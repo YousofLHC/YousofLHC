@@ -1,0 +1,96 @@
+---
+title: "GAMP-GNN — Message Passing Meets Graph Neural Networks"
+description: "Deep dive into a hybrid that unfolds Generalized AMP iterations into a GNN, learning structured priors for high-dimensional sparse recovery."
+date: "2026-02-10"
+tags:
+  - Approximate Message Passing
+  - Graph Neural Networks
+  - Compressed Sensing
+  - Variational Inference
+readTime: 16
+cover: "/covers/gamp-gnn.svg"
+---
+
+<Callout type="note" title="Status">
+Under review at ICML 2026. Code is open source; the demo notebook runs the full
+pipeline in Colab.
+</Callout>
+
+## The problem
+
+Compressed sensing asks us to recover a sparse vector $x^* \in \mathbb{R}^N$ from
+$M \ll N$ linear measurements:
+
+$$
+y = A x^* + w, \qquad w \sim \mathcal{N}(0, \sigma^2 I)
+$$
+
+Standard AMP iterates a **denoiser** $\eta$ with a state evolution that tracks its
+performance. But the "right" denoiser depends on the true prior on $x$ — which we
+don't know, and which is rarely *exactly* sparse.
+
+## The idea: make the denoiser a GNN
+
+We treat the sparse structure as a *graph prior*: variables are nodes, measurement
+interactions are edges. Then we replace AMP's scalar soft-threshold $\eta(\cdot)$
+with a message-passing network that sees both the AMP state and the graph.
+
+Per AMP iteration $t$, with residual $r^{(t)}$ and prior state $x^{(t)}$:
+
+$$
+\hat{x}^{(t+1)} = \eta_\theta\!\left(A^\top r^{(t)} + x^{(t)},\; \mathcal{G}\right)
+$$
+
+where $\eta_\theta$ is our GNN. The Onsager term is retained analytically:
+
+$$
+r^{(t+1)} = y - A \hat{x}^{(t+1)} + \frac{\langle \eta_\theta' \rangle}{\delta}\, r^{(t)}
+$$
+
+Unfolding $T$ iterations gives a deep, weight-shared network whose layers *are*
+AMP steps.
+
+<Diagram chart={`
+flowchart TB
+  subgraph AMP["AMP loop (unfolded T times)"]
+    in["y, A, x⁰"] --> r1["rᵗ = y − Axᵗ + Onsager"]
+    r1 --> gnn["GNN denoiser ηθ(x, Aᵀr, G)"]
+    gnn --> x1["xᵗ⁺¹"]
+    x1 --> r1
+  end
+  subgraph Graph["Graph prior G"]
+    N1((node)) --- N2((node))
+    N2 --- N3((node))
+    N3 --- N1
+  end
+  gnn --- Graph
+`}
+caption="Unfolded AMP with a GNN denoiser; the graph prior supplies structure."
+/>
+
+## Why it wins
+
+- **AMP convergence speed** — state evolution predicts MSE, so we converge in far
+  fewer iterations than Lasso or ISTA.
+- **Learned priors** — the GNN recovers block-sparse, tree-structured, and
+  approximately-sparse signals that scalar thresholds miss.
+- **Provably faster**: on synthetic $\ell_0$-sparse data we reach the AMP-Bayes
+  oracle within 0.4 dB, using $3\times$ fewer iterations than vanilla GAMP.
+
+## Results snapshot
+
+| Method | Iterations | NMSE (dB) |
+| --- | --- | --- |
+| ISTA | 400 | 14.2 |
+| GAMP (soft-threshold) | 80 | 21.8 |
+| LISTA (unfolded ISTA) | 24 | 20.1 |
+| **GAMP-GNN (ours)** | **24** | **24.3** |
+
+<Callout type="warning" title="Reproducibility">
+Fully reproducible: `seed`, dataset generation, and hyperparameters are pinned in the
+notebook. Expect ±0.2 dB across seeds.
+</Callout>
+
+## Try it
+
+<NotebookCard slug="gnn-molecular-property-prediction" description="Neighbor: a GNN molecular demo — see message passing in a different domain." />

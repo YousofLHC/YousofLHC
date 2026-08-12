@@ -1,0 +1,64 @@
+---
+title: HELLO
+description: ''
+date: '2026-08-12'
+tags: []
+cover: ''
+draft: false
+subject: Mathematics
+order: 1
+pdf: ''
+readTime: 1
+---
+# Hello
+```python
+code goes here
+```
+<Callout type="note" title="note">
+Write the message here.
+</Callout>
+```mermaid
+flowchart LR
+  A[Start] --> B{Decision?}
+  B -- yes --> C[Done]
+```
+as
+
+sa
+
+$x \in \mathbb{R}^n$
+
+
+$$
+x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}
+$$
+
+
+from rdkit import Chem
+from rdkit.Chem import Descriptors, Draw
+
+mol = Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)O")
+print("SMILES  :", Chem.MolToSmiles(mol))
+print("MW      :", round(Descriptors.MolWt(mol), 2))
+print("logP    :", round(Descriptors.MolLogP(mol), 2))
+print("HBD     :", Descriptors.NumHDonors(mol))
+
+img = Draw.MolToImage(mol, size=(320, 320))
+img.save("molecule.png")from rdkit import Chem
+from rdkit.Chem import Descriptors, Draw
+
+mol = Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)O")
+print("SMILES  :", Chem.MolToSmiles(mol))
+print("MW      :", round(Descriptors.MolWt(mol), 2))
+print("logP    :", round(Descriptors.MolLogP(mol), 2))
+print("HBD     :", Descriptors.NumHDonors(mol))
+
+img = Draw.MolToImage(mol, size=(320, 320))
+img.save("molecule.png")
+
+
+
+| Column A | Column B |
+| --- | --- |
+| value 1 | value 2 |
+| value 3 | value 4 |

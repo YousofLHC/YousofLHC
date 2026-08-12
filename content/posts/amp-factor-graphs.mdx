@@ -1,0 +1,178 @@
+---
+title: "Message Passing: From Factor Graphs to GNNs — and What AMP Adds"
+description: "A derivation-driven tour of belief propagation, the linear-Gaussian special case, and how graph neural networks learn those same messages — with an Approximate Message Passing twist at the end."
+date: "2026-02-01"
+tags:
+  - Approximate Message Passing
+  - Graph Neural Networks
+  - Probabilistic ML
+  - Factor Graphs
+readTime: 19
+cover: "/covers/amp-factor-graphs.svg"
+subject: "Probabilistic ML"
+---
+
+<Callout type="tip" title="What you'll learn">
+Message passing is the shared skeleton behind belief propagation, Kalman filtering,
+graph neural networks, and Approximate Message Passing. This article walks each step
+with full derivations, and ends with a runnable notebook.
+</Callout>
+
+## The one idea behind everything
+
+Every probabilistic model you will ever build can be drawn as a **factor graph**:
+a bipartite graph where round nodes are *variables* $x_1, \dots, x_N$ and square nodes
+are *factors* $f_a$ that couple them. The joint distribution factorizes as
+
+$$
+p(x_1, \dots, x_N) = \frac{1}{Z} \prod_{a} f_a\big(\{x\}_a\big).
+$$
+
+We want marginals $p(x_i)$ — and the most efficient way to get them is to pass
+*messages* along the edges until the graph "agrees" with itself.
+
+### The sum–product message
+
+Define a message from factor $f$ to variable $x$ as
+
+$$
+\mu_{f \to x}(x) \;=\; \int f(x, x') \; \mu_{x' \to f}(x') \; dx'.
+$$
+
+and from variable to factor as a product of incoming messages:
+
+$$
+\mu_{x \to f}(x) \;=\; \prod_{g \in \mathcal{N}(x) \setminus f} \mu_{g \to x}(x).
+$$
+
+After iterating to convergence, the *belief* at a variable is
+
+$$
+b(x) \;\propto\; \prod_{f \in \mathcal{N}(x)} \mu_{f \to x}(x).
+$$
+
+On a tree these beliefs are *exactly* the marginals. On loopy graphs, they are an
+approximation — usually a shockingly good one.
+
+## The linear-Gaussian special case
+
+Let the model be $x \sim \mathcal{N}(\mu_0, P_0)$ and $y = A x + w$ with
+$w \sim \mathcal{N}(0, R)$. In this case the messages stay Gaussian, and the
+sum–product rules collapse into **Gaussian belief propagation**:
+
+$$
+\mu_{y \to x}(x) \propto \exp\!\Big(-\tfrac12 (y - A x)^\top R^{-1} (y - A x)\Big),
+$$
+
+and the belief update is closed-form:
+
+$$
+x^* = P^* A^\top R^{-1} y + \cdots,
+\qquad
+P^{*} = \left(P_0^{-1} + A^\top R^{-1} A\right)^{-1}.
+$$
+
+<Callout type="note" title="Same equations, different names">
+This is *precisely* the Kalman update, the ridge-regression solution, and the
+Gaussian AMP update — just with different notation. When you see a Kalman filter
+in a robotics textbook, you're watching belief propagation in disguise.
+</Callout>
+
+## From belief propagation to GNN layers
+
+Now replace the fixed messages with *learnable* functions. A GNN message from node
+$v$ to node $u$ is:
+
+$$
+m_{v \to u}^{(t)} = \operatorname{MSG}_{\theta}\!\left(h_v^{(t-1)}, h_u^{(t-1)}, e_{vu}\right),
+\qquad
+h_u^{(t)} = \operatorname{UPD}_{\phi}\!\left(h_u^{(t-1)}, \sum_{v \in \mathcal{N}(u)} m_{v \to u}^{(t)}\right).
+$$
+
+The aggregation $\sum_{v \in \mathcal{N}(u)}$ is a sum-product over a local factor;
+the readout is a global factor; the whole thing is **belief propagation with
+trained potentials**. Below is the full mapping.
+
+<Diagram chart={`
+flowchart LR
+  subgraph FactorGraph["Factor graph"]
+    X1((x1)) --- F12[μ: f12]
+    F12 --- X2((x2))
+    F12 --- X3((x3))
+  end
+  subgraph GNN["GNN (learned messages)"]
+    H1[(h1)] --- M1[MSGθ]
+    M1 --- H2[(h2)]
+    M1 --- H3[(h3)]
+  end
+  F12 -- "μ ↔ MSGθ" --> M1
+  X1 -- "belief ↔ UPDφ" --> H1
+`}
+caption="The same bipartite structure: factor messages become learned GNN messages."
+/>
+
+## Chemistry interlude: molecules are already graphs
+
+Drug discovery is a natural graph problem — atoms are nodes, bonds are edges. And
+because molecules are drawn *chemically*, it helps to write them chemically too.
+For example, sulfonation of benzene:
+
+$$
+\ce{C6H6 + H2SO4 ->[\Delta] C6H5SO3H + H2O}
+$$
+
+The $\ce{}$ macro comes from the `mhchem` extension of KaTeX — the same extension
+that renders equilibrium arrows, oxidation states, and units:
+
+$$
+\ce{CH3COO- + H2O <=> CH3COOH + OH-}
+$$
+
+For property prediction we don't need the drawing, just the connectivity. A GNN
+reads a SMILES string like `CC(=O)Oc1ccccc1C(=O)O`, builds the bond graph, and
+predicts logP — which is exactly what the notebook at the end of this article does.
+
+## What Approximate Message Passing adds
+
+Belief propagation is exact on trees but intractable when the factor $f$ couples
+$O(N)$ variables — think compressed sensing with $y = Ax + w$ and dense $A$. AMP
+sidesteps this by approximating the messages with a **Gaussian state per variable**:
+
+$$
+x^{(t+1)} = \eta\!\left(A^\top r^{(t)} + x^{(t)}; \; \theta^{(t)}\right)
+$$
+
+with the residual updated by the famous **Onsager correction**:
+
+$$
+r^{(t)} = y - A x^{(t)} + \frac{b^{(t)}}{\delta}\, r^{(t-1)}.
+$$
+
+The correction is what makes AMP match the replica-predicted MSE — no other iterative
+solver gets this for free. And crucially, $\eta(\cdot)$ can be a *learned*
+soft-thresholding network — giving a GAMP-style network that we build in the
+`GAMP-GNN` project.
+
+<Callout type="warning" title="Hand-wavy? Don't be">
+The Onsager term is subtle. If you are implementing AMP from scratch, derive it
+from the *state evolution* recursion before adding learnable parameters — the blog
+companion to the `gamp-gnn` project page shows the full derivation.
+</Callout>
+
+## Put it together: a runnable notebook
+
+The notebook below implements a message-passing GNN for molecular property
+prediction from scratch — complete with LaTeX math, training curves, and a
+prediction table you can re-run in Colab.
+
+<NotebookCard slug="gnn-molecular-property-prediction" />
+
+## Summary
+
+| Concept | Factor-graph name | GNN name | AMP name |
+| --- | --- | --- | --- |
+| Local update | $\mu_{f \to x}$ | $\operatorname{MSG}_\theta$ | $\eta(\cdot)$ |
+| Combine | $\prod \mu$ | sum aggregation | Gaussian state |
+| Output | belief $b(x)$ | readout $R(\cdot)$ | estimator $\hat{x}$ |
+
+Three fields, one skeleton. Learn it once — the derivations transfer everywhere.

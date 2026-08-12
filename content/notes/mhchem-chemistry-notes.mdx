@@ -1,0 +1,105 @@
+---
+title: "Chemistry for ML People: Bonds, SMILES, and Reaction Equations"
+description: "The minimal chemistry toolkit an ML practitioner needs — SMILES notation, chemical reactions in mhchem, molecular graphs, and how RDKit talks to PyTorch."
+date: "2026-01-12"
+tags:
+  - Drug Design
+  - Chemistry
+  - mhchem
+readTime: 10
+subject: "Chemistry"
+order: 2
+cover: "/covers/mhchem-notes.svg"
+---
+
+<Callout type="note" title="No chemistry background needed">
+This note assumes zero chemistry. We focus on the *representations* that machine
+learning models actually consume: SMILES, molecular graphs, and reaction equations.
+</Callout>
+
+## 1 · SMILES in 60 seconds
+
+SMILES is a one-line notation for molecules. Atoms are symbols, bonds are
+`-` (single), `=` (double), `#` (triple). Rings close by matching digits:
+
+- `CCO` → ethanol: $\ce{CH3CH2OH}$
+- `c1ccccc1` → benzene (the `c` is lowercase aromatic carbon, `1` opens/closes a ring)
+- `CC(=O)Oc1ccccc1C(=O)O` → **aspirin**
+
+<Figure
+  src="/figures/aspirin-graph.svg"
+  alt="Aspirin: skeletal formula mapped to a molecular graph for GNNs"
+  caption="Figure 1 · Aspirin as a molecular graph — every atom a node, every bond an edge."
+/>
+
+## 2 · Writing reactions with mhchem
+
+KaTeX's `mhchem` extension renders reactions directly inside LaTeX math. The syntax
+is close to how chemists actually write:
+
+$$
+\ce{CH3COOH + C2H5OH <=>[H+][-H2O] CH3COOC2H5}
+$$
+
+Equilibrium, temperatures, and labels all work:
+
+$$
+\ce{N2 + 3H2 ->[Fe catalyst][450 ^\circ C] 2NH3}
+$$
+
+Units too, via `\pu`:
+
+$$
+\ce{\pu{0.5 mol L^{-1} NaOH}} \quad\Rightarrow\quad \text{half a mole of NaOH per liter}
+$$
+
+<Callout type="tip" title="Where you'll actually use this">
+- Documenting molecule-level preprocessing in papers and reports.
+- Writing *method* sections that show your ADMET filters or synthesis routes.
+- Teaching notes like this one — the exact chemistry-flavored content a reviewer
+  loves to see rendered correctly.
+</Callout>
+
+## 3 · From SMILES to graphs with RDKit
+
+The pipeline every drug-ML project shares:
+
+```python
+from rdkit import Chem
+from rdkit.Chem import AllChem, Descriptors
+
+mol = Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)O")
+logp = Descriptors.MolLogP(mol)
+fp = AllChem.GetMorganFingerprintAsBitVect(mol, radius=2, nBits=1024)
+
+# atom + bond features → adjacency for the GNN
+atoms = [a.GetSymbol() for a in mol.GetAtoms()]
+bonds = [(b.GetBeginAtomIdx(), b.GetEndAtomIdx(), b.GetBondType().name)
+         for b in mol.GetBonds()]
+```
+
+Then the resulting graph feeds the message-passing layers from the
+[GNN notebook](/notebooks/gnn-molecular-property-prediction).
+
+## 4 · Common reaction classes worth knowing
+
+| Class | Pattern | Used in |
+| --- | --- | --- |
+| Esterification | $\ce{RCOOH + R'OH -> RCOOR' + H2O}$ | prodrug synthesis |
+| Sulfonation | $\ce{C6H6 + H2SO4 -> C6H5SO3H}$ | building blocks |
+| Amide bond | $\ce{RCOOH + R'NH2 -> RCONHR'}$ | peptide chemistry |
+| Hydrogenation | $\ce{R-CH=CH2 + H2 ->[Pd/C] R-CH2CH3}$ | stability tricks |
+
+## 5 · Checklist before you feed molecules to a model
+
+1. **Canonicalize** SMILES — one string per molecule.
+2. **Sanitize** with RDKit (`Chem.MolFromSmiles` returns `None` on garbage).
+3. **Featurize** atoms (Z, hybridization, charge, H-count) and bonds (order,
+   aromaticity).
+4. **Split by scaffold** — never random — for honest generalization numbers.
+
+## Keep exploring
+
+- Full derivation of graph message passing → [factor graphs article](/blog/amp-factor-graphs)
+- Hands-on GNN for logP → [the notebook](/notebooks/gnn-molecular-property-prediction)
+- Generative molecule design → [DiffMolecule project](/projects/diffmolecule)

@@ -1,0 +1,86 @@
+---
+title: "DiffMolecule — Guided Diffusion over Graphs for De Novo Drug Design"
+description: "An equivariant fragment-level diffusion model that generates valid, synthesizable molecules under target-aware guidance, with RDKit property filters."
+date: "2026-01-28"
+tags:
+  - Diffusion
+  - Graph Neural Networks
+  - Drug Design
+  - Generative Models
+readTime: 13
+cover: "/covers/diffmolecule.svg"
+---
+
+<Callout type="note" title="Status">
+In press, *Journal of Chemical Information and Modeling*. Joint work with the
+computational chemistry lab.
+</Callout>
+
+## Generative design on a graph
+
+De novo design means sampling new molecular graphs, not retrieving known ones. We
+model the forward corruption as *independent* noise on fragments:
+
+$$
+q(x_t \mid x_{t-1}) = \mathcal{N}\!\left(x_t;\, \sqrt{1-\beta_t}\, x_{t-1},\; \beta_t I\right)
+$$
+
+The reverse process is a learned GNN that predicts the denoising step — conditioned
+on a *target* property (e.g., predicted logP, binding score, synthetic accessibility):
+
+$$
+p_\theta(x_{t-1} \mid x_t, c) = \mathcal{N}\!\left(x_{t-1};\, \mu_\theta(x_t, t, c),\; \Sigma_t\right)
+$$
+
+Sampling anneals guidance strength with a classifier-free trick:
+
+$$
+\hat{\epsilon}_\theta = (1 + w)\,\epsilon_\theta(x_t, t, c) - w\,\epsilon_\theta(x_t, t, \varnothing)
+$$
+
+<Diagram chart={`
+flowchart LR
+  noise["noise xT"] --> D["denoise GNN<br/>μθ(x_t, t, c)"]
+  c["property target c<br/>(logP · binding · SA)"] --> D
+  D --> X0["x₀ molecular graph"]
+  X0 --> filter{"RDKit filters<br/>valid · synthesizable · QED"}
+  filter -- pass --> out["candidate molecules"]
+  filter -- fail --> D
+`}
+caption="Sampling loop: guided denoising with a final RDKit sanity filter."
+/>
+
+## Design decisions that matter
+
+1. **Fragment-level tokens** — generating at the level of common fragments
+   (rings, linkers) instead of atoms raises validity from ~40% to **91%**.
+2. **Equivariant message passing** — the denoiser uses an E(n)-equivariant GNN,
+   so rotamers and translations don't change the distribution.
+3. **Guidance on the fly** — the property head is a frozen MLP on pooled node
+   features; no retraining when you swap the target.
+
+## Results at a glance
+
+| Metric | Value |
+| --- | --- |
+| Validity (RDKit) | 91% |
+| Synthesizable (SA ≤ 3.5) | 74% |
+| logP within ±0.5 of target | 68% |
+| Novel molecules (Tanimoto < 0.3 to train set) | 96% |
+
+## Chemistry is the glue
+
+Every generated graph is validated chemically — here is the reaction family we lean
+on for the ester linkers the model prefers:
+
+$$
+\ce{R-COOH + R'-OH ->[catalyst] R-COOR' + H2O}
+$$
+
+You can render reaction equations like this in **any article or note** on this site
+using the `mhchem` extension — see the [chemistry notes](/notes/mhchem-chemistry-notes).
+
+## Explore the family
+
+- Primer on why molecules are graphs → [visual primer](/blog/message-passing-primer)
+- The full math behind message passing → [factor graphs](/blog/amp-factor-graphs)

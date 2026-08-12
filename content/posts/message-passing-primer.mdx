@@ -1,0 +1,74 @@
+---
+title: "A Visual Primer on Message Passing — Why Molecules Think in Graphs"
+description: "A gentle, heavily-illustrated introduction to message passing on graphs, built around molecules: from hand-drawn arrows to PyTorch Geometric in one sitting."
+date: "2026-01-18"
+tags:
+  - Graph Neural Networks
+  - Drug Design
+  - Tutorial
+readTime: 12
+cover: "/covers/message-passing-primer.svg"
+subject: "Tutorial"
+---
+
+<Callout type="tip" title="For beginners">
+If this is your first time with GNNs, start here. We trade some rigor for intuition,
+then point you to the full derivation in the *factor graphs* article.
+</Callout>
+
+## A molecule is a graph wearing a disguise
+
+Every molecule is a labeled graph. Carbon, oxygen, nitrogen — nodes. Bonds —
+edges. The reason GNNs work on chemistry is that **the language matches the data**:
+a benzene ring stays a ring no matter how you twist it, and graph convolutions are
+equivariant to that twisting by construction.
+
+<Figure
+  src="/figures/factor-graph-to-gnn.svg"
+  alt="From factor graph to GNN message passing architecture diagram"
+  caption="Figure 1 · The mapping between factor graphs and GNN layers. Click to zoom and pan."
+/>
+
+## The three-step dance
+
+Each message-passing layer repeats one dance:
+
+1. **Message** — each neighbor $v$ computes a vector "about you," $m_{v \to u}$.
+2. **Aggregate** — node $u$ sums (or averages) all incoming messages.
+3. **Update** — node $u$ fuses its old state with the aggregate.
+
+$$h_u^{(t)} = \sigma\!\left(W^{(t)} h_u^{(t-1)} + \sum_{v \in \mathcal{N}(u)} m_{v \to u}^{(t)}\right)$$
+
+After $T$ layers, node $u$ "sees" everything within $T$ hops. For small molecules,
+$T = 2$ covers the whole graph — which is why tiny models work so well here.
+
+## Why sum beats "molecular fingerprints" for big datasets
+
+Fingerprints (ECFP, etc.) are hand-designed bit-vectors. GNNs *learn* the features
+to extract. The comparison is unfair in the best way:
+
+| Property | ECFP fingerprint | GNN embedding |
+| --- | --- | --- |
+| Features | hand-crafted | learned end-to-end |
+| Invariance | hash collisions | equivariant by design |
+| Data needed | ~any | benefits from scale |
+| Interpretability | fixed bits | attention possible |
+
+## Watch out for these three gotchas
+
+1. **Redundant atom features.** Duplicate features make readouts overweight hubs.
+2. **Mean vs sum readout.** For counting tasks (how many oxygens?) sum is essential.
+3. **Training-test leakage by scaffold.** Always split *by scaffold*, not randomly,
+   when evaluating generalization to new chemistry.
+
+<Callout type="warning" title="Scaffold splitting">
+Random splits overestimate performance on drug discovery tasks — chemists never ask
+"how well does it memorize my existing library?" Split by Bemis–Murcko scaffold and
+watch your test MAE jump to a realistic number.
+</Callout>
+
+## Next stops
+
+- The full **factor-graph derivation** → [Message Passing from Factor Graphs to GNNs](/blog/amp-factor-graphs)
+- The **runnable notebook** → [GNN for Molecular Property Prediction](/notebooks/gnn-molecular-property-prediction)
+- The project it feeds → [GAMP-GNN](/projects/gamp-gnn)

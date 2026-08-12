@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" font-family="Inter, Segoe UI, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050918"/><stop offset="1" stop-color="#0b1128"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#111b40" stop-opacity="0.9"/><stop offset="1" stop-color="#0a0f24"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <text x="600" y="44" text-anchor="middle" font-size="26" font-weight="700" fill="#e8edff">From Factor Graph to GNN Message Passing</text>
+  <text x="600" y="72" text-anchor="middle" font-size="14" fill="#8b93b0">The same update rule, two languages — belief propagation on the left, MPNN layers on the right.</text>
+
+  <!-- left: factor graph -->
+  <g>
+    <rect x="40" y="100" width="520" height="560" rx="16" fill="url(#panel)" stroke="#3be1ff44"/>
+    <text x="60" y="132" font-size="15" font-weight="700" fill="#3be1ff">FACTOR GRAPH  (sum-product)</text>
+
+    <circle cx="170" cy="330" r="34" fill="#3be1ff22" stroke="#3be1ff"/>
+    <text x="170" y="325" text-anchor="middle" font-size="13" fill="#3be1ff" font-family="JetBrains Mono, monospace">x₁</text>
+    <text x="170" y="342" text-anchor="middle" font-size="10" fill="#8b93b0">variable</text>
+
+    <rect x="300" y="300" width="90" height="60" rx="10" fill="#a78bfa22" stroke="#a78bfa"/>
+    <text x="345" y="325" text-anchor="middle" font-size="14" fill="#a78bfa" font-family="JetBrains Mono, monospace">f₁₂</text>
+    <text x="345" y="342" text-anchor="middle" font-size="10" fill="#8b93b0">factor</text>
+
+    <circle cx="510" cy="200" r="30" fill="#f472b622" stroke="#f472b6"/>
+    <text x="510" y="205" text-anchor="middle" font-size="13" fill="#f472b6" font-family="JetBrains Mono, monospace">x₂</text>
+
+    <circle cx="510" cy="460" r="30" fill="#f472b622" stroke="#f472b6"/>
+    <text x="510" y="465" text-anchor="middle" font-size="13" fill="#f472b6" font-family="JetBrains Mono, monospace">x₃</text>
+
+    <line x1="204" y1="330" x2="300" y2="330" stroke="#5b6cff" stroke-width="2" marker-end="url(#arw)"/>
+    <line x1="390" y1="315" x2="484" y2="212" stroke="#5b6cff" stroke-width="2"/>
+    <line x1="390" y1="345" x2="484" y2="446" stroke="#5b6cff" stroke-width="2"/>
+
+    <rect x="60" y="520" width="480" height="120" rx="12" fill="#050918" stroke="#1a2140"/>
+    <text x="80" y="548" font-size="13" font-weight="700" fill="#dce6ff">Messages flow both ways:</text>
+    <text x="80" y="572" font-size="13" fill="#9aa4c7">μ_{f→x}(x) = ∫ f(x, x′) μ_{x′→f}(x′) dx′</text>
+    <text x="80" y="596" font-size="13" fill="#9aa4c7">Belief: b(x) ∝ ∏_{f∈N(x)} μ_{f→x}(x)</text>
+    <text x="80" y="622" font-size="12" fill="#5d688f" font-family="JetBrains Mono, monospace">= locally consistent marginals</text>
+  </g>
+
+  <!-- center connector -->
+  <g>
+    <rect x="590" y="360" width="120" height="60" rx="14" fill="#0e3a4a" stroke="#3be1ff88"/>
+    <text x="650" y="386" text-anchor="middle" font-size="12" fill="#3be1ff" font-family="JetBrains Mono, monospace">LEARN</text>
+    <text x="650" y="404" text-anchor="middle" font-size="10" fill="#8b93b0">differentiable</text>
+    <line x1="560" y1="390" x2="590" y2="390" stroke="#3be1ff" stroke-width="2" stroke-dasharray="4 3"/>
+    <line x1="710" y1="390" x2="740" y2="390" stroke="#3be1ff" stroke-width="2" stroke-dasharray="4 3"/>
+  </g>
+
+  <!-- right: MPNN pipeline -->
+  <g>
+    <rect x="740" y="100" width="420" height="560" rx="16" fill="url(#panel)" stroke="#a78bfa44"/>
+    <text x="760" y="132" font-size="15" font-weight="700" fill="#a78bfa">GNN  (message passing layers)</text>
+
+    <!-- stage boxes -->
+    <g>
+      <rect x="760" y="160" width="380" height="58" rx="10" fill="#050918" stroke="#1a2140"/>
+      <text x="782" y="186" font-size="13" font-weight="700" fill="#dce6ff">1 · Initialize</text>
+      <text x="782" y="206" font-size="11" fill="#9aa4c7">h_u⁰ = MLP(x_u atom feat)  +  bond features e_uv</text>
+    </g>
+    <g>
+      <rect x="760" y="234" width="380" height="120" rx="10" fill="#050918" stroke="#1a2140"/>
+      <text x="782" y="260" font-size="13" font-weight="700" fill="#dce6ff">2 · Message  (t = 1..T)</text>
+      <text x="782" y="284" font-size="11" fill="#9aa4c7">m_{v→u}^t = MSG(h_v^{t-1}, h_u^{t-1}, e_uv)</text>
+      <text x="782" y="304" font-size="11" fill="#9aa4c7">h_u^t  = UPD(h_u^{t-1}, ∑_{v∈N(u)} m_{v→u}^t)</text>
+      <rect x="782" y="320" width="90" height="20" rx="6" fill="#a78bfa18" stroke="#a78bfa55"/>
+      <text x="827" y="334" text-anchor="middle" font-size="10" fill="#a78bfa">T = 3 layers</text>
+    </g>
+    <g>
+      <rect x="760" y="370" width="380" height="58" rx="10" fill="#050918" stroke="#1a2140"/>
+      <text x="782" y="396" font-size="13" font-weight="700" fill="#dce6ff">3 · Readout</text>
+      <text x="782" y="416" font-size="11" fill="#9aa4c7">ŷ = R(∑_u h_u^T)   (sum / mean / attention)</text>
+    </g>
+    <g>
+      <rect x="760" y="444" width="380" height="58" rx="10" fill="#050918" stroke="#1a2140"/>
+      <text x="782" y="470" font-size="13" font-weight="700" fill="#dce6ff">4 · Loss</text>
+      <text x="782" y="490" font-size="11" fill="#9aa4c7">SmoothL1(ŷ, y) — gradients backprop through layers</text>
+    </g>
+
+    <rect x="760" y="520" width="380" height="120" rx="12" fill="#050918" stroke="#1a2140"/>
+    <text x="782" y="548" font-size="12" font-weight="700" fill="#dce6ff">Key equivalence</text>
+    <text x="782" y="572" font-size="12" fill="#3be1ff">MSG ≈ learned μ_{f→x}   (soft messages)</text>
+    <text x="782" y="594" font-size="12" fill="#3be1ff">UPD ≈ belief combination b(x)</text>
+    <text x="782" y="618" font-size="11" fill="#5d688f">AMP replaces MSG with a scalar-on-Gaussian</text>
+    <text x="782" y="634" font-size="11" fill="#5d688f">soft-threshold — one line, huge speed.</text>
+  </g>
+
+  <defs>
+    <marker id="arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5b6cff"/>
+    </marker>
+  </defs>
+</svg>
