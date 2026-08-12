@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+  <defs>
+    <linearGradient id="bg9" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050918"/>
+      <stop offset="1" stop-color="#0b1128"/>
+    </linearGradient>
+    <linearGradient id="g9" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#fbbf24"/>
+    </linearGradient>
+    <radialGradient id="glow9" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#34d399" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#34d399" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="520" fill="url(#bg9)"/>
+  <rect width="900" height="520" fill="none" stroke="#34d39922" stroke-width="1"/>
+  <g stroke="#fbbf241a" stroke-width="1">
+    <line x1="333" y1="0" x2="333" y2="520"/>
+<line x1="399" y1="0" x2="399" y2="520"/>
+<line x1="465" y1="0" x2="465" y2="520"/>
+<line x1="531" y1="0" x2="531" y2="520"/>
+<line x1="597" y1="0" x2="597" y2="520"/>
+<line x1="663" y1="0" x2="663" y2="520"/>
+<line x1="729" y1="0" x2="729" y2="520"/>
+<line x1="795" y1="0" x2="795" y2="520"/>
+<line x1="861" y1="0" x2="861" y2="520"/>
+<line x1="27" y1="0" x2="27" y2="520"/>
+<line x1="93" y1="0" x2="93" y2="520"/>
+<line x1="159" y1="0" x2="159" y2="520"/>
+<line x1="225" y1="0" x2="225" y2="520"/>
+<line x1="291" y1="0" x2="291" y2="520"/>
+    <line x1="0" y1="333" x2="900" y2="333"/>
+<line x1="0" y1="393" x2="900" y2="393"/>
+<line x1="0" y1="453" x2="900" y2="453"/>
+<line x1="0" y1="513" x2="900" y2="513"/>
+<line x1="0" y1="53" x2="900" y2="53"/>
+<line x1="0" y1="113" x2="900" y2="113"/>
+<line x1="0" y1="173" x2="900" y2="173"/>
+<line x1="0" y1="233" x2="900" y2="233"/>
+<line x1="0" y1="293" x2="900" y2="293"/>
+  </g>
+  <circle cx="448.9414600663337" cy="319.9968874205847" r="190" fill="url(#glow9)"/>
+  <g transform="translate(450 250)">
+    <circle cx="130.0" cy="0.0" r="7" fill="#fbbf24" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.0s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="135.1" cy="78.0" r="7" fill="#34d399" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="91.0" cy="157.6" r="7" fill="#fbbf24" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="0.0" cy="130.0" r="7" fill="#34d399" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.0s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="-78.0" cy="135.1" r="7" fill="#fbbf24" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="-157.6" cy="91.0" r="7" fill="#34d399" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="-130.0" cy="0.0" r="7" fill="#fbbf24" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.0s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="-135.1" cy="-78.0" r="7" fill="#34d399" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="-91.0" cy="-157.6" r="7" fill="#fbbf24" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="-0.0" cy="-130.0" r="7" fill="#34d399" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.0s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="78.0" cy="-135.1" r="7" fill="#fbbf24" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="157.6" cy="-91.0" r="7" fill="#34d399" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+  </g>
+  <text x="44" y="430" font-family="JetBrains Mono, monospace, sans-serif" font-size="34" font-weight="700" fill="url(#g9)">Kalman Notes</text>
+  <text x="44" y="464" font-family="JetBrains Mono, monospace, sans-serif" font-size="15" letter-spacing="4" fill="#8b93b0">AI × SCIENCE — 333</text>
+</svg>
