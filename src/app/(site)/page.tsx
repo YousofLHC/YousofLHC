@@ -6,51 +6,95 @@ import {
   AtSign,
   BookOpen,
   CalendarClock,
-  Globe,
+  Check,
+  FlaskConical,
+  GitBranch,
   GraduationCap,
+  Hexagon,
   Mail,
+  Magnet,
+  Network,
+  ScanLine,
+  Sparkles,
+  Workflow,
 } from "lucide-react";
 import { Reveal } from "@/components/ui/reveal";
 import { Stagger } from "@/components/ui/stagger";
-import { TypedText } from "@/components/landing/typed-text";
-import { HeroScene } from "@/components/three/hero-scene";
-import { HeroGlow } from "@/components/three/hero-glow";
-import { CardScene } from "@/components/three/card-scene";
-import { ParticleNetwork } from "@/components/three/particle-network";
 import { Tilt } from "@/components/three/tilt";
+import { CinematicHero } from "@/components/landing/cinematic-hero";
+import { TimelineFill } from "@/components/ui/timeline-fill";
 import { PostCard } from "@/components/blog/post-card";
 import { NotebookMini } from "@/components/notebook/notebook-card";
-import {
-  education,
-  experience,
-  profile,
-  projects,
-  skills,
-  stats,
-} from "@/lib/data";
+import { domains, education, experience, profile, projects, skills } from "@/lib/data";
 import { listArticles } from "@/lib/mdx";
 import { listNotebooks } from "@/lib/notebooks";
 import { site } from "@/lib/site";
 
-const typedRoles = [
-  "Approximate Message Passing researcher",
-  "Graph Neural Network engineer",
-  "AI drug designer",
-  "Molecular dynamics modeler",
-  "Material informatician",
-  "Deep learning & ML practitioner",
-  "Agentic systems builder",
-  "PhD applicant · Spring 2027",
+const focusItems = [
+  {
+    title: "Drug Discovery",
+    desc: "AI for target identification, molecular docking, and de novo drug design.",
+    color: "cyan",
+    icon: FlaskConical,
+  },
+  {
+    title: "Protein Folding",
+    desc: "Structure prediction and representation learning for proteins.",
+    color: "violet",
+    icon: Sparkles,
+  },
+  {
+    title: "Metabolic Modeling",
+    desc: "Genome-scale modeling, flux analysis, and pathway optimization.",
+    color: "emerald",
+    icon: Workflow,
+  },
+  {
+    title: "Molecular Dynamics",
+    desc: "Simulation and enhanced sampling for molecular and material systems.",
+    color: "cyan",
+    icon: Magnet,
+  },
+  {
+    title: "Materials Science",
+    desc: "AI-guided discovery of novel materials and functional molecules.",
+    color: "emerald",
+    icon: Hexagon,
+  },
+  {
+    title: "Graph Neural Networks",
+    desc: "GNNs for molecules, proteins, and complex relational data.",
+    color: "amber",
+    icon: Network,
+  },
+  {
+    title: "Kalman Filtering",
+    desc: "State estimation for noisy, high-dimensional dynamical systems.",
+    color: "violet",
+    icon: ScanLine,
+  },
+  {
+    title: "AI Agents",
+    desc: "Agentic systems for biology, materials, and metabolic engineering.",
+    color: "amber",
+    icon: AtSign,
+  },
 ];
 
-const exploringChips = [
-  "Biophysics",
-  "Biochemistry",
-  "High-dimensional statistics",
-  "Control theory",
+const featurePoints = [
+  "Self-driving pipelines for docking, screening, and validation.",
+  "Tool-using LLM agents grounded in molecular simulation.",
+  "Uncertainty-aware decision making with dynamical-system priors.",
 ];
 
-const workSceneTypes = ["molecule", "protein", "network", "crystal"] as const;
+const workSceneImages = [
+  "/assets/scenes/drug-capsule.jpg",
+  "/assets/scenes/protein-folding.jpg",
+  "/assets/scenes/gnn-network.jpg",
+  "/assets/scenes/crystal-lattice.jpg",
+];
+
+const exploringChips = ["Biophysics", "Biochemistry", "High-dimensional statistics", "Control theory"];
 
 const timeline = [...experience.slice(0, 3), education[0]];
 
@@ -63,13 +107,41 @@ const galleryItems = [
   { src: "/gallery/ai-agent.png", label: "AI Agent", featured: false },
 ];
 
+const contactCards = [
+  {
+    label: "GitHub",
+    name: "yousofLHC",
+    desc: "Check out my code and projects.",
+    href: site.socials.github,
+    icon: GitBranch,
+  },
+  {
+    label: "Google Scholar",
+    name: "Yousof Ghalenoei",
+    desc: "Explore my publications and citations.",
+    href: site.socials.scholar,
+    icon: GraduationCap,
+  },
+  {
+    label: "LinkedIn",
+    name: "yousof-ghalenoei",
+    desc: "Let's connect professionally.",
+    href: site.socials.linkedin,
+    icon: AtSign,
+  },
+  {
+    label: "Book a call",
+    name: "Calendly · 30 minutes",
+    desc: "Reserve a 1:1 slot to discuss research or collaboration.",
+    href: site.calendly,
+    icon: CalendarClock,
+  },
+];
+
 const contactRows = [
   { label: "Email", value: site.email, href: `mailto:${site.email}`, icon: Mail },
-  { label: "Book a 1:1 call", value: "Calendly — 30 minutes", href: site.calendly, icon: CalendarClock },
-  { label: "GitHub", value: "github.com/yousofghalenoei", href: site.socials.github, icon: Globe },
-  { label: "LinkedIn", value: "in/yousofghalenoei", href: site.socials.linkedin, icon: Globe },
-  { label: "Google Scholar", value: "Citations profile", href: site.socials.scholar, icon: BookOpen },
   { label: "X (Twitter)", value: "@yousofghalenoei", href: site.socials.x, icon: AtSign },
+  { label: "ORCID", value: "Research profile", href: site.socials.orcid, icon: BookOpen },
 ];
 
 export default async function Home() {
@@ -81,111 +153,40 @@ export default async function Home() {
 
   return (
     <>
-      {/* ================= HERO ================= */}
-      <section className="relative z-10 flex min-h-screen flex-col justify-center overflow-hidden px-5 pt-28 lg:pt-24">
-        <ParticleNetwork />
-        <div className="orb orb-cyan -left-10 -top-10 h-[500px] w-[500px]" />
-        <div className="orb orb-amber bottom-0 right-0 h-[400px] w-[400px]" />
-        <div className="pointer-events-none absolute inset-0 grid-overlay opacity-30 [mask-image:radial-gradient(ellipse_at_center,black_10%,transparent_70%)]" />
-        <div className="relative z-[1] mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-          <div>
-            <Reveal>
-              <p className="eyebrow">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-pulse-soft rounded-full bg-emerald opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald" />
-                </span>
-                {site.availability}
-              </p>
-            </Reveal>
+      {/* ================= HERO (cinematic reel) ================= */}
+      <CinematicHero />
 
-            <Reveal delay={0.08}>
-              <h1 className="mt-6 font-display text-[42px] font-semibold leading-[1.06] tracking-tight sm:text-6xl lg:text-[64px]">
-                AI for science.
-                <br />
-                Knowledge for <span className="text-grad">impact.</span>
-              </h1>
-            </Reveal>
-
-            <Reveal delay={0.16}>
-              <p className="mt-6 font-mono text-base text-dim sm:text-lg">
-                Building as <span className="text-ink">{profile.name}</span> —{" "}
-                <span className="text-cyan">&gt; </span>
-                <TypedText phrases={typedRoles} className="text-cyan" />
-              </p>
-            </Reveal>
-
-            <Reveal delay={0.24}>
-              <p className="mt-5 max-w-xl text-lg leading-8 text-ink/80">
-                I build intelligent models and agentic systems to accelerate
-                discovery in biology, chemistry, and materials — bridging{" "}
-                <span className="text-ink">AI</span>, physics, and computation to
-                solve real problems.
-              </p>
-            </Reveal>
-
-            <Reveal delay={0.32}>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/resume" className="btn btn-primary">
-                  View portfolio <ArrowUpRight />
-                </Link>
-                <Link href="/connect" className="btn btn-ghost">
-                  <CalendarClock /> Book a call
-                </Link>
-              </div>
-            </Reveal>
-
-            <Reveal delay={0.42}>
-              <div className="mt-14 grid max-w-2xl grid-cols-4 divide-x divide-line">
-                {stats.map((s) => (
-                  <div key={s.label} className="px-4 first:pl-0">
-                    <p className="font-mono text-2xl font-bold text-ink sm:text-3xl">
-                      {s.value}
-                    </p>
-                    <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-faint">
-                      {s.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-
-          <Reveal delay={0.18} className="hidden lg:block">
-            <div className="relative">
-              <HeroGlow />
-              <div className="orb orb-cyan absolute -right-16 -top-16 h-[340px] w-[340px]" style={{ filter: "blur(10px)" }} />
-              <div className="orb orb-amber absolute -bottom-10 -left-10 h-[220px] w-[220px]" style={{ filter: "blur(10px)" }} />
-              <Tilt max={10}>
-                <div className="relative">
-                  <div className="hero-ring" />
-                  <div className="hero-panel relative h-[560px]">
-                    <div className="absolute inset-0 animate-img-float">
-                      <HeroScene />
-                    </div>
-                    <p className="hero-caption">
-                      <b>3D molecular scene</b> — live · three.js
-                    </p>
-                  </div>
-                </div>
-              </Tilt>
+      {/* ================= DOMAIN MARQUEE ================= */}
+      <div className="marquee" aria-hidden="true">
+        <div className="mq-track animate-marquee" style={{ animationDuration: "38s" }}>
+          {[0, 1].map((g) => (
+            <div key={g} className="mq-group">
+              {domains.map((d) => {
+                const Icon = d.icon as typeof FlaskConical;
+                return (
+                  <span key={g + d.id} className="mq-chip">
+                    <Icon size={15} />
+                    {d.label}
+                  </span>
+                );
+              })}
             </div>
-          </Reveal>
+          ))}
         </div>
-      </section>
+      </div>
 
       {/* ================= RESEARCH FOCUS ================= */}
-      <section className="relative z-10 mx-auto max-w-6xl px-5 py-24">
-        <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+      <section id="research" className="relative z-10 mx-auto max-w-6xl px-5 py-24">
+        <div className="focus-layout">
           <div>
             <Reveal>
-              <p className="eyebrow">01 · research focus</p>
+              <p className="eyebrow">research focus</p>
               <h2 className="heading mt-4 text-3xl sm:text-4xl">
                 Where AI Meets the <span className="text-grad">Molecular</span> World.
               </h2>
               <p className="mt-4 max-w-md text-dim">
-                I develop data-driven and physics-informed AI methods to model,
-                predict, and design complex molecular systems.
+                I develop data-driven and physics-informed AI methods to model, predict, and design
+                complex molecular systems.
               </p>
             </Reveal>
 
@@ -201,81 +202,141 @@ export default async function Home() {
                 ))}
               </div>
             </Reveal>
+
+            <Reveal delay={0.24}>
+              <div className="dna-frame relative mt-10 max-w-[340px]">
+                <div className="pointer-events-none absolute -inset-[30px] z-0 rounded-3xl bg-[radial-gradient(circle_at_40%_40%,rgba(79,200,232,0.16),transparent_65%)] blur-2xl" />
+                <Image
+                  src="/assets/scenes/dna-helix.jpg"
+                  alt="3D DNA double helix render"
+                  width={340}
+                  height={190}
+                  className="animate-drift relative z-[1] w-full rounded-2xl border border-line"
+                />
+              </div>
+            </Reveal>
           </div>
 
-          <Reveal delay={0.12} className="hidden sm:block">
-            <div className="relative ml-auto max-w-[340px]">
-              <div className="pointer-events-none absolute -inset-[30px] z-0 rounded-3xl bg-[radial-gradient(circle_at_40%_40%,rgba(79,200,232,0.16),transparent_65%)] blur-2xl" />
-              <Image
-                src="/gallery/dna-helix.png"
-                alt="3D DNA double helix with rainbow base pairs"
-                width={340}
-                height={300}
-                className="animate-drift relative z-[1] w-full rounded-2xl border border-line mix-blend-screen saturate-120 contrast-105"
-              />
-            </div>
-</Reveal>
-      </div>
+          <Stagger className="stagger-children focus-grid">
+            {focusItems.map((f) => (
+              <div key={f.title} className="focus-item" data-c={f.color}>
+                <div className="focus-icon">
+                  <f.icon size={20} />
+                </div>
+                <h3>{f.title}</h3>
+                <p>{f.desc}</p>
+              </div>
+            ))}
+          </Stagger>
+        </div>
+      </section>
+
+      {/* ================= FEATURE BAND (AI agents) ================= */}
+      <section className="relative z-10 border-t border-line bg-abyss/30">
+        <div className="orb orb-violet absolute -left-40 top-10 h-[400px] w-[400px]" />
+        <div className="mx-auto max-w-6xl px-5 py-24">
+          <div className="feature">
+            <Reveal>
+              <p className="eyebrow">featured direction</p>
+              <h2 className="heading mt-4 text-3xl sm:text-4xl">
+                Autonomous AI Agents for <span className="text-grad">Biological</span> Discovery.
+              </h2>
+              <p className="mt-4 max-w-md leading-7 text-dim">
+                I design agentic systems that plan, reason, and act across simulation and data
+                pipelines — closing the loop between hypothesis generation and experimental
+                validation in the life sciences.
+              </p>
+              <ul className="mt-6">
+                {featurePoints.map((pt) => (
+                  <li key={pt}>
+                    <Check size={16} />
+                    {pt}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/projects" className="link-arrow">
+                Explore agent-driven projects <ArrowRight size={16} />
+              </Link>
+            </Reveal>
+
+            <Reveal delay={0.15}>
+              <div className="feature-visual">
+                <div className="glow" />
+                <div className="frame">
+                  <Image
+                    src="/assets/scenes/ai-agent.jpg"
+                    alt="3D render of an AI agent surrounded by DNA helices and molecular structures"
+                    width={600}
+                    height={338}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </div>
       </section>
 
       {/* ================= SELECTED WORK ================= */}
-      <section className="relative z-10 border-t border-line bg-abyss/30">
-        <div className="mx-auto max-w-6xl px-5 py-24">
-          <Reveal>
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div className="max-w-xl">
-                <p className="eyebrow">02 · publications</p>
-                <h2 className="heading mt-4 text-3xl sm:text-4xl">
-                  Selected <span className="text-grad">Work.</span>
-                </h2>
-              </div>
-              <Link
-                href="/projects"
-                className="group inline-flex items-center gap-1.5 font-mono text-sm text-cyan"
-              >
-                View all on GitHub{" "}
-                <ArrowRight
-                  size={14}
-                  className="transition-transform group-hover:translate-x-1"
-                />
-              </Link>
+      <section id="work" className="relative z-10 mx-auto max-w-6xl px-5 py-24">
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="eyebrow">publications &amp; projects</p>
+              <h2 className="heading mt-4 text-3xl sm:text-4xl">
+                Selected <span className="text-grad">Work.</span>
+              </h2>
             </div>
-          </Reveal>
-
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {workProjects.map((p, i) => (
-              <Reveal key={p.slug} delay={i * 0.08}>
-                <Tilt max={6} className="h-full">
-                  <Link
-                    href={`/projects/${p.slug}`}
-                    className="work-card group block h-full"
-                  >
-                    <div className={`work-thumb tint-${["blue", "orange", "purple", "cyan"][i % 4]}`}>
-                      <CardScene type={workSceneTypes[i % workSceneTypes.length]} />
-                    </div>
-                    <div className="p-5">
-                      <div className="flex items-center justify-between">
-                        <span className="work-kicker">{p.domain}</span>
-                        <span className="work-kicker">{p.year}</span>
-                      </div>
-                      <h3 className="mt-2 font-display text-[17px] font-semibold text-ink">
-                        {p.title}
-                      </h3>
-                      <p className="mt-1 text-[13px] leading-5 text-faint">{p.subtitle}</p>
-                      <div className="mt-4 flex flex-wrap gap-1.5">
-                        {p.tags.slice(0, 3).map((t) => (
-                          <span key={t} className="work-tag">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </Link>
-                </Tilt>
-              </Reveal>
-            ))}
+            <Link href="/projects" className="link-arrow">
+              View all on GitHub <ArrowRight size={16} />
+            </Link>
           </div>
+        </Reveal>
+
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {workProjects.map((p, i) => (
+            <Reveal key={p.slug} delay={i * 0.08}>
+              <Tilt max={6} className="h-full">
+                <Link href={`/projects/${p.slug}`} className="work-card group block h-full">
+                  <div className="work-thumb">
+                    <Image
+                      src={workSceneImages[i % workSceneImages.length]}
+                      alt={p.title}
+                      fill
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="work-body">
+                    <h3>{p.title}</h3>
+                    <p>{p.subtitle}</p>
+                    <div className="tag-row">
+                      <span className="work-tag hot">{p.domain.split(" ")[0]}</span>
+                      {p.tags.slice(1, 3).map((t) => (
+                        <span key={t} className="work-tag">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="work-foot">
+                      <span className="work-year">{p.year}</span>
+                      <span className="link-arrow">
+                        <ArrowUpRight size={15} />
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </Tilt>
+            </Reveal>
+          ))}
         </div>
+
+        <Reveal delay={0.2}>
+          <div className="mt-12 text-center">
+            <Link href="/projects" className="btn btn-ghost">
+              Explore More Projects
+            </Link>
+          </div>
+        </Reveal>
       </section>
 
       {/* ================= SCIENTIFIC VISUALIZATIONS ================= */}
@@ -289,8 +350,8 @@ export default async function Home() {
                 Visual <span className="text-grad">Explorer.</span>
               </h2>
               <p className="mt-4 text-dim">
-                A glimpse into the molecular world — from protein structures to
-                neural network topologies and chromatographic data.
+                A glimpse into the molecular world — from protein structures to neural network
+                topologies and chromatographic data.
               </p>
             </div>
           </Reveal>
@@ -321,78 +382,49 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ================= ABOUT + JOURNEY ================= */}
-      <section className="relative z-10 mx-auto max-w-6xl px-5 py-24">
-        <div className="grid gap-14 lg:grid-cols-[1.35fr_1fr]">
-          <div>
-            <Reveal>
-              <p className="eyebrow">04 · about</p>
-              <h2 className="heading mt-4 text-3xl sm:text-4xl">
-                A mind that treats <span className="text-grad">science</span> and{" "}
-                <span className="text-grad">signal</span> as one language.
-              </h2>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <div className="mt-6 space-y-5">
-                {profile.bio.map((p, i) => (
-                  <p key={i} className="leading-8 text-ink/80">
-                    {p}
+      {/* ================= JOURNEY + ABOUT ================= */}
+      <section id="timeline" className="relative z-10 overflow-hidden">
+        <div className="orb orb-amber absolute right-[-120px] top-[20%] h-[360px] w-[360px]" />
+        <div className="mx-auto max-w-6xl px-5 py-24">
+          <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr]">
+            <div className="tl-left">
+              <Reveal>
+                <p className="eyebrow">academic journey</p>
+                <h2 className="heading mt-4 text-3xl sm:text-4xl">
+                  Education &amp; <span className="text-grad">Experience.</span>
+                </h2>
+                <p className="mt-4 max-w-sm leading-7 text-dim">
+                  My academic path is driven by curiosity and a passion for solving meaningful
+                  scientific challenges.
+                </p>
+              </Reveal>
+
+              <Reveal delay={0.12}>
+                <div className="mt-8 space-y-5">
+                  {profile.bio.slice(0, 2).map((p, i) => (
+                    <p key={i} className="leading-7 text-ink/80">
+                      {p}
+                    </p>
+                  ))}
+                  <p className="rounded-xl border border-cyan/25 bg-cyan/5 px-4 py-3 font-mono text-sm leading-6 text-cyan/90">
+                    → {profile.focus}
                   </p>
+                </div>
+              </Reveal>
+            </div>
+
+            <Reveal delay={0.1}>
+              <TimelineFill>
+                {timeline.map((t) => (
+                  <div key={`${t.period}-${t.title}`} className="tl-item">
+                    <div className="tl-node" />
+                    <span className="tl-date">{t.period}</span>
+                    <h3>{t.title}</h3>
+                    <p className="tl-org">{t.org}</p>
+                    <p className="tl-detail">{t.detail}</p>
+                  </div>
                 ))}
-                <p className="rounded-xl border border-cyan/25 bg-cyan/5 px-4 py-3 font-mono text-sm leading-6 text-cyan/90">
-                  → {profile.focus}
-                </p>
-              </div>
-            </Reveal>
-
-            <Reveal delay={0.2}>
-              <div className="mt-12">
-                <p className="eyebrow">tech stack</p>
-                <div className="mt-6 space-y-6">
-                  {skills.map((g) => (
-                    <div key={g.name} className="flex flex-wrap items-center gap-x-5 gap-y-2">
-                      <span className="w-44 shrink-0 font-mono text-xs uppercase tracking-wider text-faint">
-                        {g.name}
-                      </span>
-                      <div className="flex flex-wrap gap-2">
-                        {g.skills.map((s) => (
-                          <span key={s.name} className="chip !py-1">
-                            {s.name}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Reveal>
-          </div>
-
-          <div>
-            <Reveal delay={0.15}>
-              <div className="rounded-[20px] border border-line bg-abyss/40 p-7">
-                <div className="mb-8 flex items-center gap-2.5">
-                  <span className="grid h-8 w-8 place-items-center rounded-lg border border-line text-accent">
-                    <GraduationCap size={16} />
-                  </span>
-                  <h3 className="font-display text-lg font-semibold">Academic Journey</h3>
-                </div>
-                <p className="-mt-4 mb-8 text-[13.5px] leading-6 text-dim">
-                  My academic path is driven by curiosity and a passion for solving
-                  meaningful scientific challenges.
-                </p>
-                <div className="timeline-list">
-                  {timeline.map((t) => (
-                    <div key={`${t.period}-${t.title}`} className="tl-item">
-                      <span className="tl-dot" />
-                      <p className="tl-date">{t.period}</p>
-                      <h4 className="tl-role">{t.title}</h4>
-                      <p className="text-[12.5px] text-dim">{t.org}</p>
-                      <p className="tl-detail">{t.detail}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              </TimelineFill>
             </Reveal>
           </div>
         </div>
@@ -404,7 +436,7 @@ export default async function Home() {
           <Reveal>
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <p className="eyebrow">06 · knowledge hub</p>
+                <p className="eyebrow">knowledge hub</p>
                 <h2 className="heading mt-4 text-3xl sm:text-4xl">
                   Learn with me — <span className="text-grad">notes, articles, notebooks</span>
                 </h2>
@@ -443,51 +475,107 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ================= CONTACT ================= */}
-      <section className="relative z-10 mx-auto max-w-6xl px-5 py-24">
-        <Reveal>
-          <div className="contact-panel">
-            <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-cyan/10 blur-3xl" />
-            <div className="relative grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-start">
-              <div>
-                <p className="eyebrow">07 · let&apos;s connect</p>
-                <h2 className="heading mt-4 text-3xl sm:text-4xl">
-                  Open to <span className="text-grad">collaboration</span> and new ideas.
-                </h2>
-                <p className="mt-5 max-w-md leading-7 text-dim">
-                  I&apos;m always excited to do driven research, collaborate on
-                  projects, and explore ways AI can accelerate scientific
-                  breakthroughs.
-                </p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <Link href={site.calendly} target="_blank" rel="noreferrer" className="btn btn-primary">
-                    <CalendarClock /> Book a 1:1 call
-                  </Link>
-                  <a href={`mailto:${site.email}`} className="btn btn-ghost">
-                    {site.email}
-                  </a>
-                </div>
-              </div>
-              <Stagger className="stagger-children rounded-[20px] border border-line bg-void/40 px-6 py-4">
-                {contactRows.map((r) => (
-                  <a key={r.label} href={r.href} target={r.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" className="contact-row group">
-                    <div className="flex items-center gap-4">
-                      <span className="contact-icon">
-                        <r.icon size={16} />
+      {/* ================= TECH STACK ================= */}
+      <section id="stack" className="relative z-10 mx-auto max-w-6xl px-5 py-24">
+        <div className="focus-layout">
+          <Reveal>
+            <p className="eyebrow">tech stack</p>
+            <h2 className="heading mt-4 text-3xl sm:text-4xl">
+              Tools of the <span className="text-grad">Trade.</span>
+            </h2>
+          </Reveal>
+
+          <Reveal delay={0.12}>
+            <div className="stack-rows">
+              {skills.map((g) => (
+                <div key={g.name}>
+                  <div className="stack-cat">{g.name}</div>
+                  <div className="stack-row">
+                    {g.skills.map((s) => (
+                      <span key={s.name} className="chip">
+                        {s.name}
                       </span>
-                      <div>
-                        <p className="contact-label">{r.label}</p>
-                        <p className="contact-value">{r.value}</p>
-                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ================= CONTACT ================= */}
+      <section id="contact" className="relative z-10 overflow-hidden border-t border-line bg-abyss/30">
+        <div className="orb orb-cyan absolute -left-40 bottom-[-160px] h-[460px] w-[460px]" />
+        <div className="mx-auto max-w-6xl px-5 py-24">
+          <Reveal>
+            <div className="contact-head">
+              <p className="eyebrow">let&apos;s connect</p>
+              <h2 className="heading mt-4 max-w-xl text-3xl sm:text-5xl">
+                Open to <span className="text-grad">collaboration</span> and new ideas.
+              </h2>
+              <p className="mt-5 max-w-lg leading-7 text-dim">
+                I&apos;m always excited to discuss research ideas, collaborate on projects, and
+                explore ways AI can accelerate scientific breakthroughs.
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.12}>
+            <div className="mt-10">
+              <div className="contact-grid">
+                {contactCards.map((c) => (
+                  <a
+                    key={c.label}
+                    href={c.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="contact-card group"
+                  >
+                    <div className="c-icon">
+                      <c.icon size={20} />
                     </div>
-                    <ArrowUpRight size={17} className="text-faint transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent" />
+                    <div className="label">{c.label}</div>
+                    <div className="name">{c.name}</div>
+                    <div className="desc">{c.desc}</div>
+                    <span className="link-arrow">
+                      View Profile <ArrowUpRight size={15} />
+                    </span>
                   </a>
                 ))}
-                </Stagger>
               </div>
             </div>
-        </Reveal>
+          </Reveal>
+
+          <Reveal delay={0.18}>
+            <div className="email-row">
+              <div className="l">
+                <Mail size={18} />
+                {site.email}
+              </div>
+              <a href={`mailto:${site.email}`} className="link-arrow">
+                Write me <ArrowRight size={15} />
+              </a>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.24}>
+            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+              {contactRows.map((r) => (
+                <a
+                  key={r.label}
+                  href={r.href}
+                  target={r.href.startsWith("http") ? "_blank" : undefined}
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 font-mono text-[12px] text-dim transition-colors hover:text-cyan"
+                >
+                  <r.icon size={13} />
+                  {r.label} · {r.value}
+                </a>
+              ))}
+            </div>
+          </Reveal>
+        </div>
       </section>
     </>
   );
