@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local reference material, not part of the app:
+    "Read This I like This one more/**",
   ]),
 ]);
 

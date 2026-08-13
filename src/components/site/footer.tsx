@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, AtSign, GitBranch, Mail, GraduationCap, FileText } from "lucide-react";
+import { ArrowUpRight, AtSign, GitBranch, Mail, GraduationCap } from "lucide-react";
 import { site } from "@/lib/site";
 import { marqueeDomains } from "@/lib/data";
 
@@ -93,11 +93,11 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col gap-4 border-t border-line pt-6 text-xs text-faint md:flex-row md:items-center md:justify-between">
           <p>
-            © {new Date().getFullYear()} {site.name} · {site.availability}
+            © {new Date().getFullYear()} {site.name} · All rights reserved.
           </p>
-          <p className="flex items-center gap-1.5 font-mono">
-            <FileText size={12} className="text-cyan/60" />
-            Built with Next.js · Three.js · KaTeX(mhchem) · Mermaid · React
+          <p className="flex items-center gap-2 font-mono">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber" />
+            Building intelligence for a better future.
           </p>
         </div>
 
