@@ -8,7 +8,6 @@ import {
   CalendarClock,
   Check,
   FlaskConical,
-  GitBranch,
   GraduationCap,
   Hexagon,
   Mail,
@@ -23,6 +22,7 @@ import { Stagger } from "@/components/ui/stagger";
 import { Tilt } from "@/components/three/tilt";
 import { CinematicHero } from "@/components/landing/cinematic-hero";
 import { TimelineFill } from "@/components/ui/timeline-fill";
+import { GithubLive } from "@/components/ui/github-live";
 import { PostCard } from "@/components/blog/post-card";
 import { NotebookMini } from "@/components/notebook/notebook-card";
 import { education, experience, profile, projects, skills } from "@/lib/data";
@@ -108,13 +108,6 @@ const galleryItems = [
 ];
 
 const contactCards = [
-  {
-    label: "GitHub",
-    name: "yousofLHC",
-    desc: "Check out my code and projects.",
-    href: site.socials.github,
-    icon: GitBranch,
-  },
   {
     label: "Google Scholar",
     name: "Yousof Ghalenoei",
@@ -545,6 +538,7 @@ export default async function Home() {
           <Reveal delay={0.12}>
             <div className="mt-10">
               <div className="contact-grid">
+                <GithubLive />
                 {contactCards.map((c) => (
                   <a
                     key={c.label}

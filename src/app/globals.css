@@ -1128,6 +1128,7 @@
     }
   }
   .contact-card {
+    display: block;
     background: var(--color-panel);
     border: 1px solid var(--color-line);
     border-radius: 16px;
@@ -1169,6 +1170,54 @@
     font-size: 13px;
     color: var(--color-dim);
     margin-bottom: 14px;
+  }
+  .gh-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 4px 0 16px;
+  }
+  .gh-repo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--color-panel-2) 45%, transparent);
+  }
+  .contact-card:hover .gh-repo {
+    border-color: var(--color-line-strong);
+  }
+  .gh-repo-name {
+    font-family: var(--font-jetbrains);
+    font-size: 12px;
+    color: var(--color-ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .gh-repo-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-jetbrains);
+    font-size: 11px;
+    color: var(--color-dim);
+    white-space: nowrap;
+  }
+  .gh-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--t-cyan);
+  }
+  .gh-star {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    color: var(--t-amber);
   }
   .email-row {
     display: flex;
