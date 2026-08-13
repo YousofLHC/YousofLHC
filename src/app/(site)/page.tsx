@@ -21,8 +21,6 @@ import { Tilt } from "@/components/three/tilt";
 import { PostCard } from "@/components/blog/post-card";
 import { NotebookMini } from "@/components/notebook/notebook-card";
 import {
-  domainColors,
-  domains,
   education,
   experience,
   profile,
@@ -176,24 +174,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ================= DOMAIN MARQUEE ================= */}
-      <section className="relative z-10 border-y border-line bg-abyss/40 py-5">
-        <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
-          <div className="flex w-max animate-marquee gap-3">
-            {[...domains, ...domains].map((d, i) => (
-              <span
-                key={`${d.id}-${i}`}
-                className="chip whitespace-nowrap"
-                style={{ color: domainColors[d.color] }}
-              >
-                <d.icon size={12} />
-                {d.label}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ================= RESEARCH FOCUS ================= */}
       <section className="relative z-10 mx-auto max-w-6xl px-5 py-24">
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
@@ -234,23 +214,8 @@ export default async function Home() {
                 className="animate-drift relative z-[1] w-full rounded-2xl border border-line mix-blend-screen saturate-120 contrast-105"
               />
             </div>
-          </Reveal>
-        </div>
-
-        <Stagger className="stagger-children focus-grid mt-10">
-          {domains.map((d) => (
-            <div key={d.id} className="focus-card">
-              <span
-                className="focus-icon"
-                style={{ color: domainColors[d.color] }}
-              >
-                <d.icon size={19} strokeWidth={1.8} />
-              </span>
-              <h3>{d.short}</h3>
-              <p>{d.blurb}</p>
-            </div>
-          ))}
-        </Stagger>
+</Reveal>
+      </div>
       </section>
 
       {/* ================= SELECTED WORK ================= */}

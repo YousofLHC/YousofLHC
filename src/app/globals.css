@@ -160,6 +160,7 @@
   --t-panel-2: #151c33;
   --t-line: rgba(255, 255, 255, 0.08);
   --t-line-strong: rgba(255, 255, 255, 0.16);
+  --t-grid: rgba(79, 200, 232, 0.12);
   --t-ink: #edeff5;
   --t-dim: #9aa3be;
   --t-faint: #5c6480;
@@ -193,6 +194,7 @@
   --t-panel-2: #e3e9f4;
   --t-line: rgba(16, 20, 35, 0.1);
   --t-line-strong: rgba(16, 20, 35, 0.18);
+  --t-grid: rgba(14, 121, 165, 0.14);
   --t-ink: #161a26;
   --t-dim: #4a5268;
   --t-faint: #8a91a8;
@@ -302,8 +304,8 @@
 
   .grid-overlay {
     background-image:
-      linear-gradient(var(--t-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--t-line) 1px, transparent 1px);
+      linear-gradient(var(--t-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--t-grid) 1px, transparent 1px);
     background-size: 46px 46px;
   }
 
