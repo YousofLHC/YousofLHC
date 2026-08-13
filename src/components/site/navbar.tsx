@@ -50,13 +50,16 @@ export function Navbar() {
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition-all duration-200 ${
+                  className={`group relative rounded-full px-4 py-1.5 text-[13px] font-medium transition-all duration-200 ${
                     active
                       ? "bg-gradient-to-b from-cyan to-violet text-void shadow-[0_2px_12px_rgba(79,200,232,0.35)]"
                       : "text-dim hover:bg-panel-2 hover:text-ink"
                   }`}
                 >
                   {l.label}
+                  {!active && (
+                    <span className="absolute inset-x-4 -bottom-px h-px w-0 bg-gradient-to-r from-cyan to-violet transition-all duration-300 group-hover:w-[calc(100%-2rem)]" />
+                  )}
                 </Link>
               </li>
             );

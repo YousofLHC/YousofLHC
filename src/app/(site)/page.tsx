@@ -11,6 +11,7 @@ import {
   Mail,
 } from "lucide-react";
 import { Reveal } from "@/components/ui/reveal";
+import { Stagger } from "@/components/ui/stagger";
 import { TypedText } from "@/components/landing/typed-text";
 import { HeroScene } from "@/components/three/hero-scene";
 import { HeroGlow } from "@/components/three/hero-glow";
@@ -111,15 +112,17 @@ export default async function Home() {
             <Reveal delay={0.16}>
               <p className="mt-6 font-mono text-base text-dim sm:text-lg">
                 Building as <span className="text-ink">{profile.name}</span> —{" "}
+                <span className="text-cyan">&gt; </span>
                 <TypedText phrases={typedRoles} className="text-cyan" />
               </p>
             </Reveal>
 
             <Reveal delay={0.24}>
               <p className="mt-5 max-w-xl text-lg leading-8 text-ink/80">
-                {profile.tagline} I design inference engines, molecular models, and
-                agentic systems at the frontier of <span className="text-ink">AI</span> ×{" "}
-                <span className="text-ink">science</span>.
+                I build intelligent models and agentic systems to accelerate
+                discovery in biology, chemistry, and materials — bridging{" "}
+                <span className="text-ink">AI</span>, physics, and computation to
+                solve real problems.
               </p>
             </Reveal>
 
@@ -155,11 +158,13 @@ export default async function Home() {
               <HeroGlow />
               <div className="orb orb-cyan absolute -right-16 -top-16 h-[340px] w-[340px]" style={{ filter: "blur(10px)" }} />
               <div className="orb orb-amber absolute -bottom-10 -left-10 h-[220px] w-[220px]" style={{ filter: "blur(10px)" }} />
-              <Tilt max={6}>
+              <Tilt max={10}>
                 <div className="relative">
                   <div className="hero-ring" />
                   <div className="hero-panel relative h-[560px]">
-                    <HeroScene />
+                    <div className="absolute inset-0 animate-img-float">
+                      <HeroScene />
+                    </div>
                     <p className="hero-caption">
                       <b>3D molecular scene</b> — live · three.js
                     </p>
@@ -191,48 +196,61 @@ export default async function Home() {
 
       {/* ================= RESEARCH FOCUS ================= */}
       <section className="relative z-10 mx-auto max-w-6xl px-5 py-24">
-        <Reveal>
-          <div className="max-w-xl">
-            <p className="eyebrow">01 · research focus</p>
-            <h2 className="heading mt-4 text-3xl sm:text-4xl">
-              Where <span className="text-grad">AI</span> meets the molecular world.
-            </h2>
-            <p className="mt-4 text-dim">
-              Ten research directions, one goal: build models that think like
-              scientists — probabilistic, molecular, and interpretable.
-            </p>
-          </div>
-        </Reveal>
+        <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+          <div>
+            <Reveal>
+              <p className="eyebrow">01 · research focus</p>
+              <h2 className="heading mt-4 text-3xl sm:text-4xl">
+                Where AI Meets the <span className="text-grad">Molecular</span> World.
+              </h2>
+              <p className="mt-4 max-w-md text-dim">
+                I develop data-driven and physics-informed AI methods to model,
+                predict, and design complex molecular systems.
+              </p>
+            </Reveal>
 
-        <Reveal delay={0.1}>
-          <div className="focus-grid mt-10">
-            {domains.map((d) => (
-              <div key={d.id} className="focus-card">
-                <span
-                  className="focus-icon"
-                  style={{ color: domainColors[d.color] }}
-                >
-                  <d.icon size={19} strokeWidth={1.8} />
+            <Reveal delay={0.18}>
+              <div className="mt-6 flex max-w-md flex-wrap items-center gap-2">
+                <span className="font-mono text-xs uppercase tracking-widest text-faint">
+                  Also exploring
                 </span>
-                <h3>{d.short}</h3>
-                <p>{d.blurb}</p>
+                {exploringChips.map((c) => (
+                  <span key={c} className="chip">
+                    {c}
+                  </span>
+                ))}
               </div>
-            ))}
+            </Reveal>
           </div>
-        </Reveal>
 
-        <Reveal delay={0.18}>
-          <div className="mt-6 flex flex-wrap items-center gap-2">
-            <span className="font-mono text-xs uppercase tracking-widest text-faint">
-              Also exploring
-            </span>
-            {exploringChips.map((c) => (
-              <span key={c} className="chip">
-                {c}
+          <Reveal delay={0.12} className="hidden sm:block">
+            <div className="relative ml-auto max-w-[340px]">
+              <div className="pointer-events-none absolute -inset-[30px] z-0 rounded-3xl bg-[radial-gradient(circle_at_40%_40%,rgba(79,200,232,0.16),transparent_65%)] blur-2xl" />
+              <Image
+                src="/gallery/dna-helix.png"
+                alt="3D DNA double helix with rainbow base pairs"
+                width={340}
+                height={300}
+                className="animate-drift relative z-[1] w-full rounded-2xl border border-line mix-blend-screen saturate-120 contrast-105"
+              />
+            </div>
+          </Reveal>
+        </div>
+
+        <Stagger className="stagger-children focus-grid mt-10">
+          {domains.map((d) => (
+            <div key={d.id} className="focus-card">
+              <span
+                className="focus-icon"
+                style={{ color: domainColors[d.color] }}
+              >
+                <d.icon size={19} strokeWidth={1.8} />
               </span>
-            ))}
-          </div>
-        </Reveal>
+              <h3>{d.short}</h3>
+              <p>{d.blurb}</p>
+            </div>
+          ))}
+        </Stagger>
       </section>
 
       {/* ================= SELECTED WORK ================= */}
@@ -241,16 +259,16 @@ export default async function Home() {
           <Reveal>
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="max-w-xl">
-                <p className="eyebrow">02 · selected work</p>
+                <p className="eyebrow">02 · publications</p>
                 <h2 className="heading mt-4 text-3xl sm:text-4xl">
-                  Research & <span className="text-grad">engineering</span>, shipped.
+                  Selected <span className="text-grad">Work.</span>
                 </h2>
               </div>
               <Link
                 href="/projects"
                 className="group inline-flex items-center gap-1.5 font-mono text-sm text-cyan"
               >
-                all projects{" "}
+                View all on GitHub{" "}
                 <ArrowRight
                   size={14}
                   className="transition-transform group-hover:translate-x-1"
@@ -262,31 +280,33 @@ export default async function Home() {
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {workProjects.map((p, i) => (
               <Reveal key={p.slug} delay={i * 0.08}>
-                <Link
-                  href={`/projects/${p.slug}`}
-                  className="work-card group block h-full"
-                >
-                  <div className={`work-thumb tint-${["blue", "orange", "purple", "cyan"][i % 4]}`}>
-                    <CardScene type={workSceneTypes[i % workSceneTypes.length]} />
-                  </div>
-                  <div className="p-5">
-                    <div className="flex items-center justify-between">
-                      <span className="work-kicker">{p.domain}</span>
-                      <span className="work-kicker">{p.year}</span>
+                <Tilt max={6} className="h-full">
+                  <Link
+                    href={`/projects/${p.slug}`}
+                    className="work-card group block h-full"
+                  >
+                    <div className={`work-thumb tint-${["blue", "orange", "purple", "cyan"][i % 4]}`}>
+                      <CardScene type={workSceneTypes[i % workSceneTypes.length]} />
                     </div>
-                    <h3 className="mt-2 font-display text-[17px] font-semibold text-ink">
-                      {p.title}
-                    </h3>
-                    <p className="mt-1 text-[13px] leading-5 text-faint">{p.subtitle}</p>
-                    <div className="mt-4 flex flex-wrap gap-1.5">
-                      {p.tags.slice(0, 3).map((t) => (
-                        <span key={t} className="work-tag">
-                          {t}
-                        </span>
-                      ))}
+                    <div className="p-5">
+                      <div className="flex items-center justify-between">
+                        <span className="work-kicker">{p.domain}</span>
+                        <span className="work-kicker">{p.year}</span>
+                      </div>
+                      <h3 className="mt-2 font-display text-[17px] font-semibold text-ink">
+                        {p.title}
+                      </h3>
+                      <p className="mt-1 text-[13px] leading-5 text-faint">{p.subtitle}</p>
+                      <div className="mt-4 flex flex-wrap gap-1.5">
+                        {p.tags.slice(0, 3).map((t) => (
+                          <span key={t} className="work-tag">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+                </Tilt>
               </Reveal>
             ))}
           </div>
@@ -299,12 +319,13 @@ export default async function Home() {
         <div className="mx-auto max-w-6xl px-5 py-24">
           <Reveal>
             <div className="mx-auto max-w-xl text-center">
-              <p className="eyebrow justify-center">scaffolds & abstractions</p>
+              <p className="eyebrow justify-center">scientific visualizations</p>
               <h2 className="heading mt-4 text-3xl sm:text-4xl">
-                Scientific <span className="text-grad">visualizations</span>
+                Visual <span className="text-grad">Explorer.</span>
               </h2>
               <p className="mt-4 text-dim">
-                Molecular, structural and cellular worlds — rendered for the dark.
+                A glimpse into the molecular world — from protein structures to
+                neural network topologies and chromatographic data.
               </p>
             </div>
           </Reveal>
@@ -360,21 +381,24 @@ export default async function Home() {
             </Reveal>
 
             <Reveal delay={0.2}>
-              <div className="mt-12 space-y-6">
-                {skills.map((g) => (
-                  <div key={g.name} className="flex flex-wrap items-center gap-x-5 gap-y-2">
-                    <span className="w-44 shrink-0 font-mono text-xs uppercase tracking-wider text-faint">
-                      {g.name}
-                    </span>
-                    <div className="flex flex-wrap gap-2">
-                      {g.skills.map((s) => (
-                        <span key={s.name} className="chip !py-1">
-                          {s.name}
-                        </span>
-                      ))}
+              <div className="mt-12">
+                <p className="eyebrow">tech stack</p>
+                <div className="mt-6 space-y-6">
+                  {skills.map((g) => (
+                    <div key={g.name} className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                      <span className="w-44 shrink-0 font-mono text-xs uppercase tracking-wider text-faint">
+                        {g.name}
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        {g.skills.map((s) => (
+                          <span key={s.name} className="chip !py-1">
+                            {s.name}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </Reveal>
           </div>
@@ -386,8 +410,12 @@ export default async function Home() {
                   <span className="grid h-8 w-8 place-items-center rounded-lg border border-line text-accent">
                     <GraduationCap size={16} />
                   </span>
-                  <h3 className="font-display text-lg font-semibold">Journey</h3>
+                  <h3 className="font-display text-lg font-semibold">Academic Journey</h3>
                 </div>
+                <p className="-mt-4 mb-8 text-[13.5px] leading-6 text-dim">
+                  My academic path is driven by curiosity and a passion for solving
+                  meaningful scientific challenges.
+                </p>
                 <div className="timeline-list">
                   {timeline.map((t) => (
                     <div key={`${t.period}-${t.title}`} className="tl-item">
@@ -458,14 +486,14 @@ export default async function Home() {
             <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-cyan/10 blur-3xl" />
             <div className="relative grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-start">
               <div>
-                <p className="eyebrow">07 · contact</p>
+                <p className="eyebrow">07 · let&apos;s connect</p>
                 <h2 className="heading mt-4 text-3xl sm:text-4xl">
-                  Collaborate and build the <span className="text-grad">future</span>.
+                  Open to <span className="text-grad">collaboration</span> and new ideas.
                 </h2>
                 <p className="mt-5 max-w-md leading-7 text-dim">
-                  I&apos;m actively seeking PhD positions, research collaborations,
-                  and consulting engagements in ML/DL, AMP, GNNs, drug design,
-                  metabolic engineering, material informatics, and agentic AI.
+                  I&apos;m always excited to do driven research, collaborate on
+                  projects, and explore ways AI can accelerate scientific
+                  breakthroughs.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link href={site.calendly} target="_blank" rel="noreferrer" className="btn btn-primary">
@@ -476,7 +504,7 @@ export default async function Home() {
                   </a>
                 </div>
               </div>
-              <div className="rounded-[20px] border border-line bg-void/40 px-6 py-4">
+              <Stagger className="stagger-children rounded-[20px] border border-line bg-void/40 px-6 py-4">
                 {contactRows.map((r) => (
                   <a key={r.label} href={r.href} target={r.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" className="contact-row group">
                     <div className="flex items-center gap-4">
@@ -491,9 +519,9 @@ export default async function Home() {
                     <ArrowUpRight size={17} className="text-faint transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent" />
                   </a>
                 ))}
+                </Stagger>
               </div>
             </div>
-          </div>
         </Reveal>
       </section>
     </>

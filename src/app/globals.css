@@ -35,6 +35,8 @@
   --animate-float-a: floatA 12s ease-in-out infinite;
   --animate-float-b: floatB 14s ease-in-out infinite;
   --animate-frame-breathe: frameBreathe 6s ease-in-out infinite;
+  --animate-img-float: imgFloat 8s ease-in-out infinite;
+  --animate-drift: drift 9s ease-in-out infinite;
 
   @keyframes float {
     0%,
@@ -127,6 +129,24 @@
     50% {
       box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.7),
         0 0 60px -10px rgba(79, 200, 232, 0.25);
+    }
+  }
+  @keyframes imgFloat {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-10px) scale(1.015);
+    }
+  }
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-14px) rotate(2deg);
     }
   }
 }
@@ -504,12 +524,17 @@
   /* ================= RESEARCH FOCUS GRID ================= */
   .focus-grid {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 1px;
     background: var(--color-line);
     border: 1px solid var(--color-line);
     border-radius: 14px;
     overflow: hidden;
+  }
+  @media (min-width: 640px) {
+    .focus-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
   .focus-card {
     background: var(--t-grad-panel);
@@ -841,17 +866,39 @@
   }
 }
 
-@media (max-width: 980px) {
-  .focus-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
 @media (max-width: 600px) {
-  .focus-grid {
-    grid-template-columns: 1fr;
-  }
   .contact-panel {
     padding: 40px 24px;
+  }
+}
+
+/* ================= STAGGER REVEAL ================= */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.stagger-children.in > * {
+  opacity: 1;
+  transform: none;
+}
+.stagger-children > *:nth-child(1) { transition-delay: 0.03s; }
+.stagger-children > *:nth-child(2) { transition-delay: 0.09s; }
+.stagger-children > *:nth-child(3) { transition-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { transition-delay: 0.21s; }
+.stagger-children > *:nth-child(5) { transition-delay: 0.27s; }
+.stagger-children > *:nth-child(6) { transition-delay: 0.33s; }
+.stagger-children > *:nth-child(7) { transition-delay: 0.39s; }
+.stagger-children > *:nth-child(8) { transition-delay: 0.45s; }
+.stagger-children > *:nth-child(9) { transition-delay: 0.51s; }
+.stagger-children > *:nth-child(10) { transition-delay: 0.57s; }
+.stagger-children > *:nth-child(n + 11) { transition-delay: 0.63s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger-children > * {
+    opacity: 1;
+    transform: none;
   }
 }
 

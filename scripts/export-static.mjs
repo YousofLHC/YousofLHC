@@ -14,7 +14,7 @@
  * Usage: `npm run build:pages`
  * Optional: `PAGES_BASE_PATH=/repo-name` when hosted at `user.github.io/repo-name`.
  */
-import { readdirSync, statSync, mkdirSync, rmSync, cpSync, existsSync, renameSync, writeFileSync } from "node:fs";
+import { readdirSync, statSync, mkdirSync, rmSync, cpSync, existsSync, renameSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -98,6 +98,7 @@ try {
     renameSync(path.join(project, "out"), outDir);
     stripAux(outDir);
     writeFileSync(path.join(outDir, ".nojekyll"), "", { flag: "a" });
+    if (process.env.PAGES_BASE_PATH) prefixAssets(outDir, process.env.PAGES_BASE_PATH);
   }
   console.log("[build:pages] cleaning up disposable copy…");
   if (existsSync(project)) rmSync(project, { recursive: true, force: true });
@@ -113,6 +114,43 @@ function stripAux(dir) {
     const p = path.join(dir, entry);
     if (statSync(p).isDirectory()) stripAux(p);
   }
+}
+
+/**
+ * Next 16 static export does not apply basePath to `<img>` srcs when
+ * `images.unoptimized` is set (only `_next/static` chunks and Link anchors
+ * get prefixed). Prefix every unprefixed asset reference in both the rendered
+ * HTML attributes and the embedded RSC payload (keeping server HTML and the
+ * hydration payload identical so there is no hydration mismatch). Only used
+ * when PAGES_BASE_PATH is set (GitHub Pages project sites).
+ */
+function prefixAssets(dir, base) {
+  const key = base.replace(/^\/+/, "").replace(/\/+$/, "");
+  const reAttr = new RegExp(`(src|href)="\\/(?!${key}\\/|_next\\/)`, "g");
+  const reJson = new RegExp(`("src":")\\/?(?!${key}\\/|_next\\/)`, "g");
+  let files = 0;
+  let count = 0;
+  const walk = (d) => {
+    for (const entry of readdirSync(d)) {
+      const p = path.join(d, entry);
+      if (statSync(p).isDirectory()) {
+        walk(p);
+        continue;
+      }
+      if (!entry.endsWith(".html")) continue;
+      const html = readFileSync(p, "utf8");
+      const patched = html
+        .replace(reAttr, `$1="/${key}/`)
+        .replace(reJson, `$1"/${key}/`);
+      if (patched !== html) {
+        writeFileSync(p, patched);
+        files++;
+        count += (html.match(reAttr)?.length ?? 0) + (html.match(reJson)?.length ?? 0);
+      }
+    }
+  };
+  walk(dir);
+  console.log(`[build:pages] basePath prefix applied — ${files} html files, ${count} refs`);
 }
 
 if (failed) process.exit(1);
