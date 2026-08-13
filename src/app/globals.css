@@ -25,7 +25,6 @@
 
   --animate-float: float 9s ease-in-out infinite;
   --animate-aurora: aurora 20s linear infinite;
-  --animate-marquee: marquee 46s linear infinite;
   --animate-shimmer: shimmer 2.75s linear infinite;
   --animate-pulse-soft: pulseSoft 4s ease-in-out infinite;
   --animate-spin-slow: spin 26s linear infinite;
@@ -56,11 +55,6 @@
     }
     100% {
       background-position: 0% 50%;
-    }
-  }
-  @keyframes marquee {
-    to {
-      transform: translateX(-50%);
     }
   }
   @keyframes shimmer {
@@ -704,42 +698,6 @@
       opacity: 1;
       transform: translateY(0);
     }
-  }
-
-  /* ================= DOMAIN MARQUEE ================= */
-  .marquee {
-    border-bottom: 1px solid var(--color-line);
-    padding: 16px 0;
-    overflow: hidden;
-    position: relative;
-    z-index: 2;
-  }
-  .mq-track {
-    display: flex;
-    width: max-content;
-  }
-  .marquee:hover .mq-track {
-    animation-play-state: paused;
-  }
-  .mq-group {
-    display: flex;
-    gap: 12px;
-    padding-right: 12px;
-  }
-  .mq-chip {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    padding: 8px 18px;
-    border: 1px solid var(--color-line);
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 12.5px;
-    color: var(--color-dim);
-    white-space: nowrap;
-  }
-  .mq-chip svg {
-    color: var(--t-cyan);
   }
 
   /* ================= AMBIENT ORBS ================= */

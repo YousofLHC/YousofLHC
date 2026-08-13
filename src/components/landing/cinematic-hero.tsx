@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, CalendarClock, Pause, Play } from "lucide-react";
@@ -60,11 +60,20 @@ const typedRoles = [
   "PhD applicant · Spring 2027",
 ];
 
+function subscribeReduced(cb: () => void) {
+  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+
+function readReduced() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 export function CinematicHero() {
   const [idx, setIdx] = useState(0);
-  const [playing, setPlaying] = useState(
-    () => typeof window !== "undefined" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
+  const [playing, setPlaying] = useState(true);
+  const reducedMotion = useSyncExternalStore(subscribeReduced, readReduced, () => false);
 
   const sectionRef = useRef<HTMLElement>(null);
   const reelRef = useRef<HTMLDivElement>(null);
@@ -315,10 +324,10 @@ export function CinematicHero() {
       <div className="hero-dock">
         <button
           className="dock-play"
-          aria-label={playing ? "Pause background reel" : "Play background reel"}
+          aria-label={playing && !reducedMotion ? "Pause background reel" : "Play background reel"}
           onClick={() => setPlaying((v) => !v)}
         >
-          {playing ? <Pause size={14} /> : <Play size={14} />}
+          {playing && !reducedMotion ? <Pause size={14} /> : <Play size={14} />}
         </button>
         <div className="dock-index">
           <b>{String(idx + 1).padStart(2, "0")}</b> / {String(SLIDES.length).padStart(2, "0")}

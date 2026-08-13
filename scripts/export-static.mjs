@@ -15,6 +15,7 @@
  * Optional: `PAGES_BASE_PATH=/repo-name` when hosted at `user.github.io/repo-name`.
  */
 import { readdirSync, statSync, mkdirSync, rmSync, cpSync, existsSync, renameSync, readFileSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -97,7 +98,7 @@ try {
     if (existsSync(outDir)) rmSync(outDir, { recursive: true, force: true });
     renameSync(path.join(project, "out"), outDir);
     stripAux(outDir);
-    hoistThemeInit(outDir);
+    injectThemeInit(outDir);
     writeFileSync(path.join(outDir, ".nojekyll"), "", { flag: "a" });
     if (process.env.PAGES_BASE_PATH) prefixAssets(outDir, process.env.PAGES_BASE_PATH);
   }
@@ -118,17 +119,16 @@ function stripAux(dir) {
 }
 
 /**
- * Without a server, `next/script` beforeInteractive only emits a
- * `self.__next_s.push` bootstrap tag for the client runtime to consume —
- * the theme script would run only after JS loads, causing a theme flash.
- * Hoist it into a plain inline <script> (executes synchronously during HTML
- * parse, before first paint), dropping the deferred bootstrap copy.
+ * Injects the theme-init snippet into the <head> of every exported HTML page
+ * as a plain inline <script> (executes synchronously during HTML parse, before
+ * first paint — no theme flash). It must NOT be rendered by React: React 19
+ * does not execute component-rendered <script> tags and logs a console error
+ * for them. Source: scripts/theme-init.js.
  */
-function hoistThemeInit(dir) {
-  const pushRe = /<script>\(self\.__next_s=\[\(\)\]\)\.push\(\[0,\{"children":"((?:[^"\\]|\\.)*?)","id":"[^"]*"\}\]\)<\/script>/g;
-  const rawRe = /<script>\(self\.__next_s\s*=\s*self\.__next_s\s*\|\|\s*\[\]\)\.push\(\[0,\{"children":"((?:[^"\\]|\\.)*?)","id":"[^"]*"\}\]\)<\/script>/g;
+function injectThemeInit(dir) {
+  const init = createRequire(import.meta.url)("./theme-init.js");
+  const injection = `<script>${init}</script>`;
   let files = 0;
-  let hoisted = 0;
   const walk = (d) => {
     for (const entry of readdirSync(d)) {
       const p = path.join(d, entry);
@@ -138,17 +138,8 @@ function hoistThemeInit(dir) {
       }
       if (!entry.endsWith(".html")) continue;
       const html = readFileSync(p, "utf8");
-      const re = rawRe.test(html) ? rawRe : pushRe;
-      rawRe.lastIndex = 0;
-      const patched = html.replace(re, (m, children) => {
-        try {
-          const src = JSON.parse(`"${children}"`);
-          hoisted++;
-          return `<script>${src}</script>`;
-        } catch {
-          return m;
-        }
-      });
+      if (html.includes(injection)) continue;
+      const patched = html.replace("</head>", `${injection}</head>`);
       if (patched !== html) {
         writeFileSync(p, patched);
         files++;
@@ -156,7 +147,7 @@ function hoistThemeInit(dir) {
     }
   };
   walk(dir);
-  if (hoisted > 0) console.log(`[build:pages] theme-init hoisted into plain inline script — ${hoisted} tags, ${files} html files`);
+  if (files > 0) console.log(`[build:pages] theme-init injected into head — ${files} html files`);
 }
 
 /**

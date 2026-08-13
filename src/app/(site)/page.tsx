@@ -25,7 +25,7 @@ import { CinematicHero } from "@/components/landing/cinematic-hero";
 import { TimelineFill } from "@/components/ui/timeline-fill";
 import { PostCard } from "@/components/blog/post-card";
 import { NotebookMini } from "@/components/notebook/notebook-card";
-import { domains, education, experience, profile, projects, skills } from "@/lib/data";
+import { education, experience, profile, projects, skills } from "@/lib/data";
 import { listArticles } from "@/lib/mdx";
 import { listNotebooks } from "@/lib/notebooks";
 import { site } from "@/lib/site";
@@ -156,24 +156,75 @@ export default async function Home() {
       {/* ================= HERO (cinematic reel) ================= */}
       <CinematicHero />
 
-      {/* ================= DOMAIN MARQUEE ================= */}
-      <div className="marquee" aria-hidden="true">
-        <div className="mq-track animate-marquee" style={{ animationDuration: "38s" }}>
-          {[0, 1].map((g) => (
-            <div key={g} className="mq-group">
-              {domains.map((d) => {
-                const Icon = d.icon as typeof FlaskConical;
-                return (
-                  <span key={g + d.id} className="mq-chip">
-                    <Icon size={15} />
-                    {d.label}
-                  </span>
-                );
-              })}
+      {/* ================= FAST LOOK (profile strip) ================= */}
+      <section className="relative z-10 mx-auto max-w-6xl px-5 pt-24">
+        <div className="focus-layout">
+          <Reveal>
+            <p className="eyebrow">about me</p>
+            <h2 className="heading mt-4 text-3xl sm:text-4xl">
+              AI Research Engineer · <span className="text-grad">M.Sc. Artificial Intelligence</span>
+            </h2>
+            <p className="mt-4 max-w-md leading-7 text-dim">{profile.bio[1]}</p>
+            <p className="mt-5 max-w-md rounded-xl border border-cyan/25 bg-cyan/5 px-4 py-3 font-mono text-sm leading-6 text-cyan/90">
+              → {profile.focus}
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.12}>
+            <div className="space-y-4">
+              {education.map((e) => (
+                <div key={e.period} className="glass rounded-xl border border-line p-5">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <h3 className="heading text-lg">{e.title}</h3>
+                    <span className="tl-date">{e.period}</span>
+                  </div>
+                  <p className="tl-org">{e.org}</p>
+                </div>
+              ))}
+              <a href={`mailto:${site.email}`} className="contact-card group">
+                <div className="c-icon">
+                  <Mail size={20} />
+                </div>
+                <div className="label">Email</div>
+                <div className="name">{site.email}</div>
+                <div className="desc">{site.availability}</div>
+                <span className="link-arrow">
+                  Write me <ArrowUpRight size={15} />
+                </span>
+              </a>
             </div>
-          ))}
+          </Reveal>
         </div>
-      </div>
+      </section>
+
+      {/* ================= TECH STACK ================= */}
+      <section id="stack" className="relative z-10 mx-auto max-w-6xl px-5 pt-24">
+        <div className="focus-layout">
+          <Reveal>
+            <p className="eyebrow">tech stack</p>
+            <h2 className="heading mt-4 text-3xl sm:text-4xl">
+              Tools of the <span className="text-grad">Trade.</span>
+            </h2>
+          </Reveal>
+
+          <Reveal delay={0.12}>
+            <div className="stack-rows">
+              {skills.map((g) => (
+                <div key={g.name}>
+                  <div className="stack-cat">{g.name}</div>
+                  <div className="stack-row">
+                    {g.skills.map((s) => (
+                      <span key={s.name} className="chip">
+                        {s.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       {/* ================= RESEARCH FOCUS ================= */}
       <section id="research" className="relative z-10 mx-auto max-w-6xl px-5 py-24">
@@ -228,6 +279,53 @@ export default async function Home() {
               </div>
             ))}
           </Stagger>
+        </div>
+      </section>
+
+      {/* ================= TIMELINE (experience + education) ================= */}
+      <section id="timeline" className="relative z-10 overflow-hidden">
+        <div className="mx-auto max-w-6xl px-5 pt-24">
+          <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr]">
+            <div className="tl-left">
+              <Reveal>
+                <p className="eyebrow">academic journey</p>
+                <h2 className="heading mt-4 text-3xl sm:text-4xl">
+                  Education &amp; <span className="text-grad">Experience.</span>
+                </h2>
+                <p className="mt-4 max-w-sm leading-7 text-dim">
+                  My academic path is driven by curiosity and a passion for solving meaningful
+                  scientific challenges.
+                </p>
+              </Reveal>
+
+              <Reveal delay={0.12}>
+                <div className="mt-8 space-y-5">
+                  {profile.bio.slice(0, 2).map((p, i) => (
+                    <p key={i} className="leading-7 text-ink/80">
+                      {p}
+                    </p>
+                  ))}
+                  <p className="rounded-xl border border-cyan/25 bg-cyan/5 px-4 py-3 font-mono text-sm leading-6 text-cyan/90">
+                    → {profile.focus}
+                  </p>
+                </div>
+              </Reveal>
+            </div>
+
+            <Reveal delay={0.1}>
+              <TimelineFill>
+                {timeline.map((t) => (
+                  <div key={`${t.period}-${t.title}`} className="tl-item">
+                    <div className="tl-node" />
+                    <span className="tl-date">{t.period}</span>
+                    <h3>{t.title}</h3>
+                    <p className="tl-org">{t.org}</p>
+                    <p className="tl-detail">{t.detail}</p>
+                  </div>
+                ))}
+              </TimelineFill>
+            </Reveal>
+          </div>
         </div>
       </section>
 
@@ -339,97 +437,6 @@ export default async function Home() {
         </Reveal>
       </section>
 
-      {/* ================= SCIENTIFIC VISUALIZATIONS ================= */}
-      <section className="relative z-10 overflow-hidden border-t border-line bg-abyss/30">
-        <div className="orb orb-violet absolute -right-40 top-10 h-[500px] w-[500px]" />
-        <div className="mx-auto max-w-6xl px-5 py-24">
-          <Reveal>
-            <div className="mx-auto max-w-xl text-center">
-              <p className="eyebrow justify-center">scientific visualizations</p>
-              <h2 className="heading mt-4 text-3xl sm:text-4xl">
-                Visual <span className="text-grad">Explorer.</span>
-              </h2>
-              <p className="mt-4 text-dim">
-                A glimpse into the molecular world — from protein structures to neural network
-                topologies and chromatographic data.
-              </p>
-            </div>
-          </Reveal>
-
-          <div className="mt-10 grid gap-4 md:auto-rows-[200px] md:grid-cols-3">
-            {galleryItems.map((item, i) => (
-              <Reveal
-                key={item.src}
-                delay={i * 0.06}
-                className={item.featured ? "md:col-span-2 md:row-span-2" : ""}
-              >
-                <div className="group relative h-full min-h-[200px] cursor-pointer overflow-hidden rounded-xl border border-line bg-panel">
-                  <Image
-                    src={item.src}
-                    alt={item.label}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover saturate-110 brightness-90 transition-all duration-700 group-hover:scale-110 group-hover:saturate-150 group-hover:brightness-100"
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  <p className="absolute bottom-4 left-4 translate-y-4 font-mono text-xs tracking-wide text-cyan opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                    {item.label}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= JOURNEY + ABOUT ================= */}
-      <section id="timeline" className="relative z-10 overflow-hidden">
-        <div className="orb orb-amber absolute right-[-120px] top-[20%] h-[360px] w-[360px]" />
-        <div className="mx-auto max-w-6xl px-5 py-24">
-          <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr]">
-            <div className="tl-left">
-              <Reveal>
-                <p className="eyebrow">academic journey</p>
-                <h2 className="heading mt-4 text-3xl sm:text-4xl">
-                  Education &amp; <span className="text-grad">Experience.</span>
-                </h2>
-                <p className="mt-4 max-w-sm leading-7 text-dim">
-                  My academic path is driven by curiosity and a passion for solving meaningful
-                  scientific challenges.
-                </p>
-              </Reveal>
-
-              <Reveal delay={0.12}>
-                <div className="mt-8 space-y-5">
-                  {profile.bio.slice(0, 2).map((p, i) => (
-                    <p key={i} className="leading-7 text-ink/80">
-                      {p}
-                    </p>
-                  ))}
-                  <p className="rounded-xl border border-cyan/25 bg-cyan/5 px-4 py-3 font-mono text-sm leading-6 text-cyan/90">
-                    → {profile.focus}
-                  </p>
-                </div>
-              </Reveal>
-            </div>
-
-            <Reveal delay={0.1}>
-              <TimelineFill>
-                {timeline.map((t) => (
-                  <div key={`${t.period}-${t.title}`} className="tl-item">
-                    <div className="tl-node" />
-                    <span className="tl-date">{t.period}</span>
-                    <h3>{t.title}</h3>
-                    <p className="tl-org">{t.org}</p>
-                    <p className="tl-detail">{t.detail}</p>
-                  </div>
-                ))}
-              </TimelineFill>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
       {/* ================= KNOWLEDGE HUB ================= */}
       <section className="relative z-10 border-t border-line bg-abyss/30">
         <div className="mx-auto max-w-6xl px-5 py-24">
@@ -475,32 +482,46 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ================= TECH STACK ================= */}
-      <section id="stack" className="relative z-10 mx-auto max-w-6xl px-5 py-24">
-        <div className="focus-layout">
+      {/* ================= SCIENTIFIC VISUALIZATIONS ================= */}
+      <section className="relative z-10 overflow-hidden border-t border-line bg-abyss/30">
+        <div className="orb orb-violet absolute -right-40 top-10 h-[500px] w-[500px]" />
+        <div className="mx-auto max-w-6xl px-5 py-24">
           <Reveal>
-            <p className="eyebrow">tech stack</p>
-            <h2 className="heading mt-4 text-3xl sm:text-4xl">
-              Tools of the <span className="text-grad">Trade.</span>
-            </h2>
-          </Reveal>
-
-          <Reveal delay={0.12}>
-            <div className="stack-rows">
-              {skills.map((g) => (
-                <div key={g.name}>
-                  <div className="stack-cat">{g.name}</div>
-                  <div className="stack-row">
-                    {g.skills.map((s) => (
-                      <span key={s.name} className="chip">
-                        {s.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
+            <div className="mx-auto max-w-xl text-center">
+              <p className="eyebrow justify-center">scientific visualizations</p>
+              <h2 className="heading mt-4 text-3xl sm:text-4xl">
+                Visual <span className="text-grad">Explorer.</span>
+              </h2>
+              <p className="mt-4 text-dim">
+                A glimpse into the molecular world — from protein structures to neural network
+                topologies and chromatographic data.
+              </p>
             </div>
           </Reveal>
+
+          <div className="mt-10 grid gap-4 md:auto-rows-[200px] md:grid-cols-3">
+            {galleryItems.map((item, i) => (
+              <Reveal
+                key={item.src}
+                delay={i * 0.06}
+                className={item.featured ? "md:col-span-2 md:row-span-2" : ""}
+              >
+                <div className="group relative h-full min-h-[200px] cursor-pointer overflow-hidden rounded-xl border border-line bg-panel">
+                  <Image
+                    src={item.src}
+                    alt={item.label}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover saturate-110 brightness-90 transition-all duration-700 group-hover:scale-110 group-hover:saturate-150 group-hover:brightness-100"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <p className="absolute bottom-4 left-4 translate-y-4 font-mono text-xs tracking-wide text-cyan opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                    {item.label}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 

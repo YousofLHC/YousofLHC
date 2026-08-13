@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
@@ -66,13 +65,13 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-const themeScript = `
-try {
-  var stored = localStorage.getItem("theme");
-  var theme = stored || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
-  document.documentElement.dataset.theme = theme;
-} catch (e) { document.documentElement.dataset.theme = "dark"; }
-`;
+/**
+ * The theme-init script must run before first paint to prevent a theme flash,
+ * but React 19 refuses to execute <script> tags rendered by components (and
+ * warns about them). It is therefore injected into <head> as plain HTML by
+ * `scripts/export-static.mjs` after the static export build; the source lives
+ * in `scripts/theme-init.js`.
+ */
 
 export default function RootLayout({
   children,
@@ -84,7 +83,6 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-screen font-sans antialiased">
-        <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeScript }} />
         <ScrollProgress />
         <NoiseOverlay />
         {children}
