@@ -700,6 +700,13 @@
     }
   }
 
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   /* ================= AMBIENT ORBS ================= */
   .orb {
     position: absolute;
@@ -1241,30 +1248,6 @@
   }
   .email-row .l svg {
     color: var(--t-cyan);
-  }
-
-  /* ================= MOBILE NAV ================= */
-  .mobile-nav {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    background: var(--color-void);
-    transform: translateY(-100%);
-    transition: transform 0.4s cubic-bezier(0.22, 0.8, 0.32, 1);
-    display: flex;
-    flex-direction: column;
-    padding: 26px 24px;
-  }
-  .mobile-nav.open {
-    transform: translateY(0);
-  }
-  .mobile-nav a.mnav-link {
-    font-family: var(--font-space-grotesk);
-    font-size: 26px;
-    font-weight: 600;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--color-line);
-    color: var(--color-ink);
   }
 }
 
