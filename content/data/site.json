@@ -1,20 +1,20 @@
 {
     "name":  "Yousof Ghalenoei",
     "shortName":  "YG",
-    "tagline":  "AI Research Engineer Â· M.Sc. Artificial Intelligence",
-    "title":  "Yousof Ghalenoei â€” M.Sc. in Artificial Intelligence",
+    "tagline":  "AI Research Engineer · M.Sc. Artificial Intelligence",
+    "title":  "Yousof Ghalenoei — M.Sc. in Artificial Intelligence",
     "description":  "Researcher and engineer across machine learning, approximate message passing, graph neural networks, AI-driven drug design, metabolic engineering, material informatics, and AI agentic systems. Open to PhD positions, research collaborations, and consulting.",
     "url":  "https://yousofghalenoei.example.com",
     "location":  "Mashhad, Iran (open to relocation)",
-    "email":  "contact@yousofghalenoei.example.com",
-    "availability":  "Open to PhD positions Â· Spring 2027 cohort",
+    "email":  "y.ghalenoei@gmail.com",
+    "availability":  "Open to PhD positions · Spring 2027 cohort",
     "calendly":  "https://calendly.com/yousof-ghalenoei/30min",
     "formspree":  "",
     "socials":  {
                     "github":  "https://github.com/YousofLHC",
                     "linkedin":  "https://linkedin.com/in/yousofghalenoei",
                     "scholar":  "https://scholar.google.com/citations?user=your_id",
-                    "orcid":  "https://orcid.org/0000-0000-0000-0000",
+                    "orcid":  "https://orcid.org/0009-0002-0526-9407",
                     "x":  "https://x.com/yousofghalenoei"
                 },
     "navLinks":  [
@@ -32,7 +32,7 @@
                      },
                      {
                          "href":  "/notes",
-                         "label":  "Notes \u0026 Notebooks"
+                         "label":  "Notes & Notebooks"
                      },
                      {
                          "href":  "/blog",

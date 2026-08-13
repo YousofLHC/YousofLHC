@@ -35,7 +35,7 @@ export function Navbar() {
           </span>
         </Link>
 
-        <ul className="no-scrollbar flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto rounded-full border border-line bg-panel/50 p-1 sm:gap-1 lg:flex">
+        <ul className="no-scrollbar flex min-w-0 items-center gap-0.5 overflow-x-auto rounded-full border border-line bg-panel/50 p-1 sm:gap-1">
           {navLinks.map((l) => {
             const active = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
             return (
