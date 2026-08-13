@@ -43,9 +43,9 @@ export function InterestHeatmap() {
         <div className="min-w-[560px]">
           <div className="flex">
             <div className="w-44 shrink-0" />
-            {months.map((m) => (
+            {months.map((m, i) => (
               <div
-                key={m}
+                key={`${m}-${i}`}
                 className="flex-1 text-center font-mono text-[10px] uppercase text-faint"
               >
                 {m}

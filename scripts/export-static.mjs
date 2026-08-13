@@ -97,6 +97,7 @@ try {
     if (existsSync(outDir)) rmSync(outDir, { recursive: true, force: true });
     renameSync(path.join(project, "out"), outDir);
     stripAux(outDir);
+    hoistThemeInit(outDir);
     writeFileSync(path.join(outDir, ".nojekyll"), "", { flag: "a" });
     if (process.env.PAGES_BASE_PATH) prefixAssets(outDir, process.env.PAGES_BASE_PATH);
   }
@@ -114,6 +115,48 @@ function stripAux(dir) {
     const p = path.join(dir, entry);
     if (statSync(p).isDirectory()) stripAux(p);
   }
+}
+
+/**
+ * Without a server, `next/script` beforeInteractive only emits a
+ * `self.__next_s.push` bootstrap tag for the client runtime to consume —
+ * the theme script would run only after JS loads, causing a theme flash.
+ * Hoist it into a plain inline <script> (executes synchronously during HTML
+ * parse, before first paint), dropping the deferred bootstrap copy.
+ */
+function hoistThemeInit(dir) {
+  const pushRe = /<script>\(self\.__next_s=\[\(\)\]\)\.push\(\[0,\{"children":"((?:[^"\\]|\\.)*?)","id":"[^"]*"\}\]\)<\/script>/g;
+  const rawRe = /<script>\(self\.__next_s\s*=\s*self\.__next_s\s*\|\|\s*\[\]\)\.push\(\[0,\{"children":"((?:[^"\\]|\\.)*?)","id":"[^"]*"\}\]\)<\/script>/g;
+  let files = 0;
+  let hoisted = 0;
+  const walk = (d) => {
+    for (const entry of readdirSync(d)) {
+      const p = path.join(d, entry);
+      if (statSync(p).isDirectory()) {
+        walk(p);
+        continue;
+      }
+      if (!entry.endsWith(".html")) continue;
+      const html = readFileSync(p, "utf8");
+      const re = rawRe.test(html) ? rawRe : pushRe;
+      rawRe.lastIndex = 0;
+      const patched = html.replace(re, (m, children) => {
+        try {
+          const src = JSON.parse(`"${children}"`);
+          hoisted++;
+          return `<script>${src}</script>`;
+        } catch {
+          return m;
+        }
+      });
+      if (patched !== html) {
+        writeFileSync(p, patched);
+        files++;
+      }
+    }
+  };
+  walk(dir);
+  if (hoisted > 0) console.log(`[build:pages] theme-init hoisted into plain inline script — ${hoisted} tags, ${files} html files`);
 }
 
 /**

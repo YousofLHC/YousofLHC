@@ -1,25 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import { Moon, Sun } from "lucide-react";
 
-function currentTheme(): "dark" | "light" {
-  if (typeof document === "undefined") return "dark";
+function subscribe(onChange: () => void) {
+  const el = document.documentElement;
+  const obs = new MutationObserver(onChange);
+  obs.observe(el, { attributes: true, attributeFilter: ["data-theme"] });
+  return () => obs.disconnect();
+}
+
+function readTheme(): "dark" | "light" {
   return document.documentElement.dataset.theme === "light" ? "light" : "dark";
 }
 
+const SERVER_THEME: "dark" | "light" = "dark";
+
 export function ThemeToggle({ className = "" }: { className?: string }) {
-  const [theme, setTheme] = useState<"dark" | "light">(currentTheme);
+  const theme = useSyncExternalStore(subscribe, readTheme, () => SERVER_THEME);
 
-  useEffect(() => {
-    const el = document.documentElement;
-    const sync = () => setTheme(el.dataset.theme === "light" ? "light" : "dark");
-    const obs = new MutationObserver(sync);
-    obs.observe(el, { attributes: true, attributeFilter: ["data-theme"] });
-    return () => obs.disconnect();
-  }, []);
-
-  function toggle() {
+  const toggle = useCallback(() => {
     const next: "dark" | "light" = theme === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
     try {
@@ -27,8 +27,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     } catch {
       /* storage unavailable */
     }
-    setTheme(next);
-  }
+  }, [theme]);
 
   return (
     <button

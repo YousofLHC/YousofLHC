@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
@@ -82,10 +83,8 @@ export default function RootLayout({
       className={`${inter.variable} ${jetbrains.variable} ${spaceGrotesk.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
       <body className="min-h-screen font-sans antialiased">
+        <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeScript }} />
         <ScrollProgress />
         <NoiseOverlay />
         {children}
