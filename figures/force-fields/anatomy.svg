@@ -1,0 +1,45 @@
+﻿<svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#0b1128"/>
+  <g transform="translate(60,40)">
+    <circle cx="20" cy="80" r="12" fill="#e3a344"/>
+    <circle cx="140" cy="80" r="12" fill="#e3a344"/>
+    <path d="M32,80 Q80,60 128,80" stroke="#93a0b4" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+    <line x1="32" y1="80" x2="128" y2="80" stroke="#e8ecf3" stroke-width="2"/>
+    <text x="80" y="140" text-anchor="middle" fill="#d9dfe9" font-family="Inter, sans-serif" font-size="13" font-weight="600">Bond stretch</text>
+    <text x="80" y="158" text-anchor="middle" fill="#93a0b4" font-family="JetBrains Mono, monospace" font-size="11">r âˆ’ râ‚€</text>
+  </g>
+  <g transform="translate(280,40)">
+    <circle cx="20" cy="120" r="10" fill="#e3a344"/>
+    <circle cx="80" cy="30" r="10" fill="#e3a344"/>
+    <circle cx="150" cy="120" r="10" fill="#e3a344"/>
+    <line x1="24" y1="112" x2="76" y2="38" stroke="#e8ecf3" stroke-width="2"/>
+    <line x1="84" y1="38" x2="146" y2="112" stroke="#e8ecf3" stroke-width="2"/>
+    <path d="M55,90 A45,45 0 0 1 105,90" stroke="#93a0b4" stroke-width="1.6" fill="none"/>
+    <text x="85" y="140" text-anchor="middle" fill="#d9dfe9" font-family="Inter, sans-serif" font-size="13" font-weight="600">Angle bend</text>
+    <text x="85" y="158" text-anchor="middle" fill="#93a0b4" font-family="JetBrains Mono, monospace" font-size="11">Î¸ âˆ’ Î¸â‚€</text>
+  </g>
+  <g transform="translate(500,40)">
+    <circle cx="10" cy="40" r="9" fill="#e3a344"/>
+    <circle cx="60" cy="70" r="9" fill="#e3a344"/>
+    <circle cx="110" cy="70" r="9" fill="#e3a344"/>
+    <circle cx="160" cy="110" r="9" fill="#e3a344"/>
+    <line x1="16" y1="45" x2="55" y2="66" stroke="#e8ecf3" stroke-width="2"/>
+    <line x1="66" y1="70" x2="106" y2="70" stroke="#e8ecf3" stroke-width="2.4"/>
+    <line x1="114" y1="72" x2="155" y2="107" stroke="#e8ecf3" stroke-width="2"/>
+    <path d="M85,70 a25,25 0 0 0 0,45" stroke="#52c7c0" stroke-width="1.6" fill="none" stroke-dasharray="3 3"/>
+    <text x="85" y="150" text-anchor="middle" fill="#d9dfe9" font-family="Inter, sans-serif" font-size="13" font-weight="600">Dihedral (torsion)</text>
+    <text x="85" y="168" text-anchor="middle" fill="#93a0b4" font-family="JetBrains Mono, monospace" font-size="11">rotation Ï† about bond</text>
+  </g>
+  <g transform="translate(710,40)">
+    <circle cx="70" cy="30" r="9" fill="#e3a344"/>
+    <circle cx="20" cy="80" r="9" fill="#e3a344"/>
+    <circle cx="70" cy="110" r="9" fill="#e3a344"/>
+    <circle cx="130" cy="70" r="9" fill="#e3a344"/>
+    <line x1="66" y1="38" x2="26" y2="74" stroke="#e8ecf3" stroke-width="2"/>
+    <line x1="66" y1="38" x2="124" y2="66" stroke="#e8ecf3" stroke-width="2"/>
+    <line x1="66" y1="38" x2="70" y2="102" stroke="#e8ecf3" stroke-width="2" stroke-dasharray="4 3"/>
+    <text x="70" y="150" text-anchor="middle" fill="#d9dfe9" font-family="Inter, sans-serif" font-size="13" font-weight="600">Improper torsion</text>
+    <text x="70" y="168" text-anchor="middle" fill="#93a0b4" font-family="JetBrains Mono, monospace" font-size="11">keeps spÂ² centers flat</text>
+  </g>
+</svg>
+

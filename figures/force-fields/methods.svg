@@ -1,0 +1,34 @@
+﻿<svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#0b1128"/>
+  <rect x="20" y="20" width="860" height="260" rx="12" fill="none" stroke="rgba(255,255,255,0.12)"/>
+  <text x="450" y="50" text-anchor="middle" fill="#e8ecf3" font-family="Fraunces, serif" font-size="17" font-weight="600">Total potential energy U</text>
+  <line x1="450" y1="60" x2="450" y2="82" stroke="rgba(255,255,255,0.2)"/>
+  <line x1="230" y1="82" x2="670" y2="82" stroke="rgba(255,255,255,0.2)"/>
+  <line x1="230" y1="82" x2="230" y2="100" stroke="rgba(255,255,255,0.2)"/>
+  <line x1="670" y1="82" x2="670" y2="100" stroke="rgba(255,255,255,0.2)"/>
+  <text x="230" y="118" text-anchor="middle" fill="#e3a344" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing=".05em">INTRAMOLECULAR â€” shape</text>
+  <text x="670" y="118" text-anchor="middle" fill="#52c7c0" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing=".05em">INTERMOLECULAR â€” talk</text>
+  <g font-family="Inter, sans-serif" font-size="12.5">
+    <rect x="55" y="140" width="150" height="54" rx="8" fill="rgba(227,163,68,0.10)" stroke="#e3a344" stroke-width="1"/>
+    <text x="130" y="162" text-anchor="middle" fill="#fbf8f2" font-weight="600">Bond stretch</text>
+    <text x="130" y="180" text-anchor="middle" fill="#93a0b4" font-size="11">bond length</text>
+    <rect x="220" y="140" width="150" height="54" rx="8" fill="rgba(227,163,68,0.10)" stroke="#e3a344" stroke-width="1"/>
+    <text x="295" y="162" text-anchor="middle" fill="#fbf8f2" font-weight="600">Angle bend</text>
+    <text x="295" y="180" text-anchor="middle" fill="#93a0b4" font-size="11">bond angle</text>
+    <rect x="385" y="140" width="150" height="54" rx="8" fill="rgba(227,163,68,0.10)" stroke="#e3a344" stroke-width="1"/>
+    <text x="460" y="162" text-anchor="middle" fill="#fbf8f2" font-weight="600">Dihedral</text>
+    <text x="460" y="180" text-anchor="middle" fill="#93a0b4" font-size="11">rotation about bond</text>
+    <rect x="550" y="140" width="150" height="54" rx="8" fill="rgba(227,163,68,0.10)" stroke="#e3a344" stroke-width="1"/>
+    <text x="625" y="162" text-anchor="middle" fill="#fbf8f2" font-weight="600">Improper</text>
+    <text x="625" y="180" text-anchor="middle" fill="#93a0b4" font-size="11">planarity</text>
+  </g>
+  <g font-family="Inter, sans-serif" font-size="12.5">
+    <rect x="330" y="220" width="150" height="54" rx="8" fill="rgba(82,199,192,0.10)" stroke="#52c7c0" stroke-width="1"/>
+    <text x="405" y="242" text-anchor="middle" fill="#fbf8f2" font-weight="600">Van der Waals</text>
+    <text x="405" y="260" text-anchor="middle" fill="#93a0b4" font-size="11">Lennard-Jones 12-6</text>
+    <rect x="495" y="220" width="150" height="54" rx="8" fill="rgba(82,199,192,0.10)" stroke="#52c7c0" stroke-width="1"/>
+    <text x="570" y="242" text-anchor="middle" fill="#fbf8f2" font-weight="600">Electrostatics</text>
+    <text x="570" y="260" text-anchor="middle" fill="#93a0b4" font-size="11">Coulomb's law</text>
+  </g>
+</svg>
+
