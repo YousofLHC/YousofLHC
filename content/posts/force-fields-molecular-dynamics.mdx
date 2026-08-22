@@ -1,0 +1,354 @@
+---
+title: "Force Fields & Molecular Dynamics — An Interactive Field Guide"
+description: "A condensed, interactive companion to González's classic review: why atoms need springs instead of Schrödinger, the six-term force field, how U becomes F, cutoffs and Ewald sums, Verlet stepping, ensembles, and free-energy methods — with live parameter plots."
+date: "2026-08-15"
+tags:
+  - Force Fields
+  - Molecular Dynamics
+  - Computational Chemistry
+  - Statistical Mechanics
+  - Simulation
+readTime: 25
+cover: "/covers/force-fields-molecular-dynamics.svg"
+subject: "Computational Chemistry"
+---
+
+<Callout type="tip" title="Before you read">
+This article is my condensed field guide to **M. A. González, "Force fields and molecular dynamics simulations," Collection SFN 12, 169–200 (2011)** — the open-access review I use as my primary reference. Every equation below has a live plot: drag the sliders to build intuition, hover the curves to read exact values, and watch how each parameter reshapes the physics.
+</Callout>
+
+## Why force fields exist at all
+
+You cannot watch a protein fold or a liquid flow with a microscope — the atomic scale is too small to see and too fast to catch. Molecular Dynamics (MD) works around this: integrate Newton's second law for every particle and you get a complete movie of where every atom is at every instant.
+
+$$
+m_i \frac{d^2 \mathbf{r}_i}{dt^2} = \mathbf{f}_i = -\nabla_{\mathbf{r}_i} U(\mathbf{r}_1, \dots, \mathbf{r}_N)
+$$
+
+This is $N$ coupled, second-order, nonlinear differential equations — analytically unsolvable for anything beyond a few particles. The only real question is where $U$ comes from.
+
+<Figure
+  src="/figures/force-fields/methods.svg"
+  alt="Ab initio MD vs empirical force field: scale and speed trade-off"
+  caption="Two ways to get f = -grad U. Ab initio MD buys chemical accuracy at the price of size and time; classical force fields buy scale and speed at the price of chemical reactivity — the choice of tool follows the question."
+/>
+
+<Callout type="warning" title="The trade-off that defines everything">
+**Ab initio MD** buys chemical accuracy at the price of size and time. **Classical force fields** buy scale and speed at the price of chemical reactivity. Neither is "more correct" — they answer different questions, and the choice of tool follows the question.
+</Callout>
+
+## Anatomy of the master equation
+
+A force field is two things bundled together: a **functional form** for $U(\mathbf{r}_1, \dots, \mathbf{r}_N)$ and a **set of fitted parameters**. The canonical class-I expression splits $U$ into six physically distinct contributions:
+
+$$
+\begin{aligned}
+U &= \underbrace{\sum_{\text{bonds}} \tfrac{1}{2}k_b(r-r_0)^2}_{\text{bond stretch}}
++ \underbrace{\sum_{\text{angles}} \tfrac{1}{2}k_a(\theta-\theta_0)^2}_{\text{angle bend}} \\
+&\quad + \underbrace{\sum_{\text{torsions}} \tfrac{V_n}{2}\big[1+\cos(n\varphi-\gamma)\big]}_{\text{dihedral}}
++ \underbrace{\sum_{\text{improper}} V_{\text{imp}}(\omega)}_{\text{planarity}} \\
+&\quad + \underbrace{\sum_{\text{LJ}} 4\varepsilon_{ij}\Big[\big(\tfrac{\sigma_{ij}}{r_{ij}}\big)^{12}-\big(\tfrac{\sigma_{ij}}{r_{ij}}\big)^{6}\Big]}_{\text{van der Waals}}
++ \underbrace{\sum_{\text{elec}} \tfrac{q_i q_j}{r_{ij}}}_{\text{electrostatics}}
+\end{aligned}
+$$
+
+The first four terms sculpt each molecule's **shape**; the last two decide how molecules — or distant atoms in the same one — **interact**. The parameters come from quantum-mechanical calculations (geometries, torsion scans, electrostatic potentials) or from fitting to diffraction, IR/Raman spectroscopy, and thermodynamic data.
+
+| Family | Terms | Role | Typical parameter source |
+|---|---|---|--|
+| Bonded (intramolecular) | Stretch, bend, dihedral, improper | Molecular shape | X-ray/neutron diffraction; IR/Raman; ab initio scans |
+| Non-bonded (intermolecular) | Lennard-Jones, Coulomb | Interaction between atoms | Liquid densities, ΔHₐₚₒᵣ, QM ESP charges |
+
+<Figure
+  src="/figures/force-fields/anatomy.svg"
+  alt="Six-term decomposition of the total potential energy"
+  caption="Six terms, two families: the first four sculpt each molecule's shape, the last two decide how molecules — or distant atoms in the same one — interact."
+/>
+
+## The bonded terms
+
+**Bond stretch** models every covalent bond as a harmonic spring around its equilibrium length. It is the most consequential approximation in classical MD:
+
+$$
+U_{\text{bond}} = \tfrac{1}{2}\,k_b\,(r-r_0)^2
+$$
+
+<BondPlot />
+
+<Callout type="danger" title="Why classical MD cannot do chemistry">
+A parabola never flattens and never breaks. The harmonic bond becomes unreliable past ≈10% displacement and structurally cannot describe bond dissociation or formation. The Morse potential (dashed curve above) can — but it costs more and is rarely used in production force fields. This single choice is the main reason reactive chemistry requires AIMD, QM/MM, or ReaxFF-style potentials.
+</Callout>
+
+**Angle bending** gets the same harmonic treatment, or a trigonometric form that behaves better at extreme angles:
+
+$$
+U_{\text{bend}} = \tfrac{1}{2}k_a(\theta-\theta_0)^2 \qquad\text{or}\qquad \tfrac{1}{2}k_a(\cos\theta-\cos\theta_0)^2
+$$
+
+The **Urey–Bradley** correction adds a spring between the two *outer* atoms of an angle, purely to sharpen the fit to vibrational spectra.
+
+**Dihedrals** are hundreds of times softer than stretching and generate conformational variety — the difference between a folded and unfolded chain:
+
+$$
+U_{\text{tors}} = \frac{V_n}{2}\big[1+\cos(n\varphi-\gamma)\big]
+$$
+
+<DihedralPlot />
+
+<Callout type="note" title="Keeping it flat">
+Aromatic rings and carbonyl carbons need to stay planar, and an ordinary torsion cannot guarantee that. An **improper torsion** term penalizes the deviation $\omega$ from the flat configuration directly.
+</Callout>
+
+<Figure
+  src="/figures/force-fields/bonded.svg"
+  alt="The four bonded terms: bond stretch, angle bend, dihedral, improper"
+  caption="The four bonded terms, in order of increasing reach along the molecular skeleton."
+/>
+
+## The non-bonded terms
+
+**Van der Waals** combines a violent short-range repulsion with a weak long-range attraction — the 12-6 Lennard-Jones potential:
+
+$$
+U_{\text{LJ}}(r) = 4\varepsilon\left[\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^{6}\right]
+$$
+
+<Figure
+  src="/figures/force-fields/lj-hero.svg"
+  alt="The Lennard-Jones 12-6 potential: repulsive wall, well of depth epsilon at r_min, zero crossing at sigma"
+  caption="The Lennard-Jones curve: a violent r^-12 repulsive wall, a well of depth epsilon near r_min ~ 1.12 sigma, and a slow r^-6 attractive tail. Drag the sliders in the plot below to reshape it."
+/>
+
+<LJPlot />
+
+Why $r^{-12}$? The $r^{-6}$ attraction has a rigorous basis in London dispersion; the $r^{-12}$ repulsion is chosen for pure computational convenience — it is simply $(r^{-6})^2$, so it costs nothing extra. Some force fields (Buckingham, COMPASS 9-6, MMFF 14-7) soften the wall, mainly for organic molecular crystals.
+
+**Combining rules** turn atomic parameters into pair parameters:
+
+$$
+\varepsilon_{ij} = \sqrt{\varepsilon_i\,\varepsilon_j}, \qquad \sigma_{ij} = \tfrac{1}{2}(\sigma_i+\sigma_j) \;\;\text{or}\;\; \sqrt{\sigma_i\sigma_j}
+$$
+
+**Electrostatics** uses borrowed, non-measurable partial charges fit to reproduce a QM electrostatic potential:
+
+$$
+U_{\text{elec}} = \frac{q_i\,q_j}{r_{ij}}
+$$
+
+<CoulombPlot />
+
+<Callout type="note" title="Charges are a modeling choice">
+Partial charges are not experimental observables — many charge-fitting schemes exist (RESP, CHELPG…) and they do not always agree. And because condensed-phase polarization is not explicitly present, non-polarizable water models quietly inflate their dipole (≈2.3–2.6 D vs. the gas-phase 1.85 D) to compensate on average.
+</Callout>
+
+**The 1–4 exclusion rule** prevents double counting: 1–2 and 1–3 pairs are excluded (already described by bond/angle terms), 1–4 pairs are *scaled* with a force-field-specific factor, and everything further apart interacts fully.
+
+<Callout type="warning" title="Never mix force fields">
+It is the specific combination of the dihedral term with the scaled 1–4 van der Waals and electrostatic terms that sets a molecule's real rotational barriers. Borrowing parameters from another force field for any one of those pieces silently breaks that balance.
+</Callout>
+
+## The critical transformation: $U \to \mathbf{F}$
+
+The bridge from energy to dynamics is the negative gradient. For the Lennard-Jones pair this is simple enough to write analytically (González Eq. 3.2):
+
+$$
+\mathbf{f}_{ij} = 48\frac{\varepsilon}{\sigma^2}\left[\left(\frac{\sigma}{r_{ij}}\right)^{14} - \tfrac{1}{2}\left(\frac{\sigma}{r_{ij}}\right)^{8}\right]\mathbf{r}_{ij}, \qquad \mathbf{f}_i = \sum_{j\neq i}\mathbf{f}_{ij}
+$$
+
+<LJForcePlot />
+
+<Callout type="tip" title="Why this matters computationally">
+The force calculation is the most expensive step in MD: the naive approach costs $\tfrac{1}{2}N(N-1)$ distance evaluations per step. Every acceleration strategy in MD exists to make this cheaper — never the other way around.
+</Callout>
+
+## Boxes, cutoffs, and the long-range problem
+
+**Periodic boundary conditions** kill the walls: an atom leaving one face re-enters through the opposite one. The surface-artifact fraction scales as $N^{-1/3}$ — ≈49% of atoms sit at the surface for $10^3$ atoms, but only ≈6% for $10^6$, so PBC only become affordable at scale.
+
+<Figure
+  src="/figures/force-fields/pbc.svg"
+  alt="Periodic boundary conditions: primary cell surrounded by periodic replicas, with the cutoff radius drawn"
+  caption="Only atoms in the primary cell (bold) are tracked; the minimum image convention makes each one interact with the nearest copy of every other atom."
+/>
+
+**Cutoffs** drop interactions beyond $R_c \le L/2$:
+
+$$
+U_{\text{trunc}}(r) = \begin{cases} U^{\text{LJ}}(r), & r \le R_c \\ 0, & r > R_c \end{cases}
+$$
+
+But the chopped-off tail is not free — and there is an analytic correction for it:
+
+$$
+U_{\text{tail}} = \frac{8}{3}\pi\rho\,\sigma^3\varepsilon\left[\frac{1}{3}\left(\frac{\sigma}{R_c}\right)^9 - \left(\frac{\sigma}{R_c}\right)^3\right]
+$$
+
+<TailPlot />
+
+<Callout type="danger" title="The tail is not optional">
+At typical liquid density and $R_c = 2.5\sigma$ the tail correction is $U_{\text{tail}} \approx -0.535\,\varepsilon$ — roughly **10% of the total potential energy**. And this correction applies *only* to short-range terms: Coulomb decays as $1/r$, far too slowly to truncate at all.
+</Callout>
+
+**Long-range electrostatics** therefore need Ewald-style methods. Ewald splits the conditionally convergent lattice sum into a real-space part, a reciprocal-space part, and a self-energy term:
+
+$$
+U_{\text{coul}} = U_{\text{real}} + U_{\text{recip}} + U_{\text{self}}
+$$
+
+with $U_{\text{real}} = \tfrac{1}{2}\sum_{ij} q_iq_j\,\text{erfc}(\sqrt{\alpha}\,r_{ij})/r_{ij}$ and the reciprocal part built from the charge density $\rho(\mathbf{k}) = \sum_i q_i e^{i\mathbf{k}\cdot\mathbf{r}_i}$. Particle-mesh descendants (PME, SPME, PPPM) bring the cost to $O(N\log N)$. The cheap alternative — a **reaction field** continuum beyond the cutoff — is crude at typical 9–15 Å cutoffs.
+
+## Stepping through time
+
+A plain Taylor expansion is numerically unstable. Verlet's trick: add the forward and backward expansions so the odd-order terms cancel:
+
+$$
+\mathbf{r}_i(t_0+\Delta t) = -\mathbf{r}_i(t_0-\Delta t) + 2\mathbf{r}_i(t_0) + \mathbf{a}_i(t_0)\Delta t^2 + O(\Delta t^4)
+$$
+
+The equivalent, more practical formulations are **leap-frog** and **velocity-Verlet** — the field's default because positions and velocities live at the same instant:
+
+$$
+\mathbf{r}_i(t_0+\Delta t) = \mathbf{r}_i(t_0) + \mathbf{v}_i(t_0)\Delta t + \tfrac12\mathbf{a}_i(t_0)\Delta t^2
+$$
+
+$$
+\mathbf{v}_i(t_0+\Delta t) = \mathbf{v}_i(t_0) + \tfrac12\big[\mathbf{a}_i(t_0)+\mathbf{a}_i(t_0+\Delta t)\big]\Delta t
+$$
+
+<VerletPlot />
+
+<Callout type="note" title="What makes an integrator trustworthy">
+Verlet-family algorithms are cheap (one force evaluation per step), time-reversible, and **symplectic** — they conserve phase-space volume, so energy stays bounded over long runs. That is why predictor-corrector schemes, more accurate per step but neither reversible nor symplectic, have fallen out of favor.
+</Callout>
+
+**Choosing $\Delta t$** — governed by the fastest motion you refuse to alias:
+
+| System | Typical Δt |
+|---|---|
+| Lennard-Jones fluid (argon, near triple point) | ≈ 5 fs |
+| Rigid molecules | ≈ 5 fs |
+| Flexible molecules with C–H stretching | 0.5 – 1 fs |
+
+The sanity check on a NVE run: total energy should not drift — convention is $|\Delta E| \le 0.003$ averaged over steps.
+
+## Ensembles and thermostats
+
+Plain Newtonian integration conserves $N$, $V$, $E$ — the **microcanonical (NVE)** ensemble. Experiments fix other things, so you usually need control:
+
+| Ensemble | Held fixed | Typical use |
+|---|---|---|
+| NVE | $N, V, E$ | Production runs after equilibration |
+| NVT | $N, V, T$ | Matching a target temperature |
+| NPT | $N, P, T$ | Equilibration; finding the correct density |
+
+Temperature control comes in three flavors with very different guarantees:
+
+| Thermostat | Mechanism | Correct ensemble? |
+|---|---|---|
+| Velocity scaling | Rescale by $\sqrt{T_B/T(t)}$ | No — fast, crude |
+| Berendsen | Weak coupling to a heat bath; prone to "flying ice cube" | Approximate — fine for equilibration |
+| Nosé–Hoover | Heat bath as an extra degree of freedom in an extended Lagrangian | Yes — the rigorous NVT choice |
+
+<Callout type="tip" title="Recommended workflow">
+Equilibrate with velocity scaling or tight Berendsen coupling to reach the target state quickly, then switch to **NVE (or Nosé–Hoover)** for the production run the analysis will actually use.
+</Callout>
+
+## What you can pull out of a trajectory
+
+Once positions, velocities, and forces are saved in time, almost any statistical-mechanical quantity is just an average:
+
+| Class | Quantity | Formula | Compare with |
+|---|---|---|---|
+| Thermodynamic | Temperature | $T = \dfrac{\sum_i m_iv_i^2}{3(N-N_c) k_B}$ | target $T$ |
+| Thermodynamic | Heat capacity | $C_v = \dfrac{\langle \Delta E^2\rangle_{NVT}}{k_B T^2}$ | calorimetry (NVT only!) |
+| Structural | Radial distribution | $g(r)$ | X-ray / neutron diffraction |
+| Structural | Structure factor | $S(Q)$ (Debye sum) | diffraction pattern |
+| Dynamical | Diffusivity | $D = \lim_{t\to\infty} \dfrac{u^2(t)}{6t}$ | QENS, NMR |
+| Dynamical | Vibrational DOS | FT of velocity autocorrelation | inelastic neutron scattering |
+
+<Callout type="note" title="Why neutrons specifically">
+The spatial *and* temporal windows a neutron spectrometer probes line up almost exactly with what an MD box computes — the intermediate scattering functions $I_s(Q,t)$ and $S(Q,\omega)$ are the go-to yardsticks for validating force fields, not just a nice-to-have comparison.
+</Callout>
+
+## Free energy: binding, catalysis, and PMFs
+
+A raw trajectory shows where atoms go, but most biophysical questions are thermodynamic: **how tightly does a ligand bind, how high is a barrier, which conformer dominates?** These all reduce to a free-energy difference $\Delta G$ — and entropy is never a simple time average, so MD reaches $\Delta G$ through sampling.
+
+**Alchemical routes** transform state 0 into state 1 along an unphysical pathway. Free Energy Perturbation computes the Zwanzig average:
+
+$$
+\Delta A = -k_BT \ln \left\langle \exp\!\left(-\frac{U_1-U_0}{k_BT}\right)\right\rangle_{0}
+$$
+
+Thermodynamic integration replaces the exponential with an integral over the ensemble-averaged force along the coupling parameter $\lambda$:
+
+$$
+\Delta A = \int_0^1 \left\langle \frac{\partial U(\lambda)}{\partial\lambda}\right\rangle_{\lambda} d\lambda
+$$
+
+**Reaction-coordinate routes** — umbrella sampling plus WHAM — place biased harmonic windows along a distance or angle and stitch them into an unbiased **potential of mean force** $G(\xi)$, ideal for ion permeation and ligand unbinding:
+
+<Figure
+  src="/figures/force-fields/pmf.svg"
+  alt="Potential of mean force along a reaction coordinate: bound state, transition state, unbound state and the Delta-G barrier"
+  caption="A potential of mean force along a chosen coordinate xi, e.g. a ligand-pocket distance — the free-energy analogue of the bonded potentials, but built from sampling rather than a fitted functional form."
+/>
+
+<Callout type="warning" title="Where this breaks">
+Every free-energy method inherits the force field's own errors — wrong van der Waals or electrostatic parameters produce a confidently wrong $\Delta G$. Convergence also demands adequate sampling of every relevant conformational state, which slow biological motions make hard.
+</Callout>
+
+## Machine-learned potentials
+
+Classical force fields fix a functional form up front; ML potentials *learn* the energy/force mapping directly from QM reference data. Because raw Cartesian coordinates are meaningless to a network, every MLP starts from a representation invariant to translation, rotation, and permutation — hand-crafted **symmetry functions** (Behler–Parrinello) or learned via **message passing** (SchNet-style GNNs, and equivariant variants like NequIP/MACE):
+
+<Figure
+  src="/figures/force-fields/mlspectrum.svg"
+  alt="Accuracy-speed spectrum: classical force field, ML potential, AIMD"
+  caption="Machine-learned potentials sit deliberately between the two poles — the design goal is to move the accuracy/speed frontier itself, not just pick a point on the old curve."
+/>
+
+| | Classical FF | ML potential | AIMD (DFT) |
+|---|---|---|---|
+| Accuracy | Fixed by parametrization | Approaches QM reference | Reference-grade |
+| Cost per step | Lowest | ≫ FF, ≪ DFT | Highest |
+| Bond breaking | No (class I/II) | Yes, if trained on it | Yes, natively |
+| Transferability | Limited to fitted chemistry | Limited to training distribution | General, but slow |
+| Data requirement | Modest, curated | Large QM reference sets | None — it *is* the reference |
+
+The open problem is the same one that always shadowed empirical force fields — **transferability outside the training distribution** — just moved one level up the accuracy ladder.
+
+## Limits, and what comes after
+
+| Classical limitation | Emerging approach |
+|---|---|
+| No bond breaking or formation | Reactive force fields (ReaxFF) |
+| No electronic structure at all | QM/MM hybrids |
+| Fixed charges, no polarization | Polarizable FFs (AMOEBA, Drude) |
+| Weak cross-environment transferability | X-POL and QM-grounded models |
+| Slow, expert-bound parametrization | Machine-learned potentials |
+
+None of this erases the core advantage: classical MD is still orders of magnitude cheaper than solving electronic structure at every step — the right tool whenever the question is about *bulk* behavior rather than the fate of individual electrons.
+
+## Cheat sheet
+
+<Callout type="tip" title="The twelve things to remember">
+1. A force field = functional form + fitted parameters; it replaces electrons with springs, angles, and pair potentials.
+2. Harmonic bonds cannot break — that single choice is why classical MD can't simulate chemistry.
+3. Dihedrals are the softest bonded term and drive conformational flexibility.
+4. LJ handles short range; Coulomb needs Ewald/PME — never a naive cutoff.
+5. Tail corrections ≈ 10% of total energy at typical cutoffs — never optional.
+6. $U \to \mathbf{F}$ via $-\nabla$ is the single most important transformation in MD.
+7. Verlet, leap-frog, and velocity-Verlet are equivalent, symplectic, time-reversible.
+8. Δt is capped by the fastest vibration — C–H stretches force Δt ≲ 1 fs unless constrained.
+9. Equilibrate with Berendsen/velocity scaling; produce in NVE or with Nosé–Hoover.
+10. Never mix parameters across force fields — the dihedral + 1–4 balance defines rotational barriers.
+11. Binding and catalysis are free energies: FEP, TI, or umbrella-sampled PMFs, not single-trajectory values.
+12. ML potentials move the accuracy/speed frontier but stay prisoners of the data they trained on.
+</Callout>
+
+## References
+
+- **González, M. A.** (2011). *Force fields and molecular dynamics simulations.* Collection SFN, 12, 169–200. [DOI: 10.1051/sfn/201112009](https://doi.org/10.1051/sfn/201112009) — open access, Institut Laue-Langevin.
+- 📄 [PDF of the González review (local copy)](/files/notes/force-fields-molecular-dynamics-gonzalez-2011.pdf)
+- The full article installs the concepts above; its reference list is the map of the field (Allen & Tildesley; Frenkel & Smit; Jorgensen & Tirado-Rives; Vega et al. on water models; Yonetani on cutoffs; van Gunsteren & Karplus on constraints).

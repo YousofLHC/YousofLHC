@@ -1,0 +1,70 @@
+---
+title: "Single-Class Anomaly Detection Based on Implicit Convex Hull and Ensemble Learning"
+description: "M.Sc. thesis — a one-class anomaly-detection framework built on an elastic-net-regularized implicit convex hull, solved with proximal methods and Kalman-based approximate message passing (KAMP), with a distributed variant (DKAMP)."
+date: "2025-10-02"
+tags:
+  - Anomaly Detection
+  - One-Class Classification
+  - Approximate Message Passing
+  - Ensemble Learning
+readTime: 8
+cover: "/covers/single-class-anomaly-detection.svg"
+---
+
+<Callout type="note" title="M.Sc. Thesis">
+Completed at **Ferdowsi University of Mashhad** under the supervision of
+[Prof. Hadi Sadoghi Yazdi](https://hadisadoghiyazdi1971.github.io/), with the
+grade **Excellent (19.5/20)**. See the [full thesis page](https://hadisadoghiyazdi1971.github.io/physics/computational/Single-class-anomaly-detection-based-on-implicit-anomaly-detection-and-ensemble-learning/).
+</Callout>
+
+## The problem
+
+Anomalies are patterns in data that do not conform to a well-defined notion of
+normal behavior — and they often carry critical information. Real-world anomaly
+detection is complicated by **imbalanced data**, where the minority (anomalous)
+class is poorly sampled, making conventional binary or multiclass classifiers
+biased toward the majority class.
+
+A natural remedy is **one-class classification (OCC)**: model only the normal
+region, and declare any observation outside it an anomaly. Classic geometric
+approaches based on convex hulls have high computational complexity and do not
+scale, while most OCC methods reduce to costly quadratic programs.
+
+## The proposed framework
+
+The thesis proposes a novel one-class framework with three main ingredients:
+
+1. **Implicit convex hull via elastic net.** Instead of computing the convex hull
+   of the normal data explicitly, the decision boundary is estimated *implicitly*
+   through elastic-net regularization. The combination of $\ell_1$ and $\ell_2$
+   terms yields both *sparsity* (feature selection) and *numerical stability*
+   with a *grouping effect* among correlated features.
+2. **Ensemble learning.** To improve accuracy and reduce the bias caused by data
+   imbalance, sampling and random subspaces are combined into an ensemble of
+   one-class models.
+3. **Message-passing solvers.** The optimization is solved with proximal gradient
+   methods and **Approximate Message Passing (AMP)**. To overcome AMP's
+   convergence limitations under noisy, ill-conditioned matrices, its
+   **Kalman-based variant (KAMP)** is used — merging Kalman-filter ideas with AMP
+   for more stable and faster convergence. A distributed version, **DKAMP**,
+   splits the measurement matrix across network nodes and exchanges small
+   messages over diverse graph topologies for scalability.
+
+## Experiments & results
+
+The framework was evaluated on diverse benchmark datasets (including the ODDS
+collection and CIFAR-10 boundary experiments) and compared with prominent
+methods — **OCSVM, SVDD, LOF, IF, and EE**:
+
+- Consistent improvement in arithmetic and geometric mean scores, precision,
+  accuracy, recall, F1, and kappa.
+- Statistically significant superiority of **KAMP over AMP** (Mann-Whitney U /
+  Wilcoxon tests, p < 0.001) on Gaussian, heavy-tailed, and orthogonal random
+  matrices, with lower error variance.
+- Ability to form fully flexible decision boundaries in the input space and to
+  construct convex hulls in high-dimensional feature space using polynomial
+  kernels.
+
+The combination of the implicit convex hull, elastic-net regularization,
+AMP/KAMP/DKAMP, and ensemble learning delivers a coherent, scalable, and robust
+framework for anomaly detection in real-world and complex datasets.

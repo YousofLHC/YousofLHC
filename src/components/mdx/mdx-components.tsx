@@ -5,6 +5,15 @@ import { ArrowUpRight, Download, Lightbulb, Info, TriangleAlert } from "lucide-r
 import { CodeBlock } from "@/components/ui/code-block";
 import { Mermaid } from "@/components/ui/mermaid";
 import { Lightbox } from "@/components/ui/lightbox";
+import {
+  LJPlot,
+  LJForcePlot,
+  BondPlot,
+  DihedralPlot,
+  CoulombPlot,
+  TailPlot,
+  VerletPlot,
+} from "@/components/ui/math-plot";
 import { getNotebook } from "@/lib/notebooks";
 
 function Pre({ children }: { children?: React.ReactNode }) {
@@ -130,5 +139,12 @@ export function getMdxComponents(): MDXComponents {
     Diagram,
     Callout,
     NotebookCard,
+    LJPlot,
+    LJForcePlot,
+    BondPlot,
+    DihedralPlot,
+    CoulombPlot,
+    TailPlot,
+    VerletPlot,
   };
 }

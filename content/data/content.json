@@ -2,414 +2,288 @@
   "profile": {
     "name": "Yousof Ghalenoei",
     "firstName": "Yousof",
-    "role": "AI Research Engineer",
-    "degree": "M.Sc. in Artificial Intelligence",
-    "tagline": "Bridging message passing, molecules, and machines.",
+    "role": "M.Sc. in Computer Engineering",
+    "degree": "M.Sc. in Computer Engineering — Artificial Intelligence & Robotics",
+    "tagline": "Bridging machine learning, optimization, and mathematics.",
     "bio": [
-      "I am an AI researcher and engineer with a Master's degree in Artificial Intelligence, focused on the intersection of probabilistic inference, graph-structured data, and computational science. My work spans Approximate Message Passing (AMP), Graph Neural Networks (GNNs), Kalman filtering, and generative models applied to drug design, metabolic engineering, material informatics, and autonomous AI agents.",
-      "I believe the most impactful machine learning is built on a strong foundation of statistics, optimization, and domain science. My research style combines rigorous theory with shipping practical systems — from high-dimensional sparse recovery to end-to-end molecular property pipelines and literature-mining agent workflows.",
-      "I am actively looking for PhD positions, research collaborations, and consulting engagements where I can push the boundaries of learning on scientific data."
+      "I hold an M.Sc. in Computer Engineering (Artificial Intelligence & Robotics) from Ferdowsi University of Mashhad, where my thesis developed a single-class anomaly-detection framework based on an implicit convex hull and ensemble learning, supervised by Prof. Hadi Sadoghi Yazdi. I also hold a bachelor's degree in mathematics education from Shahid Beheshti University of Mashhad, and I studied computer engineering at the University of Bojnurd, North Khorasan.",
+      "I have completed courses in paper writing, machine learning, statistics, and optimization from credible educational sources, and I carry out hands-on projects such as optimizing solar cells with the genetic algorithm. My work interests include neural networks, machine learning, reinforcement learning, big data processing, and distributed systems.",
+      "I teach mathematics while pursuing research, and I am always open to research collaborations, academic exchanges, and opportunities that combine rigorous mathematics with real-world engineering."
     ],
-    "focus": "Currently: diffusion-based molecular generation + AMP-inspired graph architectures, and agentic literature systems for metabolic engineering."
+    "focus": "Recently completed: M.Sc. thesis on single-class anomaly detection via an implicit convex hull and ensemble learning — combining elastic-net regularization, proximal methods, and Kalman-based approximate message passing (KAMP/DKAMP)."
   },
   "stats": [
-    { "value": "12", "label": "Publications" },
-    { "value": "240+", "label": "Citations" },
-    { "value": "18", "label": "Projects shipped" },
-    { "value": "9", "label": "Interactive notebooks" }
+    { "value": "3", "label": "Degrees" },
+    { "value": "4", "label": "Years of teaching" },
+    { "value": "5", "label": "Programming languages" },
+    { "value": "3", "label": "Research interests" }
   ],
   "education": [
     {
-      "period": "2024 — 2026",
-      "title": "M.Sc. in Artificial Intelligence",
+      "period": "2022 — 2025",
+      "title": "M.Sc. in Computer Engineering — Artificial Intelligence & Robotics",
       "org": "Ferdowsi University of Mashhad, Iran",
-      "detail": "Thesis: “Message Passing and Graph Neural Networks for High-Dimensional Inference.” Advisor: Prof. Hadi Sadoghi Yazdi. Coursework in probabilistic graphical models, high-dimensional statistics, reinforcement learning, and advanced deep learning.",
-      "tags": ["Machine Learning", "Probabilistic Modeling", "GNN"],
+      "detail": "Graduated with the grade Excellent (19.5/20). Thesis: “Single-class anomaly detection based on implicit convex hull and ensemble learning” — an elastic-net-regularized one-class framework solved with proximal methods and Kalman-based approximate message passing (KAMP), with a distributed variant (DKAMP). Advisor: Prof. Hadi Sadoghi Yazdi.",
+      "tags": ["Anomaly Detection", "Machine Learning", "Optimization"],
       "highlight": true
     },
     {
-      "period": "2019 — 2023",
-      "title": "B.Sc. in Computer Engineering",
-      "org": "Ferdowsi University of Mashhad, Iran",
-      "detail": "Graduated with honors (Top 3%). Focus on algorithms, linear algebra, and signal processing. Final project on dictionary learning for time-series pattern recognition.",
-      "tags": ["Algorithms", "Signal Processing", "Linear Algebra"]
+      "period": "2018 — 2022",
+      "title": "B.Sc. in Mathematics Education",
+      "org": "Shahid Beheshti University of Mashhad, Iran",
+      "detail": "Government-funded bachelor's degree in mathematics education, graduated with a GPA of 17.56/20. Served as the secretary of the university's mathematics scientific association.",
+      "tags": ["Mathematics", "Education", "Statistics"]
+    },
+    {
+      "period": "2017 — 2019",
+      "title": "B.Sc. in Computer Engineering (studied)",
+      "org": "University of Bojnurd, Iran",
+      "detail": "Computer engineering studies at the University of Bojnurd (government-funded) in North Khorasan, with a GPA of 17/20.",
+      "tags": ["Programming", "Computer Science", "Linear Algebra"]
     }
   ],
   "experience": [
     {
-      "period": "2024 — Present",
-      "title": "Research Assistant — Sparse Inference Lab",
-      "org": "School of Electrical & Computer Engineering",
-      "detail": "Designing AMP-based iterative algorithms and GNN message-passing layers for compressed sensing and molecular property regression. Built GPU-accelerated PyTorch prototypes; results under review at a top ML venue.",
-      "tags": ["AMP", "PyTorch", "GNN", "Compressed Sensing"],
+      "period": "Feb 2022 — Present",
+      "title": "Mathematics Teacher",
+      "org": "Ministry of Education, Bojnurd, Iran",
+      "detail": "Teaching mathematics at the secondary level under the Iranian Ministry of Education in Bojnurd, North Khorasan.",
+      "tags": ["Teaching", "Mathematics"],
       "highlight": true
     },
     {
-      "period": "2025 — Present",
-      "title": "Machine Learning Engineer (part-time)",
-      "org": "Computational Chemistry Startup",
-      "detail": "Own the ADMET property-prediction pipeline (RDKit descriptors + GNN ensembles). Delivered a 2× speedup in virtual screening throughput and a retrosynthesis planning prototype used by the discovery team.",
-      "tags": ["RDKit", "GNN", "Drug Design", "MLOps"]
+      "period": "2019 — 2021",
+      "title": "Secretary, Mathematics Scientific Association",
+      "org": "Shahid Beheshti University of Mashhad",
+      "detail": "Organized seminars, workshops, and academic events for the university's mathematics scientific association.",
+      "tags": ["Leadership", "Mathematics", "Events"]
     },
     {
-      "period": "2024 — 2025",
-      "title": "Teaching Assistant — Machine Learning",
-      "org": "Ferdowsi University of Mashhad",
-      "detail": "Co-designed lab assignments on Bayesian methods, factor graphs, and deep learning. Wrote interactive Jupyter notebooks (10+) used by 90+ students; recognized with the department's TA excellence award.",
-      "tags": ["Teaching", "Jupyter", "Bayesian ML"]
-    },
-    {
-      "period": "2022 — 2024",
-      "title": "Freelance Data Scientist / ML Engineer",
-      "org": "Remote",
-      "detail": "Delivered time-series forecasting, sensor-fusion (Kalman/EKF) and anomaly-detection systems for industrial clients across logistics and manufacturing.",
-      "tags": ["Kalman", "Forecasting", "Scikit-learn"]
+      "period": "2017 — 2020",
+      "title": "Freelance Programmer",
+      "org": "Freelance",
+      "detail": "Developed software and data solutions in Python, R, C++, and PHP on a freelance basis.",
+      "tags": ["Python", "R", "C++", "PHP"]
     }
   ],
   "publications": [
     {
-      "title": "GAMP-GNN: Message Passing Meets Graph Neural Networks for Model-Based Compressed Sensing",
-      "authors": "Y. Ghalenoei, ...",
-      "venue": "ICML 2026 (under review)",
-      "year": "2026",
+      "title": "Single-Class Anomaly Detection via Implicit Convex Hull and Ensemble Learning",
+      "authors": "Y. Ghalenoei, H. Sadoghi Yazdi",
+      "venue": "M.Sc. Thesis — Ferdowsi University of Mashhad",
+      "year": "2025",
       "status": "under-review",
-      "tags": ["AMP", "GNN", "Compressed Sensing"]
+      "tags": ["Anomaly Detection", "One-Class Classification", "Proximal Methods"],
+      "cite": "Sample entry — replace with the real citation"
     },
     {
-      "title": "DiffMolecule: Guided Diffusion over Graphs for Fragment-based De Novo Drug Design",
-      "authors": "Y. Ghalenoei, ...",
-      "venue": "Journal of Chemical Information and Modeling",
+      "title": "Kalman-Based Approximate Message Passing for Online Anomaly Scoring",
+      "authors": "Y. Ghalenoei, H. Sadoghi Yazdi",
+      "venue": "Preprint (sample)",
       "year": "2025",
-      "status": "in-press",
-      "tags": ["Drug Design", "Diffusion", "GNN"]
-    },
-    {
-      "title": "Data-Driven Flux Prediction in Genome-Scale Metabolic Models via Graph Regularized Regression",
-      "authors": "Y. Ghalenoei, ...",
-      "venue": "Metabolic Engineering",
-      "year": "2025",
-      "status": "published",
-      "tags": ["Metabolic Engineering", "GNN", "Flux Analysis"]
-    },
-    {
-      "title": "CrystalFormer: a Transformer with Bond-Aware Attention for Inorganic Property Prediction",
-      "authors": "Y. Ghalenoei, ...",
-      "venue": "npj Computational Materials",
-      "year": "2025",
-      "status": "published",
-      "tags": ["Material Informatics", "Transformer"]
-    },
-    {
-      "title": "Invariant Extended Kalman Filtering with Learned Noise Models for Multi-Sensor Fusion",
-      "authors": "Y. Ghalenoei, ...",
-      "venue": "IEEE Transactions on Aerospace & Electronic Systems (short)",
-      "year": "2024",
-      "status": "published",
-      "tags": ["Kalman", "Sensor Fusion"]
-    },
-    {
-      "title": "Sparse Dictionary Learning for Time-Series Pattern Recognition in Industrial Telemetry",
-      "authors": "Y. Ghalenoei, ...",
-      "venue": "Pattern Recognition Letters",
-      "year": "2024",
-      "status": "published",
-      "tags": ["Pattern Recognition", "Dictionary Learning"]
-    },
-    {
-      "title": "Agentic-RAG: Self-Verifying Retrieval Agents for Scientific Literature Discovery",
-      "authors": "Y. Ghalenoei, ...",
-      "venue": "arXiv preprint",
-      "year": "2026",
       "status": "preprint",
-      "tags": ["AI Agents", "RAG", "LLM"]
+      "tags": ["Message Passing", "Kalman Filter", "AMP"],
+      "cite": "Sample entry — replace with the real citation"
+    },
+    {
+      "title": "Genetic-Algorithm Optimization of Solar-Cell Parameters",
+      "authors": "Y. Ghalenoei",
+      "venue": "Technical report (sample)",
+      "year": "2024",
+      "status": "published",
+      "tags": ["Genetic Algorithm", "Optimization", "Photovoltaics"],
+      "cite": "Sample entry — replace with the real citation"
+    },
+    {
+      "title": "Compression-Based Outlier Detection on Industrial Time Series",
+      "authors": "Y. Ghalenoei",
+      "venue": "Working paper (sample)",
+      "year": "2023",
+      "status": "in-press",
+      "tags": ["Anomaly Detection", "Time Series", "Compression"],
+      "cite": "Sample entry — replace with the real citation"
     }
   ],
-  "awards": [
-    { "year": "2025", "title": "Department TA Excellence Award", "org": "Ferdowsi University of Mashhad" },
-    { "year": "2024", "title": "Merit Fellowship, M.Sc. Program", "org": "Ministry of Science, Iran" },
-    { "year": "2023", "title": "Graduated with Honors (Top 3%)", "org": "Ferdowsi University of Mashhad" },
-    { "year": "2022", "title": "1st Place, National AI Hackathon — drug-target interaction track", "org": "IPM Iran" }
-  ],
+  "awards": [],
   "certifications": [
-    { "year": "2025", "title": "Deep Learning Specialization", "org": "DeepLearning.AI" },
-    { "year": "2024", "title": "Probabilistic Graphical Models", "org": "Stanford (Coursera)" },
-    { "year": "2024", "title": "Computational Drug Discovery", "org": "MIT (OCW)" }
+    {
+      "year": "—",
+      "title": "Courses in paper writing, machine learning, statistics, and optimization",
+      "org": "Credible educational sources"
+    }
   ],
   "skills": [
     {
       "name": "Programming Languages",
       "skills": [
-        { "name": "Python", "level": 95 },
-        { "name": "Julia", "level": 80 },
-        { "name": "C++", "level": 65 },
-        { "name": "SQL / Bash", "level": 75 }
-      ]
-    },
-    {
-      "name": "ML / DL Frameworks",
-      "skills": [
-        { "name": "PyTorch + PyG", "level": 90 },
-        { "name": "JAX", "level": 75 },
-        { "name": "TensorFlow / Keras", "level": 70 },
-        { "name": "Scikit-learn / XGBoost", "level": 90 }
-      ]
-    },
-    {
-      "name": "Scientific Computing",
-      "skills": [
-        { "name": "RDKit / OpenBabel", "level": 80 },
-        { "name": "OpenMM / GROMACS", "level": 70 },
-        { "name": "COBRApy (FBA)", "level": 75 },
-        { "name": "ASE / Pymatgen", "level": 70 }
+        { "name": "Python", "level": 90 },
+        { "name": "R", "level": 85 },
+        { "name": "C++", "level": 70 },
+        { "name": "PHP", "level": 65 },
+        { "name": "Git", "level": 80 },
+        { "name": "LaTeX", "level": 75 }
       ]
     },
     {
       "name": "Mathematical Foundations",
       "skills": [
-        { "name": "Probability & Statistics", "level": 90 },
-        { "name": "Optimization & Duality", "level": 85 },
-        { "name": "Filtering & Control", "level": 80 },
-        { "name": "Graph & Spectral Theory", "level": 80 }
+        { "name": "Linear Algebra", "level": 85 },
+        { "name": "Statistics", "level": 80 },
+        { "name": "Machine Learning", "level": 85 },
+        { "name": "Optimization", "level": 80 }
+      ]
+    },
+    {
+      "name": "Research Interests",
+      "skills": [
+        { "name": "Message Passing", "level": 70 },
+        { "name": "Compression-Based Anomaly Detection", "level": 70 },
+        { "name": "Proximal Methods for Nonconvex Systems", "level": 65 },
+        { "name": "Genetic Algorithms", "level": 80 }
+      ]
+    },
+    {
+      "name": "Languages",
+      "skills": [
+        { "name": "Persian (Farsi) — Native", "level": 100 },
+        { "name": "English — Reading", "level": 80 },
+        { "name": "English — Writing", "level": 75 },
+        { "name": "English — Speaking & Listening", "level": 75 }
       ]
     }
   ],
   "languages": [
     { "name": "Persian (Farsi)", "level": "Native", "percentage": 100 },
-    { "name": "English", "level": "Fluent (IELTS 8.0)", "percentage": 92 },
-    { "name": "German", "level": "Intermediate (B1)", "percentage": 55 }
+    { "name": "English", "level": "Working proficiency (reading, writing, speaking, listening)", "percentage": 75 }
   ],
   "projects": [
     {
-      "slug": "gamp-gnn",
-      "title": "GAMP-GNN",
-      "subtitle": "Message Passing for Model-Based Compressed Sensing",
-      "summary": "A hybrid approximate-message-passing network that unfolds GAMP iterations into a GNN, learning structured priors for high-dimensional sparse recovery with provably faster convergence.",
-      "year": "2026",
-      "status": "active",
-      "domain": "Approximate Message Passing",
-      "domainColor": "cyan",
-      "tags": ["AMP", "GNN", "Compressed Sensing", "Variational Inference"],
-      "tech": ["PyTorch", "PyG", "NumPy", "JAX"],
-      "cover": "/covers/gamp-gnn.svg",
-      "github": "https://github.com/yousofghalenoei/gamp-gnn",
-      "featured": true
-    },
-    {
-      "slug": "diffmolecule",
-      "title": "DiffMolecule",
-      "subtitle": "Guided Diffusion over Graphs for De Novo Drug Design",
-      "summary": "An equivariant diffusion model generating valid, synthesizable molecules under target-aware guidance, with RDKit-based property filters and a fragment-level latent space.",
+      "slug": "single-class-anomaly-detection",
+      "title": "Single-Class Anomaly Detection via Implicit Convex Hull",
+      "subtitle": "M.Sc. thesis — implicit convex hull, ensemble learning, and Kalman-based message passing",
+      "summary": "A one-class classification framework that estimates the normal-data decision boundary through an elastic-net-regularized implicit convex hull, solved with proximal gradient methods and approximate message passing (AMP), extended to Kalman-based AMP (KAMP) and its distributed variant (DKAMP) for stability and scalability.",
       "year": "2025",
-      "status": "active",
-      "domain": "AI-Driven Drug Design",
+      "status": "complete",
+      "domain": "Anomaly Detection",
       "domainColor": "magenta",
-      "tags": ["Diffusion", "GNN", "Drug Design", "Generative Models"],
-      "tech": ["PyTorch", "RDKit", "PyG", "Weights & Biases"],
-      "cover": "/covers/diffmolecule.svg",
-      "github": "https://github.com/yousofghalenoei/diffmolecule",
-      "demo": "https://yousofghalenoei.example.com/demo/diffmolecule",
+      "tags": ["Anomaly Detection", "One-Class Classification", "AMP", "Ensemble Learning"],
+      "tech": ["Python", "R"],
+      "cover": "/covers/single-class-anomaly-detection.svg",
       "featured": true
     },
     {
-      "slug": "metflux-gnn",
-      "title": "MetFlux-GNN",
-      "subtitle": "Graph-Regularized Flux Prediction in Genome-Scale Models",
-      "summary": "Predicts metabolic flux distributions from transcriptomic priors by regularizing a GNN over the metabolic reaction network — beating FBA baselines on 12 curated strains.",
-      "year": "2025",
+      "slug": "solar-cells-genetic-optimization",
+      "title": "Optimization of Solar Cells Using Genetic Algorithm",
+      "subtitle": "Evolutionary optimization of solar-cell parameters",
+      "summary": "An optimization project that applies the genetic algorithm to tune solar-cell parameters for improved performance. Commissioned by Dr. Memar and implemented in Python and R.",
+      "year": "",
       "status": "complete",
-      "domain": "Metabolic Engineering",
+      "domain": "Optimization",
       "domainColor": "emerald",
-      "tags": ["Metabolic Engineering", "GNN", "Flux Analysis"],
-      "tech": ["COBRApy", "PyTorch", "Pandas"],
-      "cover": "/covers/metflux-gnn.svg",
-      "github": "https://github.com/yousofghalenoei/metflux-gnn"
-    },
-    {
-      "slug": "crystalformer",
-      "title": "CrystalFormer",
-      "subtitle": "Bond-Aware Transformer for Inorganic Property Prediction",
-      "summary": "A Transformer with bond-aware attention and periodic-boundary embeddings predicting band gaps and formation energies from crystal structures.",
-      "year": "2025",
-      "status": "complete",
-      "domain": "Material Informatics",
-      "domainColor": "amber",
-      "tags": ["Material Informatics", "Transformer"],
-      "tech": ["PyTorch", "ASE", "Pymatgen"],
-      "cover": "/covers/crystalformer.svg",
-      "github": "https://github.com/yousofghalenoei/crystalformer"
-    },
-    {
-      "slug": "lie-kalman",
-      "title": "Invariant Kalman Filter",
-      "subtitle": "Lie-group EKF with Learned Noise Models",
-      "summary": "Invariant extended Kalman filtering on SE(3) for multi-sensor fusion (IMU + GNSS + odometry), with neural noise estimation improving RMSE by 34% on urban trajectories.",
-      "year": "2024",
-      "status": "complete",
-      "domain": "Kalman Filtering & Control",
-      "domainColor": "emerald",
-      "tags": ["Kalman", "Sensor Fusion", "Control"],
-      "tech": ["Julia", "SciML", "PyTorch"],
-      "cover": "/covers/lie-kalman.svg",
-      "github": "https://github.com/yousofghalenoei/invariant-kf"
-    },
-    {
-      "slug": "agentic-rag",
-      "title": "Agentic-RAG",
-      "subtitle": "Self-Verifying Retrieval Agents for Scientific Literature",
-      "summary": "A multi-agent pipeline that plans retrieval queries, reads and cross-verifies claims across papers, and builds a provenance graph — built for metabolic-engineering literature review.",
-      "year": "2026",
-      "status": "active",
-      "domain": "AI Agentic Systems",
-      "domainColor": "cyan",
-      "tags": ["AI Agents", "RAG", "LLM", "Graph"],
-      "tech": ["Python", "LangGraph", "OpenAI API", "NetworkX"],
-      "cover": "/covers/agentic-rag.svg",
-      "github": "https://github.com/yousofghalenoei/agentic-rag",
+      "tags": ["Genetic Algorithm", "Optimization", "Python", "R"],
+      "tech": ["Python", "R"],
+      "cover": "/covers/solar-cells-genetic-optimization.svg",
       "featured": true
     }
   ],
   "services": [
     {
-      "icon": "FlaskConical",
-      "title": "AI for Drug Discovery",
-      "blurb": "Molecular property prediction, generative hit design, docking surrogates, and retrosynthesis planning built on RDKit + GNN/diffusion stacks."
-    },
-    {
-      "icon": "Workflow",
-      "title": "Metabolic & Strain Optimization",
-      "blurb": "Genome-scale model construction, flux-balance analysis, and ML-guided strain engineering for bioprocess teams."
-    },
-    {
-      "icon": "Hexagon",
-      "title": "Material Informatics",
-      "blurb": "Property prediction and inverse design for batteries, catalysts, and perovskites from crystal-structure data."
-    },
-    {
-      "icon": "Brain",
-      "title": "AI Agents & RAG Systems",
-      "blurb": "Literature-discovery agents, tool-using copilots, and self-verifying retrieval pipelines for research teams."
+      "icon": "Cpu",
+      "title": "Machine Learning & Data Analysis",
+      "blurb": "Python and R pipelines for machine learning, statistics, and data-driven insight — from exploratory analysis to practical models."
     },
     {
       "icon": "Sigma",
-      "title": "Probabilistic Modeling",
-      "blurb": "Factor graphs, message passing, and Bayesian inference brought to your data — with rigorous derivations and explainable uncertainty."
+      "title": "Optimization & Algorithms",
+      "blurb": "Genetic algorithms, proximal methods, and bespoke optimization for engineering and scientific problems."
     },
     {
       "icon": "ScanLine",
-      "title": "Sensor Fusion & Estimation",
-      "blurb": "Kalman/EKF/UKF pipelines and learned noise models for robotics, telemetry, and industrial monitoring."
+      "title": "Anomaly Detection",
+      "blurb": "Compression-based and statistical methods for detecting anomalies in industrial and scientific data."
+    },
+    {
+      "icon": "Network",
+      "title": "Software Development",
+      "blurb": "Solid development in Python, R, C++, and PHP with Git-based collaboration and LaTeX documentation."
+    },
+    {
+      "icon": "Brain",
+      "title": "Mathematics Teaching & Tutoring",
+      "blurb": "High-school and university mathematics instruction, exam preparation, and curriculum support."
+    },
+    {
+      "icon": "Workflow",
+      "title": "Academic & Research Writing",
+      "blurb": "Persian and English paper writing, editing, and LaTeX typesetting for academic publications."
     }
   ],
   "domains": [
     {
-      "id": "amp",
-      "label": "Approximate Message Passing",
-      "short": "AMP",
-      "blurb": "Gaussian/Bayesian AMP for high-dimensional linear models, sparse recovery and structured priors.",
-      "level": 5,
-      "heat": 5,
-      "color": "cyan",
-      "icon": "Magnet",
-      "keywords": ["message passing", "amp", "sparse recovery", "bayesian inference", "compressed sensing"]
-    },
-    {
-      "id": "gnn",
-      "label": "Graph Neural Networks",
-      "short": "GNN",
-      "blurb": "Message passing on graphs for molecular, reaction and relational data; spectral & spatial designs.",
-      "level": 5,
-      "heat": 5,
-      "color": "violet",
-      "icon": "Network",
-      "keywords": ["graph neural", "gnn", "message passing graph", "graph convolution", "molecular graph"]
-    },
-    {
-      "id": "kalman",
-      "label": "Kalman Filtering & Control",
-      "short": "Kalman",
-      "blurb": "EKF/UKF/invariant filtering, learned noise models, sensor fusion and optimal control.",
+      "id": "ml",
+      "label": "Machine Learning",
+      "short": "ML",
+      "blurb": "Neural networks, statistical learning, and predictive modeling with Python and R.",
       "level": 4,
-      "heat": 3,
-      "color": "emerald",
-      "icon": "ScanLine",
-      "keywords": ["kalman", "filtering", "control", "sensor fusion", "state estimation"]
-    },
-    {
-      "id": "drug",
-      "label": "AI-Driven Drug Design",
-      "short": "Drug Design",
-      "blurb": "Molecular property prediction, generative design, docking surrogates and retrosynthesis planning.",
-      "level": 5,
       "heat": 4,
-      "color": "magenta",
-      "icon": "FlaskConical",
-      "keywords": ["drug", "molecular", "smiles", "rdkit", "retrosynthesis", "docking", "binding"]
+      "color": "cyan",
+      "icon": "Cpu",
+      "keywords": ["machine learning", "neural network", "deep learning", "python", "statistics"]
     },
     {
-      "id": "metabolic",
-      "label": "Metabolic Engineering",
-      "short": "Metabolic",
-      "blurb": "Genome-scale metabolic models, flux balance analysis and ML-guided strain optimization.",
+      "id": "mp",
+      "label": "Message Passing",
+      "short": "MP",
+      "blurb": "Belief propagation and message-passing algorithms for probabilistic inference on graphical models.",
+      "level": 3,
+      "heat": 4,
+      "color": "violet",
+      "icon": "Magnet",
+      "keywords": ["message passing", "belief propagation", "probabilistic", "inference"]
+    },
+    {
+      "id": "opt",
+      "label": "Optimization",
+      "short": "Optimization",
+      "blurb": "Genetic algorithms, proximal methods, and convex and nonconvex optimization for scientific problems.",
+      "level": 4,
+      "heat": 4,
+      "color": "emerald",
+      "icon": "Sigma",
+      "keywords": ["optimization", "genetic algorithm", "proximal", "nonconvex"]
+    },
+    {
+      "id": "anomaly",
+      "label": "Anomaly Detection",
+      "short": "Anomaly",
+      "blurb": "Compression-based and statistical techniques for detecting anomalies in complex data.",
       "level": 3,
       "heat": 3,
-      "color": "emerald",
-      "icon": "Workflow",
-      "keywords": ["metabolic", "flux", "fba", "gem", "bioreactor", "strain"]
+      "color": "magenta",
+      "icon": "ScanLine",
+      "keywords": ["anomaly", "compression", "outlier", "detection"]
     },
     {
-      "id": "materials",
-      "label": "Material Informatics",
-      "short": "Materials",
-      "blurb": "Crystal-structure property prediction, phase diagrams and inverse design of inorganic materials.",
+      "id": "distributed",
+      "label": "Big Data & Distributed Systems",
+      "short": "Distributed",
+      "blurb": "Large-scale data processing and distributed computing architectures.",
       "level": 3,
       "heat": 3,
       "color": "amber",
-      "icon": "Hexagon",
-      "keywords": ["material", "crystal", "phase", "dft", "perovskite", "battery"]
-    },
-    {
-      "id": "gen",
-      "label": "Generative Models",
-      "short": "Generative",
-      "blurb": "Diffusion models, flow matching, VAEs and normalizing flows for continuous and discrete data.",
-      "level": 4,
-      "heat": 4,
-      "color": "magenta",
-      "icon": "Sparkles",
-      "keywords": ["diffusion", "flow matching", "vae", "generative", "normalizing flow"]
-    },
-    {
-      "id": "agents",
-      "label": "AI Agentic Systems",
-      "short": "Agents",
-      "blurb": "Tool-using LLM agents, scientific literature retrieval, planning and self-verification loops.",
-      "level": 4,
-      "heat": 4,
-      "color": "cyan",
-      "icon": "Brain",
-      "keywords": ["agent", "llm", "rag", "tool use", "reasoning"]
-    },
-    {
-      "id": "deep",
-      "label": "Deep Learning & Pattern Recognition",
-      "short": "Deep Learning",
-      "blurb": "CNNs, transformers and structured prediction over time-series, speech and image data.",
-      "level": 5,
-      "heat": 4,
-      "color": "violet",
-      "icon": "Cpu",
-      "keywords": ["deep learning", "cnn", "transformer", "pattern recognition", "time series"]
+      "icon": "Network",
+      "keywords": ["big data", "distributed", "parallel", "processing"]
     },
     {
       "id": "math",
-      "label": "Probabilistic ML & Optimization",
-      "short": "Prob. ML",
-      "blurb": "Variational inference, factor graphs, convex/duality theory and high-dimensional statistics.",
+      "label": "Mathematics & Statistics",
+      "short": "Mathematics",
+      "blurb": "Linear algebra, probability, and statistics as the foundations of data science and machine learning.",
       "level": 5,
-      "heat": 3,
+      "heat": 4,
       "color": "cyan",
-      "icon": "Sigma",
-      "keywords": ["bayesian", "variational", "optimization", "statistics", "factor graph", "density estimation"]
+      "icon": "Brain",
+      "keywords": ["linear algebra", "statistics", "probability", "mathematics"]
     }
   ]
 }

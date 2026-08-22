@@ -6,17 +6,14 @@ const outDir = path.join(process.cwd(), "public", "covers");
 mkdirSync(outDir, { recursive: true });
 
 const covers = [
-  { file: "gamp-gnn.svg", title: "GAMP-GNN", a: "#3be1ff", b: "#a78bfa" },
-  { file: "diffmolecule.svg", title: "DiffMolecule", a: "#f472b6", b: "#a78bfa" },
-  { file: "metflux-gnn.svg", title: "MetFlux-GNN", a: "#34d399", b: "#3be1ff" },
-  { file: "crystalformer.svg", title: "CrystalFormer", a: "#fbbf24", b: "#f472b6" },
-  { file: "lie-kalman.svg", title: "Invariant KF", a: "#34d399", b: "#a78bfa" },
-  { file: "agentic-rag.svg", title: "Agentic-RAG", a: "#3be1ff", b: "#f472b6" },
+  { file: "single-class-anomaly-detection.svg", title: "Anomaly Detection", a: "#f472b6", b: "#3be1ff" },
+  { file: "solar-cells-genetic-optimization.svg", title: "Solar Cells · GA", a: "#fbbf24", b: "#34d399" },
   { file: "amp-factor-graphs.svg", title: "Factor Graphs", a: "#3be1ff", b: "#818cf8" },
   { file: "message-passing-primer.svg", title: "Message Passing", a: "#a78bfa", b: "#f472b6" },
   { file: "gnn-molecular-property-prediction.svg", title: "GNN Notebook", a: "#34d399", b: "#3be1ff" },
   { file: "kalman-filter-notes.svg", title: "Kalman Notes", a: "#34d399", b: "#fbbf24" },
   { file: "mhchem-notes.svg", title: "mhchem Notes", a: "#f472b6", b: "#34d399" },
+  { file: "force-fields-molecular-dynamics.svg", title: "Force Fields & MD", a: "#e8934a", b: "#4fc8e8" },
 ];
 
 function svgFor({ title, a, b }, i) {

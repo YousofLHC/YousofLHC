@@ -92,37 +92,39 @@ export default function ResumePage() {
       </Section>
 
       {/* ===== publications ===== */}
-      <Section index="03" title="Publications">
-        <div className="space-y-4">
-          {publications.map((p) => (
-            <Reveal key={p.title}>
-              <article className="print-card card p-5">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="max-w-2xl">
-                    <h3 className="font-medium leading-snug text-ink">
-                      <span className="text-cyan">[{p.year}]</span> {p.title}
-                    </h3>
-                    <p className="mt-1.5 font-mono text-xs text-faint">{p.authors}</p>
-                    <p className="mt-1 text-sm text-dim">{p.venue}</p>
-                  </div>
-                  <span
-                    className={`rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider ${statusColor[p.status]}`}
-                  >
-                    {p.status}
-                  </span>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {p.tags.map((t) => (
-                    <span key={t} className="chip !py-0.5 text-[10px]">
-                      {t}
+      {publications.length > 0 && (
+        <Section index="03" title="Publications">
+          <div className="space-y-4">
+            {publications.map((p) => (
+              <Reveal key={p.title}>
+                <article className="print-card card p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="max-w-2xl">
+                      <h3 className="font-medium leading-snug text-ink">
+                        <span className="text-cyan">[{p.year}]</span> {p.title}
+                      </h3>
+                      <p className="mt-1.5 font-mono text-xs text-faint">{p.authors}</p>
+                      <p className="mt-1 text-sm text-dim">{p.venue}</p>
+                    </div>
+                    <span
+                      className={`rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider ${statusColor[p.status]}`}
+                    >
+                      {p.status}
                     </span>
-                  ))}
-                </div>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {p.tags.map((t) => (
+                      <span key={t} className="chip !py-0.5 text-[10px]">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </Section>
+      )}
 
       {/* ===== skills ===== */}
       <Section index="04" title="Technical Skills">
@@ -156,36 +158,40 @@ export default function ResumePage() {
       {/* ===== awards / certs / languages ===== */}
       <Section index="05" title="Awards, Certifications & Languages">
         <div className="grid gap-6 md:grid-cols-3">
-          <div className="print-card card p-6">
-            <h3 className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-cyan">
-              <Award size={13} /> Awards
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {awards.map((a) => (
-                <li key={a.title} className="text-sm">
-                  <p className="font-medium text-ink">{a.title}</p>
-                  <p className="text-xs text-faint">
-                    {a.year} · {a.org}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="print-card card p-6">
-            <h3 className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-cyan">
-              <BadgeCheck size={13} /> Certifications
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {certifications.map((c) => (
-                <li key={c.title} className="text-sm">
-                  <p className="font-medium text-ink">{c.title}</p>
-                  <p className="text-xs text-faint">
-                    {c.year} · {c.org}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {awards.length > 0 && (
+            <div className="print-card card p-6">
+              <h3 className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-cyan">
+                <Award size={13} /> Awards
+              </h3>
+              <ul className="mt-4 space-y-3">
+                {awards.map((a) => (
+                  <li key={a.title} className="text-sm">
+                    <p className="font-medium text-ink">{a.title}</p>
+                    <p className="text-xs text-faint">
+                      {a.year} · {a.org}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {certifications.length > 0 && (
+            <div className="print-card card p-6">
+              <h3 className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-cyan">
+                <BadgeCheck size={13} /> Certifications
+              </h3>
+              <ul className="mt-4 space-y-3">
+                {certifications.map((c) => (
+                  <li key={c.title} className="text-sm">
+                    <p className="font-medium text-ink">{c.title}</p>
+                    <p className="text-xs text-faint">
+                      {c.year} · {c.org}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="print-card card p-6">
             <h3 className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-cyan">
               <Languages size={13} /> Languages

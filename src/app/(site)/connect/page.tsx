@@ -20,9 +20,9 @@ export default function ConnectPage() {
           Let&apos;s build the <span className="text-grad-cyan">next signal</span> together
         </h1>
         <p className="mt-4 max-w-2xl text-dim">
-          Whether you&apos;re recruiting for a PhD position, exploring a research
-          collaboration, or scoping an applied AI project — I read every message and reply
-          within 24–48 hours.
+          Whether you&apos;re exploring a research collaboration, scoping a data or
+          optimization project, or looking for mathematics tutoring — I read every
+          message and reply within a few days.
         </p>
       </Reveal>
 
@@ -32,25 +32,27 @@ export default function ConnectPage() {
         </Reveal>
 
         <div className="space-y-5">
-          <Reveal delay={0.14}>
-            <div className="card p-6">
-              <h3 className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-cyan">
-                <CalendarClock size={14} /> Book a 1:1 call
-              </h3>
-              <p className="mt-3 text-sm leading-6 text-dim">
-                Free 30-minute intro calls for PhD inquiries, collaborations, and project
-                scoping. Pick a slot that works for you.
-              </p>
-              <a
-                href={site.calendly}
-                target="_blank"
-                rel="noreferrer"
-                className="btn btn-primary mt-4 w-full"
-              >
-                Open scheduling calendar
-              </a>
-            </div>
-          </Reveal>
+          {site.calendly && (
+            <Reveal delay={0.14}>
+              <div className="card p-6">
+                <h3 className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-cyan">
+                  <CalendarClock size={14} /> Book a 1:1 call
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-dim">
+                  Free 30-minute intro calls for collaborations and project scoping. Pick a
+                  slot that works for you.
+                </p>
+                <a
+                  href={site.calendly}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-primary mt-4 w-full"
+                >
+                  Open scheduling calendar
+                </a>
+              </div>
+            </Reveal>
+          )}
 
           <Reveal delay={0.2}>
             <div className="card p-6">
@@ -103,16 +105,18 @@ export default function ConnectPage() {
         </div>
       </Reveal>
 
-      <Reveal delay={0.15}>
-        <div className="mt-12 overflow-hidden rounded-2xl border border-line bg-panel/40">
-          <iframe
-            title="Calendly scheduling"
-            src={site.calendly}
-            className="h-[560px] w-full"
-            loading="lazy"
-          />
-        </div>
-      </Reveal>
+      {site.calendly && (
+        <Reveal delay={0.15}>
+          <div className="mt-12 overflow-hidden rounded-2xl border border-line bg-panel/40">
+            <iframe
+              title="Calendly scheduling"
+              src={site.calendly}
+              className="h-[560px] w-full"
+              loading="lazy"
+            />
+          </div>
+        </Reveal>
+      )}
     </div>
   );
 }

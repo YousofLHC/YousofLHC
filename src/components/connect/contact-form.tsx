@@ -5,14 +5,14 @@ import { Send, CheckCircle2, Loader2, CalendarClock } from "lucide-react";
 import { site } from "@/lib/site";
 
 const purposes = [
-  "PhD position inquiry",
   "Research collaboration",
   "Consulting / project",
-  "Industry partnership",
+  "Data science & ML work",
+  "Mathematics tutoring",
   "Just saying hi",
 ];
 
-const initialState = { name: "", email: "", org: "", purpose: purposes[0], message: "" };
+const initialState = { name: "", email: "", org: "", subject: "", purpose: purposes[0], message: "" };
 
 export function ContactForm() {
   const [form, setForm] = useState(initialState);
@@ -40,7 +40,9 @@ export function ContactForm() {
       }
     }
 
-    const subject = encodeURIComponent(`[${form.purpose}] from ${form.name}`);
+    const subject = encodeURIComponent(
+      `[${form.purpose}] ${form.subject || "Message from website"} — ${form.name}`
+    );
     const body = encodeURIComponent(
       `${form.message}\n\n—\n${form.name}${form.org ? ` · ${form.org}` : ""}\n${form.email}`
     );
@@ -98,15 +100,9 @@ export function ContactForm() {
         </div>
         <div>
           <label className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-faint">
-            Purpose *
+            Subject *
           </label>
-          <select className={input} value={form.purpose} onChange={set("purpose")}>
-            {purposes.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
+          <input className={input} required value={form.subject} onChange={set("subject")} placeholder="e.g. PhD position inquiry" />
         </div>
       </div>
 

@@ -17,11 +17,11 @@ const footerCols = [
   {
     title: "Research",
     links: [
-      { href: "/blog", label: "Approximate Message Passing" },
-      { href: "/blog", label: "Graph Neural Networks" },
-      { href: "/blog", label: "Drug Design" },
-      { href: "/blog", label: "Metabolic Engineering" },
-      { href: "/blog", label: "AI Agents" },
+      { href: "/blog", label: "Message Passing" },
+      { href: "/blog", label: "Machine Learning" },
+      { href: "/blog", label: "Optimization" },
+      { href: "/blog", label: "Anomaly Detection" },
+      { href: "/blog", label: "Mathematics & Statistics" },
     ],
   },
 ];
@@ -31,7 +31,7 @@ const socialIcons = [
   { href: site.socials.linkedin, label: "LinkedIn", icon: AtSign },
   { href: site.socials.scholar, label: "Google Scholar", icon: GraduationCap },
   { href: `mailto:${site.email}`, label: "Email", icon: Mail },
-];
+].filter((s) => Boolean(s.href));
 
 export function Footer() {
   return (
@@ -47,8 +47,7 @@ export function Footer() {
               <span className="font-mono text-sm text-ink">{site.name}</span>
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-6 text-dim">
-              {site.tagline}. Bridging probabilistic inference, graph-structured learning,
-              and computational science.
+              {site.tagline}. Bridging machine learning, optimization, and mathematics.
             </p>
             <div className="mt-5 flex gap-2">
               {socialIcons.map((s) => (

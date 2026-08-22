@@ -5,11 +5,8 @@ import {
   ArrowUpRight,
   AtSign,
   BookOpen,
-  CalendarClock,
   Check,
-  FlaskConical,
   GraduationCap,
-  Hexagon,
   Mail,
   Magnet,
   Network,
@@ -32,59 +29,59 @@ import { site } from "@/lib/site";
 
 const focusItems = [
   {
-    title: "Drug Discovery",
-    desc: "AI for target identification, molecular docking, and de novo drug design.",
+    title: "Machine Learning",
+    desc: "Neural networks, statistical learning, and predictive modeling with Python and R.",
     color: "cyan",
-    icon: FlaskConical,
-  },
-  {
-    title: "Protein Folding",
-    desc: "Structure prediction and representation learning for proteins.",
-    color: "violet",
     icon: Sparkles,
   },
   {
-    title: "Metabolic Modeling",
-    desc: "Genome-scale modeling, flux analysis, and pathway optimization.",
+    title: "Optimization",
+    desc: "Genetic algorithms, proximal methods, and convex and nonconvex optimization.",
     color: "emerald",
-    icon: Workflow,
-  },
-  {
-    title: "Molecular Dynamics",
-    desc: "Simulation and enhanced sampling for molecular and material systems.",
-    color: "cyan",
     icon: Magnet,
   },
   {
-    title: "Materials Science",
-    desc: "AI-guided discovery of novel materials and functional molecules.",
-    color: "emerald",
-    icon: Hexagon,
-  },
-  {
-    title: "Graph Neural Networks",
-    desc: "GNNs for molecules, proteins, and complex relational data.",
-    color: "amber",
+    title: "Message Passing",
+    desc: "Belief propagation and probabilistic inference on graphical models.",
+    color: "violet",
     icon: Network,
   },
   {
-    title: "Kalman Filtering",
-    desc: "State estimation for noisy, high-dimensional dynamical systems.",
-    color: "violet",
+    title: "Anomaly Detection",
+    desc: "Compression-based and statistical methods for detecting unusual patterns.",
+    color: "amber",
     icon: ScanLine,
   },
   {
-    title: "AI Agents",
-    desc: "Agentic systems for biology, materials, and metabolic engineering.",
-    color: "amber",
+    title: "Big Data & Distributed Systems",
+    desc: "Large-scale data processing and distributed computing.",
+    color: "cyan",
+    icon: Workflow,
+  },
+  {
+    title: "Mathematics & Statistics",
+    desc: "Linear algebra, probability, and statistics as foundations.",
+    color: "violet",
+    icon: GraduationCap,
+  },
+  {
+    title: "Reinforcement Learning",
+    desc: "Learning through interaction, from bandits to deep RL.",
+    color: "emerald",
     icon: AtSign,
+  },
+  {
+    title: "Teaching & Education",
+    desc: "Mathematics teaching, tutoring, and educational content.",
+    color: "amber",
+    icon: BookOpen,
   },
 ];
 
 const featurePoints = [
-  "Self-driving pipelines for docking, screening, and validation.",
-  "Tool-using LLM agents grounded in molecular simulation.",
-  "Uncertainty-aware decision making with dynamical-system priors.",
+  "Python and R pipelines for machine learning, statistics, and data analysis.",
+  "Genetic algorithms and proximal methods for hard optimization problems.",
+  "Message-passing and compression-based methods for inference and anomaly detection.",
 ];
 
 const workSceneImages = [
@@ -94,7 +91,13 @@ const workSceneImages = [
   "/assets/scenes/crystal-lattice.jpg",
 ];
 
-const exploringChips = ["Biophysics", "Biochemistry", "High-dimensional statistics", "Control theory"];
+const exploringChips = [
+  "Reinforcement learning",
+  "Big data processing",
+  "Distributed systems",
+  "Paper writing",
+  "LaTeX typesetting",
+];
 
 const timeline = [...experience.slice(0, 3), education[0]];
 
@@ -109,32 +112,31 @@ const galleryItems = [
 
 const contactCards = [
   {
-    label: "Google Scholar",
-    name: "Yousof Ghalenoei",
-    desc: "Explore my publications and citations.",
-    href: site.socials.scholar,
-    icon: GraduationCap,
-  },
-  {
-    label: "LinkedIn",
-    name: "yousof-ghalenoei",
-    desc: "Let's connect professionally.",
-    href: site.socials.linkedin,
+    label: "GitHub",
+    name: "Yousof_LHC",
+    desc: "Explore my code and experiments.",
+    href: site.socials.github,
     icon: AtSign,
   },
   {
-    label: "Book a call",
-    name: "Calendly · 30 minutes",
-    desc: "Reserve a 1:1 slot to discuss research or collaboration.",
-    href: site.calendly,
-    icon: CalendarClock,
+    label: "Email",
+    name: site.email,
+    desc: "Write to me directly — I usually reply within a few days.",
+    href: `mailto:${site.email}`,
+    icon: Mail,
+  },
+  {
+    label: "Notes & Notebooks",
+    name: "Knowledge hub",
+    desc: "My study notes on machine learning, mathematics, and programming.",
+    href: "/notes",
+    icon: BookOpen,
   },
 ];
 
 const contactRows = [
   { label: "Email", value: site.email, href: `mailto:${site.email}`, icon: Mail },
-  { label: "X (Twitter)", value: "@yousofghalenoei", href: site.socials.x, icon: AtSign },
-  { label: "ORCID", value: "Research profile", href: site.socials.orcid, icon: BookOpen },
+  { label: "GitHub", value: "Yousof_LHC", href: site.socials.github, icon: AtSign },
 ];
 
 export default async function Home() {
@@ -155,7 +157,7 @@ export default async function Home() {
           <Reveal>
             <p className="eyebrow">about me</p>
             <h2 className="heading mt-4 text-3xl sm:text-4xl">
-              AI Research Engineer · <span className="text-grad">M.Sc. Artificial Intelligence</span>
+              M.Sc. Computer Engineering · <span className="text-grad">AI &amp; Robotics</span>
             </h2>
             <p className="mt-4 max-w-md leading-7 text-dim">{profile.bio[1]}</p>
             <p className="mt-5 max-w-md rounded-xl border border-cyan/25 bg-cyan/5 px-4 py-3 font-mono text-sm leading-6 text-cyan/90">
@@ -226,11 +228,11 @@ export default async function Home() {
             <Reveal>
               <p className="eyebrow">research focus</p>
               <h2 className="heading mt-4 text-3xl sm:text-4xl">
-                Where AI Meets the <span className="text-grad">Molecular</span> World.
+                Where AI Meets the <span className="text-grad">Mathematical</span> World.
               </h2>
               <p className="mt-4 max-w-md text-dim">
-                I develop data-driven and physics-informed AI methods to model, predict, and design
-                complex molecular systems.
+                I develop rigorous, data-driven machine-learning methods grounded in
+                mathematics, statistics, and optimization.
               </p>
             </Reveal>
 
@@ -330,12 +332,12 @@ export default async function Home() {
             <Reveal>
               <p className="eyebrow">featured direction</p>
               <h2 className="heading mt-4 text-3xl sm:text-4xl">
-                Autonomous AI Agents for <span className="text-grad">Biological</span> Discovery.
+                From Mathematics to <span className="text-grad">Intelligent</span> Systems.
               </h2>
               <p className="mt-4 max-w-md leading-7 text-dim">
-                I design agentic systems that plan, reason, and act across simulation and data
-                pipelines — closing the loop between hypothesis generation and experimental
-                validation in the life sciences.
+                I build on a strong foundation in mathematics, statistics, and optimization
+                to design machine-learning systems that are rigorous, explainable, and
+                practical — from evolutionary search to message-passing inference.
               </p>
               <ul className="mt-6">
                 {featurePoints.map((pt) => (
@@ -346,7 +348,7 @@ export default async function Home() {
                 ))}
               </ul>
               <Link href="/projects" className="link-arrow">
-                Explore agent-driven projects <ArrowRight size={16} />
+                Explore my projects <ArrowRight size={16} />
               </Link>
             </Reveal>
 
@@ -529,8 +531,9 @@ export default async function Home() {
                 Open to <span className="text-grad">collaboration</span> and new ideas.
               </h2>
               <p className="mt-5 max-w-lg leading-7 text-dim">
-                I&apos;m always excited to discuss research ideas, collaborate on projects, and
-                explore ways AI can accelerate scientific breakthroughs.
+                I&apos;m always happy to discuss research ideas, collaborate on data and
+                optimization projects, and explore ways machine learning can solve real
+                problems.
               </p>
             </div>
           </Reveal>

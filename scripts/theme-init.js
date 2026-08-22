@@ -7,7 +7,7 @@
 module.exports = `
 try {
   var stored = localStorage.getItem("theme");
-  var theme = stored || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  var theme = stored || "light";
   document.documentElement.dataset.theme = theme;
-} catch (e) { document.documentElement.dataset.theme = "dark"; }
+} catch (e) { document.documentElement.dataset.theme = "light"; }
 `;

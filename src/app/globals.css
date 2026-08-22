@@ -1332,7 +1332,8 @@
     font-size: 1.08em;
   }
   .rich .katex-display {
-    @apply my-6 overflow-x-auto overflow-y-hidden py-1;
+    @apply my-6 py-1;
+    overflow-x: auto;
   }
   .rich pre {
     @apply my-6;

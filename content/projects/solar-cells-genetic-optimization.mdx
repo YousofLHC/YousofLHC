@@ -1,0 +1,48 @@
+---
+title: "Optimization of Solar Cells Using Genetic Algorithm"
+description: "An optimization project that applies the genetic algorithm to tune solar-cell parameters, commissioned by Dr. Memar and implemented in Python and R."
+date: "2020-06-01"
+tags:
+  - Genetic Algorithm
+  - Optimization
+  - Python
+  - R
+readTime: 4
+cover: "/covers/solar-cells-genetic-optimization.svg"
+---
+
+<Callout type="note" title="Status">
+Commissioned by Dr. Memar. Implemented in Python and R.
+</Callout>
+
+## The problem
+
+Photovoltaic devices are described by a handful of parameters — series and
+shunt resistances, diode ideality factors, and light-generated current — that
+are hard to recover directly from measured current–voltage curves. Hand-tuning
+them is slow and often gets stuck in local optima.
+
+## The genetic algorithm approach
+
+This project reformulates parameter recovery as an optimization problem and
+solves it with the genetic algorithm:
+
+- **Encoding** — each candidate solution is a real-valued vector of solar-cell
+  parameters (e.g., the single- or double-diode equivalent-circuit model).
+- **Fitness** — the objective compares the simulated $I$–$V$ curve against the
+  measured curve, minimizing the error between them.
+- **Search operators** — selection, crossover, and mutation explore the
+  parameter space over successive generations, with elitism to keep the best
+  candidates.
+
+Because the genetic algorithm is population-based, it explores the search
+space globally before refining, which makes it robust to the non-convex,
+multi-modal error landscapes typical of solar-cell models.
+
+## Implementation notes
+
+- Prototyped in **Python** (numpy for the device model, custom GA operators).
+- Analysis, parameter sweeps, and visualizations produced in **R**.
+- The pipeline was structured so the fitness function and the GA core are
+  decoupled, making it easy to swap in other evolutionary strategies or
+  hybrid refinement steps.

@@ -17,7 +17,7 @@ export const mdxOptions: {
 } = {
   remarkPlugins: [remarkMath, remarkGfm],
   rehypePlugins: [
-    [rehypeKatex, { strict: false, throwOnError: false, trust: false }],
+    [rehypeKatex, { strict: false, throwOnError: false, trust: false, output: "html" }],
     rehypeSlug,
   ],
 };

@@ -11,38 +11,38 @@ import { site } from "@/lib/site";
 const SLIDES = [
   {
     src: "/assets/scenes/hero-wide.jpg",
-    tag: "DRUG DELIVERY",
-    title: "Protein–Ligand Dynamics",
+    tag: "MACHINE LEARNING",
+    title: "Learning from Data",
     kb: { s0: 1.06, s1: 1.17, x: -1.8, y: -1.2 },
   },
   {
     src: "/assets/scenes/protein-folding.jpg",
-    tag: "PROTEIN DESIGN",
-    title: "Folding & Structure Prediction",
+    tag: "OPTIMIZATION",
+    title: "Evolutionary Search",
     kb: { s0: 1.16, s1: 1.06, x: 1.6, y: 1.1 },
   },
   {
     src: "/assets/scenes/dna-helix.jpg",
-    tag: "GENOMICS",
-    title: "Sequence Intelligence",
+    tag: "STATISTICS",
+    title: "Patterns in Data",
     kb: { s0: 1.06, s1: 1.18, x: 2.0, y: -1.4 },
   },
   {
     src: "/assets/scenes/gnn-network.jpg",
-    tag: "GRAPH NEURAL NETWORKS",
-    title: "Relational Representation Learning",
+    tag: "MESSAGE PASSING",
+    title: "Distributed Computation",
     kb: { s0: 1.16, s1: 1.06, x: -1.6, y: 1.2 },
   },
   {
     src: "/assets/scenes/crystal-lattice.jpg",
-    tag: "MATERIALS SCIENCE",
-    title: "Crystalline Lattice Discovery",
+    tag: "MATHEMATICS",
+    title: "Structures & Symmetry",
     kb: { s0: 1.06, s1: 1.17, x: -2.0, y: 1.0 },
   },
   {
     src: "/assets/scenes/drug-capsule.jpg",
-    tag: "DRUG DISCOVERY",
-    title: "Virtual Screening & Docking",
+    tag: "BIG DATA",
+    title: "Processing at Scale",
     kb: { s0: 1.15, s1: 1.05, x: 1.8, y: -1.2 },
   },
 ];
@@ -50,14 +50,14 @@ const SLIDES = [
 const DUR = 7000;
 
 const typedRoles = [
-  "Approximate Message Passing researcher",
-  "Graph Neural Network engineer",
-  "AI drug designer",
-  "Molecular dynamics modeler",
-  "Material informatician",
-  "Deep learning & ML practitioner",
-  "Agentic systems builder",
-  "PhD applicant · Spring 2027",
+  "M.Sc. in Computer Engineering",
+  "Artificial Intelligence & Robotics",
+  "Machine learning practitioner",
+  "Optimization & algorithm designer",
+  "Message-passing explorer",
+  "Compression-based anomaly detection",
+  "Mathematics educator",
+  "Python · R · C++ developer",
 ];
 
 function subscribeReduced(cb: () => void) {
@@ -284,9 +284,9 @@ export function CinematicHero() {
             </p>
 
             <h1 className="mt-6 font-display text-[42px] font-semibold leading-[1.03] tracking-tight sm:text-6xl lg:text-[72px]">
-              AI for science.
+              Mathematics, data, and
               <br />
-              Knowledge for <span className="accent">impact.</span>
+              intelligence for <span className="accent">impact.</span>
             </h1>
 
             <p className="cine-mono mt-6 font-mono text-base sm:text-lg">
@@ -295,9 +295,10 @@ export function CinematicHero() {
             </p>
 
             <p className="cine-lead mt-5 max-w-xl text-lg leading-8">
-              I build intelligent models and agentic systems to accelerate discovery in biology,
-              chemistry, and materials — bridging AI, physics, and computation to solve real
-              problems.
+              I hold an M.Sc. in Computer Engineering (Artificial Intelligence &
+              Robotics) from Ferdowsi University of Mashhad — combining machine
+              learning, optimization, and message passing with a strong foundation in
+              mathematics.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">

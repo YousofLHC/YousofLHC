@@ -40,59 +40,52 @@ async function makeCv() {
     y -= 14;
   };
 
-  page.drawText("YOUSOF RAHIMI", { x: 50, y, size: H1, font: bold, color: NAVY });
+  page.drawText("YOUSOF GHALENOEI", { x: 50, y, size: H1, font: bold, color: NAVY });
   y -= 16;
-  page.drawText("M.Sc. in Artificial Intelligence — AI Research Engineer", {
+  page.drawText("M.Sc. in Computer Engineering — Artificial Intelligence & Robotics", {
     x: 50, y, size: 12, font: mono, color: TEAL,
   });
   y -= 14;
-  page.drawText("contact@yousof.example.com  |  Tehran, Iran  |  github.com/yousofrahimi  |  scholar: your_id", {
+  page.drawText("y.ghalenoei@mail.um.ac.ir  |  Bojnurd, North Khorasan, Iran  |  (+98) 939 977 6021  |  github.com/YousofLHC", {
     x: 50, y, size: 8.5, font: font, color: GRAY,
   });
   y -= 26;
 
-  section("RESEARCH INTERESTS");
-  page.drawText("Approximate Message Passing, Graph Neural Networks, Kalman filtering, AI-driven drug design,", { x: 50, y, size: BODY, font });
-  y -= 13;
-  page.drawText("metabolic engineering, material informatics, AI agentic systems.", { x: 50, y, size: BODY, font });
-  y -= 20;
-
-  section("EDUCATION");
-  page.drawText("M.Sc. Artificial Intelligence — Amirkabir Univ. of Technology (Tehran Polytechnic), 2024–2026 (GPA 4.0/4.0)", { x: 50, y, size: BODY, font: bold });
-  y -= 12;
-  for (const l of wrap("Thesis: Message Passing and Graph Neural Networks for High-Dimensional Inference.", 495)) {
-    page.drawText(l, { x: 60, y, size: BODY, font, color: GRAY });
+  section("ABOUT");
+  for (const l of wrap("M.Sc. in Computer Engineering (Artificial Intelligence & Robotics) from Ferdowsi University of Mashhad, with a thesis on single-class anomaly detection based on an implicit convex hull and ensemble learning (grade: Excellent, 19.5/20). Holds a B.Sc. in Mathematics Education from Shahid Beheshti University of Mashhad and studied Computer Engineering at the University of Bojnurd. Completed courses in paper writing, machine learning, statistics, and optimization from credible educational sources. Interested in neural networks, machine learning, reinforcement learning, big data processing, and distributed systems.", 495)) {
+    page.drawText(l, { x: 50, y, size: BODY, font });
     y -= 12;
-  }
-  y -= 4;
-  page.drawText("B.Sc. Computer Engineering — University of Tehran, 2019–2023 (Top 3%)", { x: 50, y, size: BODY, font: bold });
-  y -= 20;
-
-  section("PUBLICATIONS (SELECTED)");
-  const pubs = [
-    "GAMP-GNN: Message Passing Meets GNNs for Model-Based Compressed Sensing — ICML 2026 (under review)",
-    "DiffMolecule: Guided Diffusion over Graphs for De Novo Drug Design — JCIM (in press)",
-    "Data-Driven Flux Prediction in Genome-Scale Metabolic Models — Metabolic Engineering (2025)",
-    "CrystalFormer: Bond-Aware Transformer for Inorganic Property Prediction — npj Comput. Mater. (2025)",
-    "Invariant EKF with Learned Noise Models for Multi-Sensor Fusion — IEEE TAES short (2024)",
-  ];
-  for (const p of pubs) {
-    for (const l of wrap("• " + p, 495)) {
-      page.drawText(l, { x: 50, y, size: BODY, font });
-      y -= 12;
-    }
-    y -= 2;
   }
   y -= 8;
 
-  section("RESEARCH & WORK EXPERIENCE");
+  section("EDUCATION");
+  const edu = [
+    ["M.Sc. Computer Engineering (AI & Robotics) — Ferdowsi University of Mashhad, 2022–2025 (Excellent, 19.5/20)",
+     "Thesis: Single-class anomaly detection based on implicit convex hull and ensemble learning, under Prof. Hadi Sadoghi Yazdi."],
+    ["B.Sc. Mathematics Education — Shahid Beheshti University of Mashhad, 2018–2022 (GPA 17.56/20)",
+     "Graduated with a GPA of 17.56/20. Served as secretary of the mathematics scientific association."],
+    ["B.Sc. Computer Engineering (studied) — University of Bojnurd, 2017–2019 (GPA 17/20)",
+     "Government-funded computer engineering studies in North Khorasan."],
+  ];
+  for (const [t, d] of edu) {
+    page.drawText(t, { x: 50, y, size: BODY, font: bold });
+    y -= 12;
+    for (const l of wrap(d, 495)) {
+      page.drawText(l, { x: 60, y, size: BODY, font, color: GRAY });
+      y -= 12;
+    }
+    y -= 4;
+  }
+  y -= 8;
+
+  section("WORK EXPERIENCE");
   const exp = [
-    ["Research Assistant — Sparse Inference Lab, 2024–Present",
-     "AMP-based iterative algorithms and GNN message-passing layers for compressed sensing; PyTorch prototypes."],
-    ["ML Engineer (part-time) — Computational Chemistry Startup, 2025–Present",
-     "Owned ADMET property prediction; 2x virtual screening throughput; retrosynthesis prototype."],
-    ["Teaching Assistant — Machine Learning, 2024–2025",
-     "Designed Bayesian-methods labs and 10+ Jupyter notebooks for 90+ students; TA excellence award."],
+    ["Mathematics Teacher — Ministry of Education, Bojnurd, Feb 2022 – Present",
+     "Teaching mathematics at the secondary level in Bojnurd, North Khorasan."],
+    ["Secretary, Mathematics Scientific Association — Shahid Beheshti University of Mashhad, 2019–2021",
+     "Organized seminars, workshops, and academic events for the mathematics scientific association."],
+    ["Freelance Programmer — 2017–2020",
+     "Developed software and data solutions in Python, R, C++, and PHP."],
   ];
   for (const [t, d] of exp) {
     page.drawText(t, { x: 50, y, size: BODY, font: bold });
@@ -105,11 +98,21 @@ async function makeCv() {
   }
   y -= 8;
 
+  section("PROJECTS");
+  page.drawText("Optimization of Solar Cells Using Genetic Algorithm — commissioned by Dr. Memar", { x: 50, y, size: BODY, font: bold });
+  y -= 12;
+  for (const l of wrap("Applied the genetic algorithm to tune solar-cell parameters, implemented in Python and R.", 495)) {
+    page.drawText(l, { x: 60, y, size: BODY, font, color: GRAY });
+    y -= 12;
+  }
+  y -= 8;
+
   section("TECHNICAL SKILLS");
-  page.drawText("Languages:  Python, Julia, C++, SQL", { x: 50, y, size: BODY, font: bold }); y -= 12;
-  page.drawText("ML / DL:    PyTorch, PyG, JAX, TensorFlow, Scikit-learn", { x: 50, y, size: BODY }); y -= 12;
-  page.drawText("Sci. tools: RDKit, OpenMM, GROMACS, COBRApy, ASE/Pymatgen", { x: 50, y, size: BODY }); y -= 12;
-  page.drawText("Theory:     Probability, Optimization & Duality, Filtering & Control, Graph/Spectral theory", { x: 50, y, size: BODY }); y -= 20;
+  page.drawText("Languages:  Python, R, C++, PHP, Git, LaTeX", { x: 50, y, size: BODY, font: bold }); y -= 12;
+  page.drawText("Math / ML:  Linear Algebra, Statistics, Machine Learning, Optimization", { x: 50, y, size: BODY }); y -= 12;
+  page.drawText("Research:   Message Passing, Compression-Based Anomaly Detection, Proximal", { x: 50, y, size: BODY }); y -= 12;
+  page.drawText("           Methods for Nonconvex Systems, Genetic Algorithms", { x: 50, y, size: BODY }); y -= 12;
+  page.drawText("Languages:  Persian (Farsi) — Native;  English — Reading, Writing, Speaking, Listening", { x: 50, y, size: BODY }); y -= 20;
 
   const bytes = await doc.save();
   writeFileSync(path.join(filesDir, "cv.pdf"), bytes);
@@ -160,7 +163,7 @@ async function makeNotePdf() {
   y -= 18;
   page.drawText("Full interactive version with LaTeX, diagrams and a runnable notebook:", { x: 50, y, size: 9.5, font, color: GRAY });
   y -= 14;
-  page.drawText("yousof.example.com/notes/kalman-filter-notes", { x: 50, y, size: 9.5, font: mono, color: TEAL });
+  page.drawText("yousofghalenoei.example.com/notes/kalman-filter-notes", { x: 50, y, size: 9.5, font: mono, color: TEAL });
 
   const bytes = await doc.save();
   writeFileSync(path.join(filesDir, "notes", "kalman-filter-notes.pdf"), bytes);
