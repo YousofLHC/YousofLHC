@@ -44,7 +44,7 @@ export function Navbar() {
                   href={l.href}
                   className={`group relative whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11.5px] font-medium transition-all duration-200 sm:px-4 sm:text-[13px] ${
                     active
-                      ? "bg-gradient-to-b from-cyan to-violet text-void shadow-[0_2px_12px_rgba(79,200,232,0.35)]"
+                      ? "nav-pill-active"
                       : "text-dim hover:bg-panel-2 hover:text-ink"
                   }`}
                 >

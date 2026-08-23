@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Fraunces, Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
 import { ScrollProgress } from "@/components/site/scroll-progress";
 import { NoiseOverlay } from "@/components/site/noise-overlay";
+import { FluidBg } from "@/components/site/fluid-bg";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -20,6 +21,13 @@ const jetbrains = JetBrains_Mono({
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -79,10 +87,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrains.variable} ${spaceGrotesk.variable}`}
+      className={`${inter.variable} ${jetbrains.variable} ${spaceGrotesk.variable} ${fraunces.variable}`}
       suppressHydrationWarning
     >
       <body className="min-h-screen font-sans antialiased">
+        <FluidBg />
         <ScrollProgress />
         <NoiseOverlay />
         {children}

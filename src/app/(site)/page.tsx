@@ -22,10 +22,26 @@ import { TimelineFill } from "@/components/ui/timeline-fill";
 import { GithubLive } from "@/components/ui/github-live";
 import { PostCard } from "@/components/blog/post-card";
 import { NotebookMini } from "@/components/notebook/notebook-card";
-import { education, experience, profile, projects, skills } from "@/lib/data";
+import { education, experience, profile, projects } from "@/lib/data";
 import { listArticles } from "@/lib/mdx";
 import { listNotebooks } from "@/lib/notebooks";
 import { site } from "@/lib/site";
+import { MouseGlow } from "@/components/site/mouse-glow";
+import fs from "node:fs";
+import path from "node:path";
+
+const HERO_DIR = path.join(process.cwd(), "public/assets/scenes/UseThisHeros");
+function getHeroImages(): string[] {
+  try {
+    return fs
+      .readdirSync(HERO_DIR)
+      .filter((f) => /\.(jpe?g|png|webp|avif|gif)$/i.test(f))
+      .sort()
+      .map((f) => `/assets/scenes/UseThisHeros/${f}`);
+  } catch {
+    return [];
+  }
+}
 
 const focusItems = [
   {
@@ -85,9 +101,9 @@ const featurePoints = [
 ];
 
 const workSceneImages = [
-  "/assets/scenes/drug-capsule.jpg",
-  "/assets/scenes/protein-folding.jpg",
-  "/assets/scenes/gnn-network.jpg",
+  "/assets/scenes/dna-helix.jpg",
+  "/assets/scenes/ai-agent.jpg",
+  "/assets/scenes/pexels-googledeepmind-17483874.jpg",
   "/assets/scenes/crystal-lattice.jpg",
 ];
 
@@ -100,15 +116,6 @@ const exploringChips = [
 ];
 
 const timeline = [...experience.slice(0, 3), education[0]];
-
-const galleryItems = [
-  { src: "/gallery/chromatogram.png", label: "Chromatogram", featured: true },
-  { src: "/gallery/dna-helix.png", label: "DNA Helix", featured: false },
-  { src: "/gallery/neuralnet.png", label: "Neural Network", featured: false },
-  { src: "/gallery/glycolysis.png", label: "Glycolysis & Krebs Cycle", featured: false },
-  { src: "/gallery/capsule.png", label: "Capsule", featured: false },
-  { src: "/gallery/ai-agent.png", label: "AI Agent", featured: false },
-];
 
 const contactCards = [
   {
@@ -145,11 +152,14 @@ export default async function Home() {
   const latestPost = posts.slice(0, 3);
   const latestNotebook = notebooks.slice(0, 2);
   const workProjects = projects.slice(0, 4);
+  const heroImages = getHeroImages();
 
   return (
     <>
-      {/* ================= HERO (cinematic reel) ================= */}
-      <CinematicHero />
+      <MouseGlow />
+
+      {/* ================= HERO ================= */}
+      <CinematicHero images={heroImages} />
 
       {/* ================= FAST LOOK (profile strip) ================= */}
       <section className="relative z-10 mx-auto max-w-6xl px-5 pt-24">
@@ -192,35 +202,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ================= TECH STACK ================= */}
-      <section id="stack" className="relative z-10 mx-auto max-w-6xl px-5 pt-24">
-        <div className="focus-layout">
-          <Reveal>
-            <p className="eyebrow">tech stack</p>
-            <h2 className="heading mt-4 text-3xl sm:text-4xl">
-              Tools of the <span className="text-grad">Trade.</span>
-            </h2>
-          </Reveal>
-
-          <Reveal delay={0.12}>
-            <div className="stack-rows">
-              {skills.map((g) => (
-                <div key={g.name}>
-                  <div className="stack-cat">{g.name}</div>
-                  <div className="stack-row">
-                    {g.skills.map((s) => (
-                      <span key={s.name} className="chip">
-                        {s.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
       {/* ================= RESEARCH FOCUS ================= */}
       <section id="research" className="relative z-10 mx-auto max-w-6xl px-5 py-24">
         <div className="focus-layout">
@@ -228,7 +209,7 @@ export default async function Home() {
             <Reveal>
               <p className="eyebrow">research focus</p>
               <h2 className="heading mt-4 text-3xl sm:text-4xl">
-                Where AI Meets the <span className="text-grad">Mathematical</span> World.
+                Where AI meets the <em className="accent-em">mathematical</em> world.
               </h2>
               <p className="mt-4 max-w-md text-dim">
                 I develop rigorous, data-driven machine-learning methods grounded in
@@ -265,7 +246,7 @@ export default async function Home() {
 
           <Stagger className="stagger-children focus-grid">
             {focusItems.map((f) => (
-              <div key={f.title} className="focus-item" data-c={f.color}>
+              <div key={f.title} className="focus-item" data-c={f.color} data-glow="">
                 <div className="focus-icon">
                   <f.icon size={20} />
                 </div>
@@ -474,49 +455,6 @@ export default async function Home() {
               </div>
             </Reveal>
           )}
-        </div>
-      </section>
-
-      {/* ================= SCIENTIFIC VISUALIZATIONS ================= */}
-      <section className="relative z-10 overflow-hidden border-t border-line bg-abyss/30">
-        <div className="orb orb-violet absolute -right-40 top-10 h-[500px] w-[500px]" />
-        <div className="mx-auto max-w-6xl px-5 py-24">
-          <Reveal>
-            <div className="mx-auto max-w-xl text-center">
-              <p className="eyebrow justify-center">scientific visualizations</p>
-              <h2 className="heading mt-4 text-3xl sm:text-4xl">
-                Visual <span className="text-grad">Explorer.</span>
-              </h2>
-              <p className="mt-4 text-dim">
-                A glimpse into the molecular world — from protein structures to neural network
-                topologies and chromatographic data.
-              </p>
-            </div>
-          </Reveal>
-
-          <div className="mt-10 grid gap-4 md:auto-rows-[200px] md:grid-cols-3">
-            {galleryItems.map((item, i) => (
-              <Reveal
-                key={item.src}
-                delay={i * 0.06}
-                className={item.featured ? "md:col-span-2 md:row-span-2" : ""}
-              >
-                <div className="group relative h-full min-h-[200px] cursor-pointer overflow-hidden rounded-xl border border-line bg-panel">
-                  <Image
-                    src={item.src}
-                    alt={item.label}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover saturate-110 brightness-90 transition-all duration-700 group-hover:scale-110 group-hover:saturate-150 group-hover:brightness-100"
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  <p className="absolute bottom-4 left-4 translate-y-4 font-mono text-xs tracking-wide text-cyan opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                    {item.label}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
         </div>
       </section>
 
