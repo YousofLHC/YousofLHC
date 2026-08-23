@@ -100,6 +100,15 @@ try {
     stripAux(outDir);
     injectThemeInit(outDir);
     writeFileSync(path.join(outDir, ".nojekyll"), "", { flag: "a" });
+    // Stamp the service worker with a unique cache version per deploy.
+    const swPath = path.join(outDir, "sw.js");
+    if (existsSync(swPath)) {
+      const stamped = readFileSync(swPath, "utf8").replace(
+        /__BUILD_VER__/g,
+        `v${Math.floor(Date.now() / 1000).toString(36)}`
+      );
+      writeFileSync(swPath, stamped);
+    }
     if (process.env.PAGES_BASE_PATH) prefixAssets(outDir, process.env.PAGES_BASE_PATH);
   }
   console.log("[build:pages] cleaning up disposable copy…");
@@ -127,7 +136,9 @@ function stripAux(dir) {
  */
 function injectThemeInit(dir) {
   const init = createRequire(import.meta.url)("./theme-init.js");
-  const injection = `<script>${init}</script>`;
+  const swUrl = `${process.env.PAGES_BASE_PATH ?? ""}/sw.js`;
+  const patchedInit = init.replace(/__SW_URL__/g, swUrl);
+  const injection = `<script>${patchedInit}</script>`;
   let files = 0;
   const walk = (d) => {
     for (const entry of readdirSync(d)) {

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import ReactDOM from "react-dom";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -103,7 +104,7 @@ const featurePoints = [
 const workSceneImages = [
   "/assets/scenes/dna-helix.jpg",
   "/assets/scenes/ai-agent.jpg",
-  "/assets/scenes/pexels-googledeepmind-17483874.jpg",
+  "/assets/scenes/pexels-googledeepmind-17483874.webp",
   "/assets/scenes/crystal-lattice.jpg",
 ];
 
@@ -153,6 +154,8 @@ export default async function Home() {
   const latestNotebook = notebooks.slice(0, 2);
   const workProjects = projects.slice(0, 4);
   const heroImages = getHeroImages();
+  // Preload the first hero slide — it is the LCP element.
+  if (heroImages[0]) ReactDOM.preload(heroImages[0], { as: "image" });
 
   return (
     <>
@@ -203,7 +206,7 @@ export default async function Home() {
       </section>
 
       {/* ================= RESEARCH FOCUS ================= */}
-      <section id="research" className="relative z-10 mx-auto max-w-6xl px-5 py-24">
+      <section id="research" className="cv-section relative z-10 mx-auto max-w-6xl px-5 py-24">
         <div className="focus-layout">
           <div>
             <Reveal>
@@ -259,7 +262,7 @@ export default async function Home() {
       </section>
 
       {/* ================= TIMELINE (experience + education) ================= */}
-      <section id="timeline" className="relative z-10 overflow-hidden">
+      <section id="timeline" className="cv-section relative z-10 overflow-hidden">
         <div className="mx-auto max-w-6xl px-5 pt-24">
           <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr]">
             <div className="tl-left">
@@ -306,7 +309,7 @@ export default async function Home() {
       </section>
 
       {/* ================= FEATURE BAND (AI agents) ================= */}
-      <section className="relative z-10 border-t border-line bg-abyss/30">
+      <section className="cv-section relative z-10 border-t border-line bg-abyss/30">
         <div className="orb orb-violet absolute -left-40 top-10 h-[400px] w-[400px]" />
         <div className="mx-auto max-w-6xl px-5 py-24">
           <div className="feature">
@@ -352,7 +355,7 @@ export default async function Home() {
       </section>
 
       {/* ================= SELECTED WORK ================= */}
-      <section id="work" className="relative z-10 mx-auto max-w-6xl px-5 py-24">
+      <section id="work" className="cv-section relative z-10 mx-auto max-w-6xl px-5 py-24">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -414,7 +417,7 @@ export default async function Home() {
       </section>
 
       {/* ================= KNOWLEDGE HUB ================= */}
-      <section className="relative z-10 border-t border-line bg-abyss/30">
+      <section className="cv-section relative z-10 border-t border-line bg-abyss/30">
         <div className="mx-auto max-w-6xl px-5 py-24">
           <Reveal>
             <div className="flex flex-wrap items-end justify-between gap-4">
@@ -459,7 +462,7 @@ export default async function Home() {
       </section>
 
       {/* ================= CONTACT ================= */}
-      <section id="contact" className="relative z-10 overflow-hidden border-t border-line bg-abyss/30">
+      <section id="contact" className="cv-section relative z-10 overflow-hidden border-t border-line bg-abyss/30">
         <div className="orb orb-cyan absolute -left-40 bottom-[-160px] h-[460px] w-[460px]" />
         <div className="mx-auto max-w-6xl px-5 py-24">
           <Reveal>

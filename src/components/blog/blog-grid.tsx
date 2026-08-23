@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
 import type { ArticleMeta } from "@/lib/mdx";
 import { PostCard } from "@/components/blog/post-card";
 
@@ -29,22 +28,12 @@ export function BlogGrid({ posts }: { posts: ArticleMeta[] }) {
         ))}
       </div>
 
-      <motion.div layout className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <AnimatePresence mode="popLayout">
-          {filtered.map((p) => (
-            <motion.div
-              layout
-              key={p.slug}
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96 }}
-              transition={{ duration: 0.25 }}
-            >
-              <PostCard post={p} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </motion.div>
+      {/* CSS fade-in on re-filter (keyed remount); no framer-motion needed */}
+      <div key={active} className="grid-fade mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {filtered.map((p) => (
+          <PostCard key={p.slug} post={p} />
+        ))}
+      </div>
 
       {filtered.length === 0 && (
         <div className="mt-16 text-center text-dim">

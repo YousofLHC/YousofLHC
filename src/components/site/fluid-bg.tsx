@@ -14,7 +14,7 @@ import { useEffect, useRef } from "react";
 
 const CELL = 26;
 const DECAY = 0.972;
-const STEP_MS = 40; // ~25fps — unhurried
+const STEP_MS = 48; // ~21fps — unhurried — unhurried
 
 const PALETTES: Record<"dark" | "light", Array<[number, number, number]>> = {
   dark: [
@@ -199,7 +199,17 @@ export function FluidBg() {
       step();
       render();
     };
-    raf = requestAnimationFrame(loop);
+    /** stay fully idle until the visitor actually moves a pointer —
+     *  zero main-thread cost on first paint and for touch-only users */
+    let started = false;
+    const arm = () => {
+      if (started || !alive) return;
+      started = true;
+      last = performance.now();
+      accMs = STEP_MS; // paint one frame immediately
+      raf = requestAnimationFrame(loop);
+    };
+    window.addEventListener("pointermove", arm, { once: true, passive: true });
 
     return () => {
       alive = false;
@@ -207,6 +217,7 @@ export function FluidBg() {
       themeObserver.disconnect();
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("pointermove", arm);
     };
   }, []);
 

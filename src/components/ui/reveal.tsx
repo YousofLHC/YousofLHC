@@ -1,31 +1,28 @@
-"use client";
+import type { CSSProperties, ReactNode } from "react";
 
-import { motion, useReducedMotion } from "motion/react";
-import type { ReactNode } from "react";
-
+/**
+ * CSS-first reveal: content is fully visible without JavaScript — the entrance
+ * animation runs via a pure CSS keyframe on mount. This guarantees nothing on
+ * the page is ever blank while JS/hydration loads (critical for slow links).
+ */
 export function Reveal({
   children,
   delay = 0,
   y = 24,
   className,
-  once = true,
 }: {
   children: ReactNode;
   delay?: number;
   y?: number;
   className?: string;
-  once?: boolean;
 }) {
-  const reduced = useReducedMotion();
+  const style = {
+    "--ry": `${y}px`,
+    animationDelay: `${delay}s`,
+  } as CSSProperties;
   return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: reduced ? 0 : y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once, margin: "-80px" }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <div className={`reveal${className ? ` ${className}` : ""}`} style={style}>
       {children}
-    </motion.div>
+    </div>
   );
 }

@@ -888,6 +888,9 @@
     mix-blend-mode: multiply;
     opacity: 0.14;
   }
+  @media (max-width: 768px) {
+    .fluid-bg { display: none; }
+  }
 
   /* ---------- light-theme hero legibility & ambience ---------- */
   [data-theme="light"] .hx-mesh { opacity: 0.55; }
@@ -1686,13 +1689,52 @@
   }
 }
 
+/* ================= CSS REVEAL (no-JS safe) ================= */
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(var(--ry, 24px));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.reveal {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    animation: revealUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+/* filtered grid re-entry fade */
+@keyframes gridFade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.grid-fade > * {
+  animation: gridFade 0.3s ease both;
+}
+
+/* skip layout/paint of offscreen sections */
+.cv-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
 /* ================= STAGGER REVEAL ================= */
-.stagger-children > * {
+/* Hidden state only applies when JS is confirmed present (html.js is set by
+   the pre-paint theme-init script), so slow/no-JS visitors always see content */
+html.js .stagger-children:not(.in) > * {
   opacity: 0;
   transform: translateY(14px);
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
+  .stagger-children > * {
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
 .stagger-children.in > * {
   opacity: 1;
   transform: none;
