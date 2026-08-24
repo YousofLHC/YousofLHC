@@ -182,8 +182,10 @@ function injectThemeInit(dir) {
  */
 function prefixAssets(dir, base) {
   const key = base.replace(/^\/+/, "").replace(/\/+$/, "");
-  const reAttr = new RegExp(`(src|href)="\\/(?!${key}\\/|_next\\/)`, "g");
-  const reJson = new RegExp(`("src":")\\/?(?!${key}\\/|_next\\/)`, "g");
+  // Prefix ALL unprefixed root-relative paths, including /_next/ — Next.js 16
+  // with turbopack.root does NOT reliably apply basePath to CSS <link> tags.
+  const reAttr = new RegExp(`(src|href)="\\/(?!${key}\\/)`, "g");
+  const reJson = new RegExp(`("src":")\\/?(?!${key}\\/)`, "g");
   let files = 0;
   let count = 0;
   const walk = (d) => {
