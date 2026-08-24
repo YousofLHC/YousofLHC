@@ -67,7 +67,7 @@ export function CodeBlock({
   const lang = language === "md" || language === "markdown" ? "markdown" : language;
 
   return (
-    <div className="group my-6 overflow-hidden rounded-xl border border-line bg-[var(--t-code-bg)] shadow-[0_10px_40px_-18px_rgba(0,0,0,0.9)]">
+    <div className="group my-6 overflow-hidden rounded-xl border border-line bg-[var(--t-code-bg)] shadow-[0_4px_16px_-6px_rgba(0,0,0,0.25)]">
       <div className="flex items-center justify-between border-b border-line bg-panel/60 px-4 py-2">
         <div className="flex items-center gap-2">
           <span className="flex gap-1.5">

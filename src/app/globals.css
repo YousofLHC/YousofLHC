@@ -208,7 +208,7 @@
   --t-grad-input: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(233, 237, 244, 0.75));
   --t-grad-text: linear-gradient(90deg, #0b72a0, #2c9ecb, #0b72a0);
   --t-grad-text-cyan: linear-gradient(95deg, #0b72a0, #2c9ecb);
-  --t-code-bg: #0a0e18;
+  --t-code-bg: #f6f8fb;
   --t-hero-bg:
     radial-gradient(ellipse 80% 55% at 12% -8%, rgba(11, 114, 160, 0.06), transparent 60%),
     radial-gradient(ellipse 65% 50% at 88% 8%, rgba(230, 55, 0, 0.045), transparent 55%),
