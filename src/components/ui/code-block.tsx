@@ -1,21 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
 import { Highlight, themes } from "prism-react-renderer";
 import { Check, Copy } from "lucide-react";
 
+/* --- theme subscription (SSR-safe via useSyncExternalStore) --- */
+
+function subscribe(onChange: () => void) {
+  const el = document.documentElement;
+  const obs = new MutationObserver(onChange);
+  obs.observe(el, { attributes: true, attributeFilter: ["data-theme"] });
+  return () => obs.disconnect();
+}
+
+const getSnapshot = () =>
+  document.documentElement.dataset.theme !== "light";
+
+const getServerSnapshot = () => true; // SSG always renders dark first
+
 function useIsDark(): boolean {
-  const [dark, setDark] = useState(() =>
-    typeof document === "undefined" || document.documentElement.dataset.theme !== "light"
-  );
-  useEffect(() => {
-    const el = document.documentElement;
-    const sync = () => setDark(el.dataset.theme !== "light");
-    const obs = new MutationObserver(sync);
-    obs.observe(el, { attributes: true, attributeFilter: ["data-theme"] });
-    return () => obs.disconnect();
-  }, []);
-  return dark;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 const darkTheme = {
