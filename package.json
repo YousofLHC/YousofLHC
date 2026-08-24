@@ -13,6 +13,9 @@
     "gen:data": "node scripts/generate-content.mjs",
     "generate": "node scripts/generate-content.mjs && node scripts/generate-covers.mjs && node scripts/generate-notebook.mjs && node scripts/generate-pdfs.mjs"
   },
+  "overrides": {
+    "katex": "$katex"
+  },
   "dependencies": {
     "@next/swc-win32-x64-msvc": "^16.3.0",
     "@types/three": "^0.185.4",
