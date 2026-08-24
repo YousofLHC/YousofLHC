@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+  <defs>
+    <linearGradient id="bg23" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050918"/>
+      <stop offset="1" stop-color="#0b1128"/>
+    </linearGradient>
+    <linearGradient id="g23" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbbf24"/>
+      <stop offset="1" stop-color="#34d399"/>
+    </linearGradient>
+    <radialGradient id="glow23" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fbbf24" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#fbbf24" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="520" fill="url(#bg23)"/>
+  <rect width="900" height="520" fill="none" stroke="#fbbf2422" stroke-width="1"/>
+  <g stroke="#34d3991a" stroke-width="1">
+    <line x1="851" y1="0" x2="851" y2="520"/>
+<line x1="17" y1="0" x2="17" y2="520"/>
+<line x1="83" y1="0" x2="83" y2="520"/>
+<line x1="149" y1="0" x2="149" y2="520"/>
+<line x1="215" y1="0" x2="215" y2="520"/>
+<line x1="281" y1="0" x2="281" y2="520"/>
+<line x1="347" y1="0" x2="347" y2="520"/>
+<line x1="413" y1="0" x2="413" y2="520"/>
+<line x1="479" y1="0" x2="479" y2="520"/>
+<line x1="545" y1="0" x2="545" y2="520"/>
+<line x1="611" y1="0" x2="611" y2="520"/>
+<line x1="677" y1="0" x2="677" y2="520"/>
+<line x1="743" y1="0" x2="743" y2="520"/>
+<line x1="809" y1="0" x2="809" y2="520"/>
+    <line x1="0" y1="331" x2="900" y2="331"/>
+<line x1="0" y1="391" x2="900" y2="391"/>
+<line x1="0" y1="451" x2="900" y2="451"/>
+<line x1="0" y1="511" x2="900" y2="511"/>
+<line x1="0" y1="51" x2="900" y2="51"/>
+<line x1="0" y1="111" x2="900" y2="111"/>
+<line x1="0" y1="171" x2="900" y2="171"/>
+<line x1="0" y1="231" x2="900" y2="231"/>
+<line x1="0" y1="291" x2="900" y2="291"/>
+  </g>
+  <circle cx="493.5738230852471" cy="165.46045958542663" r="190" fill="url(#glow23)"/>
+  <g transform="translate(450 250)">
+    <circle cx="130.0" cy="0.0" r="7" fill="#34d399" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.0s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="135.1" cy="78.0" r="7" fill="#fbbf24" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="91.0" cy="157.6" r="7" fill="#34d399" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="0.0" cy="130.0" r="7" fill="#fbbf24" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.0s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="-78.0" cy="135.1" r="7" fill="#34d399" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="-157.6" cy="91.0" r="7" fill="#fbbf24" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="-130.0" cy="0.0" r="7" fill="#34d399" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.0s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="-135.1" cy="-78.0" r="7" fill="#fbbf24" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="-91.0" cy="-157.6" r="7" fill="#34d399" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="-0.0" cy="-130.0" r="7" fill="#fbbf24" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.0s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="78.0" cy="-135.1" r="7" fill="#34d399" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+<circle cx="157.6" cy="-91.0" r="7" fill="#fbbf24" fill-opacity="0.75">
+        <animate attributeName="r" values="5;9;5" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+  </g>
+  <text x="44" y="430" font-family="JetBrains Mono, monospace, sans-serif" font-size="34" font-weight="700" fill="url(#g23)">cover</text>
+  <text x="44" y="464" font-family="JetBrains Mono, monospace, sans-serif" font-size="15" letter-spacing="4" fill="#8b93b0">AI × SCIENCE — 851</text>
+</svg>

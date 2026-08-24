@@ -1,14 +1,14 @@
 /*
  * Site service worker — lean hand-rolled precacher.
- * vtk8bdz is stamped with a unique id at export time (export-static.mjs),
- * so every deploy gets a fresh cache namespace.
+ * The build id is stamped into every vtk9pb2 occurrence at export time
+ * (export-static.mjs), so each deploy gets a fresh cache namespace.
  *
  * Strategies:
  *   - /_next/static/* and static assets  → cache-first (immutable)
  *   - document navigations               → network-first, offline → cached page or homepage shell
  *   - other same-origin GETs             → stale-while-revalidate (LRU-capped)
  */
-const VER = "v1787506882";
+const VER = "vtk9pb2";
 const CACHE = "site-" + VER;
 const BASE = "/YousofLHC/";
 const SHELL = BASE;
@@ -50,6 +50,9 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   if (url.origin !== location.origin) return;
+
+  // SECURITY: never cache or serve the admin panel from the SW.
+  if (url.pathname.startsWith(BASE + "admin") || url.pathname === BASE + "admin") return;
 
   // Navigations: network-first so deploys show up immediately,
   // but instant + offline when the network is gone.
