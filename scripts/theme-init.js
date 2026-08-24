@@ -3,11 +3,14 @@
  * export-static.mjs. It must run before first paint (no theme flash), which is
  * why it is plain script text rather than a React-rendered <script> tag
  * (React 19 does not execute those and warns about them).
+ *
+ * Resolution order: saved choice → browser prefers-color-scheme → Light.
  */
 module.exports = `
 try {
   var stored = localStorage.getItem("theme");
-  var theme = stored || "light";
+  var sysDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  var theme = stored || (sysDark ? "dark" : "light");
   document.documentElement.dataset.theme = theme;
 } catch (e) { document.documentElement.dataset.theme = "light"; }
 document.documentElement.classList.add("js");

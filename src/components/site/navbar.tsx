@@ -26,9 +26,18 @@ export function Navbar() {
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5">
         <Link href="/" className="group flex shrink-0 items-center gap-3">
-          <span className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-accent to-accent-2 font-display text-sm font-bold text-void animate-logo-pulse transition-transform duration-300 group-hover:rotate-6">
-            {site.shortName.slice(0, 2)}
-          </span>
+          {site.logo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={site.logo}
+              alt={site.name}
+              className="h-10 w-10 rounded-xl object-contain transition-transform duration-300 group-hover:rotate-6"
+            />
+          ) : (
+            <span className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-accent to-accent-2 font-display text-sm font-bold text-void animate-logo-pulse transition-transform duration-300 group-hover:rotate-6">
+              {site.shortName.slice(0, 2)}
+            </span>
+          )}
           <span className="hidden font-mono text-sm tracking-tight text-ink sm:block">
             {site.name}
             <span className="ml-1 text-accent">_</span>

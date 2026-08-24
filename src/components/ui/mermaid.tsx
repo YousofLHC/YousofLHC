@@ -5,6 +5,17 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 
 type Theme = "dark" | "light";
 
+/* serialized render queue — init→render pairs never interleave */
+let renderQueue: Promise<unknown> = Promise.resolve();
+function enqueueRender<T>(fn: () => Promise<T>): Promise<T> {
+  const next = renderQueue.then(fn, fn);
+  renderQueue = next.then(
+    () => undefined,
+    () => undefined
+  );
+  return next;
+}
+
 function readTheme(): Theme {
   if (typeof document === "undefined") return "dark";
   return document.documentElement.dataset.theme === "light" ? "light" : "dark";
@@ -55,14 +66,20 @@ export function Mermaid({ chart, caption }: { chart: string; caption?: string })
     async function render() {
       try {
         const mermaid = (await import("mermaid")).default;
-        mermaid.initialize({
-          startOnLoad: false,
-          theme: "dark",
-          securityLevel: "strict",
-          fontFamily: "JetBrains Mono, monospace",
-          themeVariables: palette(theme),
+        /* Global config is last-wins, so renders from all instances are
+           serialized through a shared queue — each init→render pair runs
+           atomically with its OWN theme (base honors themeVariables fully),
+           eliminating light/dark cross-contamination between diagrams. */
+        const { svg } = await enqueueRender(() => {
+          mermaid.initialize({
+            startOnLoad: false,
+            securityLevel: "strict",
+            fontFamily: "JetBrains Mono, monospace",
+            theme: "base",
+            themeVariables: palette(theme),
+          });
+          return mermaid.render(`mmd-${id}`, chart);
         });
-        const { svg } = await mermaid.render(`mmd-${id}`, chart);
         if (active) setHtml(svg);
       } catch {
         if (active) setError(true);
@@ -85,7 +102,7 @@ export function Mermaid({ chart, caption }: { chart: string; caption?: string })
 
   return (
     <figure className="my-6">
-      <div className="mermaid overflow-x-auto rounded-xl border border-line bg-panel/60 p-4">
+      <div className="mermaid overflow-x-auto rounded-xl border border-line bg-panel p-4">
         {html ? (
           <div
             aria-hidden="false"

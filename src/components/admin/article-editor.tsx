@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import nextDynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { dump } from "js-yaml";
@@ -16,26 +17,30 @@ import {
   Upload,
   ListTree,
 } from "lucide-react";
-import { Field, TextInput, TextArea, Toggle } from "@/components/admin/field";
+import { Field, TextInput, TextArea } from "@/components/admin/field";
+import { TagInput } from "@/components/admin/tag-input";
+import { CoverPicker } from "@/components/admin/cover-picker";
 import { EditorToolbar } from "@/components/admin/editor/toolbar";
-import { MarkdownPreview } from "@/components/admin/editor/preview";
 import { createOrUpdateArticle, type ArticleKind } from "@/app/admin/actions";
+
+/** Preview pane is heavy (MDX + KaTeX + mermaid) — load it lazily so the
+ *  editor itself paints instantly. */
+const MarkdownPreview = nextDynamic(
+  () => import("@/components/admin/editor/preview").then((m) => m.MarkdownPreview),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-48 items-center justify-center font-mono text-xs text-faint">
+        loading preview…
+      </div>
+    ),
+  }
+);
 
 interface EditorState {
   frontmatter: Record<string, unknown>;
   body: string;
   slug: string;
-}
-
-function tagsToText(tags: unknown): string {
-  return Array.isArray(tags) ? tags.join(", ") : "";
-}
-
-function textToTags(text: string): string[] {
-  return text
-    .split(",")
-    .map((t) => t.trim())
-    .filter(Boolean);
 }
 
 function computeReadTime(body: string): number {
@@ -50,7 +55,7 @@ function defaultFrontmatter(kind: ArticleKind, today: string): Record<string, un
     date: today,
     tags: [],
     cover: "",
-    draft: false,
+    draft: true,
   };
   if (kind === "notes") {
     base.subject = "Mathematics";
@@ -102,7 +107,6 @@ export function ArticleEditor({
 
   const fm = state.frontmatter;
   const title = String(fm.title ?? "");
-  const tagsText = tagsToText(fm.tags);
 
   const set = (key: string, value: unknown) =>
     setState((s) => ({ ...s, frontmatter: { ...s.frontmatter, [key]: value } }));
@@ -190,12 +194,24 @@ export function ArticleEditor({
     }
     setBusy(true);
     setError(null);
-    const res = await createOrUpdateArticle(
-      kind,
-      state.slug,
-      { ...fm, readTime: computeReadTime(state.body) },
-      state.body
-    );
+    let res: Awaited<ReturnType<typeof createOrUpdateArticle>>;
+    try {
+      res = await createOrUpdateArticle(
+        kind,
+        state.slug,
+        { ...fm, readTime: computeReadTime(state.body) },
+        state.body
+      );
+      if (typeof res !== "object" || res === null || !("ok" in res)) {
+        throw new Error("session");
+      }
+    } catch {
+      setBusy(false);
+      setError(
+        "Session expired or action unreachable — reload this page and sign in again."
+      );
+      return;
+    }
     setBusy(false);
     if (!res.ok) {
       setError(res.error ?? "Save failed");
@@ -245,6 +261,30 @@ export function ArticleEditor({
             <Upload size={15} /> Import
           </button>
           <input ref={fileRef} type="file" accept=".mdx,.md" hidden onChange={handleImport} />
+
+          {/* status: Published / Draft */}
+          <div className="flex items-center rounded-lg border border-line p-0.5">
+            {(
+              [
+                ["published", false],
+                ["draft", true],
+              ] as const
+            ).map(([label, val]) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => set("draft", val)}
+                className={`rounded-md px-3 py-1 font-mono text-[11px] transition-colors ${
+                  Boolean(fm.draft) === val
+                    ? "bg-cyan/15 text-cyan"
+                    : "text-dim hover:text-ink"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
           <button onClick={handleSave} disabled={busy} className="btn btn-primary disabled:opacity-60">
             {busy ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
             {busy ? "Saving…" : "Save"}
@@ -291,16 +331,24 @@ export function ArticleEditor({
               </Field>
             </div>
             <div className="min-w-48 flex-1">
-              <Field label="Tags" hint="comma-separated">
-                <TextInput value={tagsText} onChange={(e) => set("tags", textToTags(e.target.value))} />
+              <Field label="Tags" hint="Enter adds a chip — commas allowed inside a tag">
+                <TagInput
+                  value={Array.isArray(fm.tags) ? (fm.tags as string[]) : []}
+                  onChange={(v) => set("tags", v)}
+                />
               </Field>
             </div>
           </div>
 
           <div className="flex flex-wrap items-end gap-5">
-            <div className="min-w-48 flex-1">
+            <div className="min-w-64 flex-1">
               <Field label="Cover">
-                <TextInput value={String(fm.cover ?? "")} onChange={(e) => set("cover", e.target.value)} placeholder="/covers/…" />
+                <CoverPicker
+                  value={String(fm.cover ?? "")}
+                  onChange={(v) => set("cover", v)}
+                  slug={state.slug}
+                  title={title}
+                />
               </Field>
             </div>
             <div className="flex items-center gap-5 pb-1">
@@ -317,7 +365,6 @@ export function ArticleEditor({
                   </Field>
                 </>
               )}
-              <Toggle checked={Boolean(fm.draft)} onChange={(v) => set("draft", v)} label="draft" />
             </div>
           </div>
 

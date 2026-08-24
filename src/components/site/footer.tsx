@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { ArrowUpRight, AtSign, GitBranch, Mail, GraduationCap } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { site } from "@/lib/site";
+import { socialHref, socialMeta } from "@/lib/social-presets";
 import { marqueeDomains } from "@/lib/data";
 
 const footerCols = [
@@ -26,12 +27,15 @@ const footerCols = [
   },
 ];
 
-const socialIcons = [
-  { href: site.socials.github, label: "GitHub", icon: GitBranch },
-  { href: site.socials.linkedin, label: "LinkedIn", icon: AtSign },
-  { href: site.socials.scholar, label: "Google Scholar", icon: GraduationCap },
-  { href: `mailto:${site.email}`, label: "Email", icon: Mail },
-].filter((s) => Boolean(s.href));
+type SocialLinkRow = { id: string; label: string; url: string };
+
+const socialIcons = (site.socialLinks as readonly SocialLinkRow[])
+  .map((l) => ({
+    href: socialHref(l, site.email),
+    label: l.label || socialMeta(l.id).label,
+    icon: socialMeta(l.id).icon,
+  }))
+  .filter((s) => Boolean(s.href));
 
 export function Footer() {
   return (

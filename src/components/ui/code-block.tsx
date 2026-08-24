@@ -1,15 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Highlight, themes } from "prism-react-renderer";
 import { Check, Copy } from "lucide-react";
 
-const theme = {
+function useIsDark(): boolean {
+  const [dark, setDark] = useState(() =>
+    typeof document === "undefined" || document.documentElement.dataset.theme !== "light"
+  );
+  useEffect(() => {
+    const el = document.documentElement;
+    const sync = () => setDark(el.dataset.theme !== "light");
+    const obs = new MutationObserver(sync);
+    obs.observe(el, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => obs.disconnect();
+  }, []);
+  return dark;
+}
+
+const darkTheme = {
   ...themes.nightOwl,
   plain: {
     ...themes.nightOwl.plain,
     backgroundColor: "transparent",
     color: "#dce6ff",
+  },
+};
+
+/* light: GitHub-style — dark ink on a very light panel */
+const lightTheme = {
+  ...themes.github,
+  plain: {
+    ...themes.github.plain,
+    backgroundColor: "#f6f8fb",
+    color: "#111624",
   },
 };
 
@@ -27,6 +51,8 @@ export function CodeBlock({
   fontSize?: number;
 }) {
   const [copied, setCopied] = useState(false);
+  const isDark = useIsDark();
+  const theme = isDark ? darkTheme : lightTheme;
 
   const copy = async () => {
     try {

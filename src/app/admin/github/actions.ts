@@ -6,6 +6,22 @@ import { promisify } from "node:util";
 import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
 import path from "node:path";
 import { requireAdmin } from "@/lib/admin/store";
+import {
+  getGhToken, hasGhToken, setGhToken, clearGhToken,
+} from "@/lib/admin/gh-token";
+
+/** Resolve the working token (cookie → env) or throw a friendly error. */
+async function requireToken(): Promise<string> {
+  const t = await getGhToken();
+  if (!t) throw new Error("Not connected — paste a token in the Connect tab.");
+  return t;
+}
+
+export interface GhConnectionStatus {
+  connected: boolean;
+  viaEnv: boolean;
+  login: string | null;
+}
 
 export interface ActionResult<T = void> {
   ok: boolean;
@@ -69,10 +85,14 @@ export interface GhUser {
   scopes: string[];
 }
 
-export async function validateGhToken(token: string): Promise<ActionResult<GhUser>> {
+export async function ghConnect(input: { token: string }): Promise<ActionResult<GhUser>> {
   return guard(async () => {
-    const { json, rateLimit } = await ghApi(token, "GET", "/user");
+    const token = input.token.trim();
+    if (!token) throw new Error("Token is required");
+    const { json } = await ghApi(token, "GET", "/user");
     const u = json as { login: string; name: string | null; avatar_url: string; html_url: string; plan?: { name?: string } };
+    // valid — persist securely server-side (encrypted httpOnly cookie)
+    await setGhToken(token, u.login);
     return {
       login: u.login,
       name: u.name,
@@ -80,11 +100,32 @@ export async function validateGhToken(token: string): Promise<ActionResult<GhUse
       html_url: u.html_url,
       plan: u.plan?.name ?? null,
       scopes: [],
-      rateLimit,
     };
   });
 }
 
+export async function ghStatus(): Promise<GhConnectionStatus> {
+  const viaCookie = await hasGhToken();
+  const envToken = process.env.GITHUB_TOKEN?.trim();
+  if (!viaCookie && !envToken) return { connected: false, viaEnv: false, login: null };
+  try {
+    const token = await requireToken();
+    const { json } = await ghApi(token, "GET", "/user");
+    return {
+      connected: true,
+      viaEnv: !viaCookie,
+      login: (json as { login?: string }).login ?? null,
+    };
+  } catch {
+    return { connected: false, viaEnv: Boolean(envToken), login: null };
+  }
+}
+
+export async function ghDisconnect(): Promise<ActionResult> {
+  return guard(async () => {
+    await clearGhToken();
+  });
+}
 export interface GhRepo {
   name: string;
   full_name: string;
@@ -96,8 +137,9 @@ export interface GhRepo {
   pages_enabled: boolean;
 }
 
-export async function listRepos(token: string): Promise<ActionResult<GhRepo[]>> {
+export async function listRepos(): Promise<ActionResult<GhRepo[]>> {
   return guard(async () => {
+    const token = await requireToken();
     const { json } = await ghApi(token, "GET", "/user/repos?per_page=100&sort=updated&affiliation=owner,collaborator");
     return (json as Array<{
       name: string;
@@ -122,10 +164,10 @@ export async function listRepos(token: string): Promise<ActionResult<GhRepo[]>> 
 }
 
 export async function createRepo(
-  token: string,
   input: { name: string; description?: string; isPrivate?: boolean }
 ): Promise<ActionResult<GhRepo>> {
   return guard(async () => {
+    const token = await requireToken();
     const name = input.name.trim().toLowerCase().replace(/[^a-z0-9._-]/g, "-");
     if (!name) throw new Error("Repo name is required");
     const { json } = await ghApi(token, "POST", "/user/repos", {
@@ -154,15 +196,19 @@ export async function buildStaticExport(input: { basePath?: string } = {}): Prom
     const script = path.join(process.cwd(), "scripts", "export-static.mjs");
     if (!existsSync(script)) throw new Error("export-static.mjs not found — run this on a full install");
     const basePath = input.basePath?.trim();
-    const { stdout, stderr } = await execAsync(
-      basePath ? `npm run build:pages` : `npm run build:pages`,
-      {
-        cwd: process.cwd(),
-        timeout: 5 * 60 * 1000,
-        maxBuffer: 4 * 1024 * 1024,
-        env: { ...process.env, ...(basePath ? { PAGES_BASE_PATH: basePath } : {}) },
-      }
-    );
+    // The admin server process may run under `next dev`, which sets
+    // NODE_ENV=development. Inheriting that into a production export build
+    // breaks prerendering (_global-error: useContext of null), so we force a
+    // clean production environment for the child npm process.
+    const cleanEnv: Record<string, string | undefined> = { ...process.env };
+    delete cleanEnv.NODE_ENV;
+    if (basePath) cleanEnv.PAGES_BASE_PATH = basePath;
+    const { stdout, stderr } = await execAsync(`npm run build:pages`, {
+      cwd: process.cwd(),
+      timeout: 5 * 60 * 1000,
+      maxBuffer: 4 * 1024 * 1024,
+      env: { ...cleanEnv, NODE_ENV: "production" },
+    });
     const full = `${stdout}\n${stderr}`;
     const lines = full.split(/\r?\n/).filter(Boolean);
     const tail = lines.slice(-14).join("\n");
@@ -244,10 +290,10 @@ async function ensureBranch(token: string, owner: string, repo: string, branch: 
 }
 
 export async function deployToPages(
-  token: string,
   input: { owner: string; repo: string; branch: string; cname?: string; prune?: boolean }
 ): Promise<ActionResult<DeploySummary>> {
   return guard(async () => {
+    const token = await requireToken();
     const owner = input.owner.trim();
     const repo = input.repo.trim();
     const branch = (input.branch || "gh-pages").trim();
@@ -386,8 +432,12 @@ export interface PagesStatus {
   httpsEnforced: boolean | null;
 }
 
-export async function pagesStatus(token: string, owner: string, repo: string): Promise<ActionResult<PagesStatus>> {
+export async function pagesStatus(
+  owner: string,
+  repo: string
+): Promise<ActionResult<PagesStatus>> {
   return guard(async () => {
+    const token = await requireToken();
     const r = await ghApi(token, "GET", `/repos/${owner}/${repo}/pages`).catch(() => null);
     if (!r) {
       return { htmlUrl: null, status: null, lastBuild: null, builds: [], customDomain: null, httpsEnforced: null };
@@ -445,8 +495,13 @@ export async function checkSite(url: string): Promise<ActionResult<SiteCheck>> {
   });
 }
 
-export async function deleteBranchOnGh(token: string, owner: string, repo: string, branch: string): Promise<ActionResult> {
+export async function deleteBranchOnGh(
+  owner: string,
+  repo: string,
+  branch: string
+): Promise<ActionResult> {
   return guard(async () => {
+    const token = await requireToken();
     await ghApi(token, "DELETE", `/repos/${owner}/${repo}/git/refs/heads/${encodeURIComponent(branch)}`);
   });
 }

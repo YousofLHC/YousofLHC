@@ -8,6 +8,9 @@
     "build:pages": "node scripts/export-static.mjs",
     "start": "next start",
     "lint": "eslint",
+    "smoke": "node --experimental-strip-types --import ./scripts/ts-register.mjs scripts/admin-smoke.mjs",
+    "covers": "node scripts/generate-covers.mjs",
+    "gen:data": "node scripts/generate-content.mjs",
     "generate": "node scripts/generate-content.mjs && node scripts/generate-covers.mjs && node scripts/generate-notebook.mjs && node scripts/generate-pdfs.mjs"
   },
   "dependencies": {

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Clock } from "lucide-react";
 import type { ArticleMeta } from "@/lib/mdx";
+import { CoverMedia } from "@/components/site/cover-media";
 
 export function PostCard({
   post,
@@ -16,10 +17,8 @@ export function PostCard({
     <Link href={link} className="card group flex flex-col overflow-hidden">
       <div className="relative h-36 overflow-hidden bg-gradient-to-br from-panel-2 via-panel to-abyss">
         {post.cover ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <CoverMedia
             src={post.cover}
-            alt=""
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (

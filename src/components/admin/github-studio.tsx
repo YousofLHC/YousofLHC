@@ -1,762 +1,469 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
-  Globe,
-  KeyRound,
-  Eye,
-  EyeOff,
-  Loader2,
-  CheckCircle2,
-  XCircle,
-  Rocket,
-  RefreshCw,
-  FolderGit2,
-  Plus,
-  ExternalLink,
-  Activity,
-  ShieldCheck,
-  Trash2,
-  GitBranch,
-  FileCode2,
-  Clock3,
+  CheckCircle2, ExternalLink, Eye, EyeOff, Globe, KeyRound,
+  Loader2, Rocket, RefreshCw, ShieldCheck, XCircle,
 } from "lucide-react";
+import type { ActionResult } from "@/app/admin/github/actions";
 import {
-  validateGhToken,
-  listRepos,
-  createRepo,
-  buildStaticExport,
-  deployToPages,
-  deployProgress,
-  pagesStatus,
-  checkSite,
-  type GhUser,
-  type GhRepo,
-  type DeploySummary,
-  type DeployProgress,
-  type PagesStatus,
-  type SiteCheck,
+  buildStaticExport, createRepo, deployProgress, deployToPages,
+  ghConnect, ghDisconnect, ghStatus, listRepos, checkSite,
+  pagesStatus, type DeployProgress, type GhRepo, type PagesStatus,
 } from "@/app/admin/github/actions";
+import { Field, TextInput } from "@/components/admin/field";
 
-const TOKEN_KEY = "yg_gh_token";
+/* ------------------------------------------------------------------ */
+/* tiny primitives                                                     */
+/* ------------------------------------------------------------------ */
 
-type Tab = "connect" | "repos" | "deploy" | "live";
+type Tab = "connect" | "deploy" | "live" | "guide";
 
-function Field({
-  label,
-  value,
-  onChange,
-  placeholder,
-  list,
-  type = "text",
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  list?: string;
-  type?: string;
-}) {
+const tabBtn = (on: boolean) =>
+  `rounded-lg px-4 py-2 font-mono text-[12px] transition-colors ${
+    on ? "bg-cyan/10 text-cyan shadow-[inset_0_0_0_1px_rgba(59,225,255,.25)]"
+       : "text-dim hover:bg-panel hover:text-ink"
+  }`;
+
+function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <label className="block">
-      <span className="mb-1 block font-mono text-[10px] uppercase tracking-wider text-faint">{label}</span>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        list={list}
-        spellCheck={false}
-        className="w-full rounded-lg border border-line bg-void/40 px-3 py-2 text-sm text-ink placeholder:text-faint focus:border-cyan/60 focus:outline-none focus:ring-1 focus:ring-cyan/40"
-      />
-    </label>
+    <div className={`rounded-2xl border border-line bg-panel p-6 ${className}`}>{children}</div>
   );
 }
 
-const STATUS_COLOR: Record<string, string> = {
-  built: "text-emerald border-emerald/40 bg-emerald/10",
-  running: "text-amber border-amber/40 bg-amber/10",
-  queued: "text-amber border-amber/40 bg-amber/10",
-  none: "text-faint border-line bg-panel/40",
-};
-
-export function GitHubStudio() {
-  const [tab, setTab] = useState<Tab>("connect");
-  const [token, setToken] = useState<string>(() =>
-    typeof window !== "undefined" ? (localStorage.getItem(TOKEN_KEY) ?? "") : ""
+function Step({ n, title, children }: { n: number; title: string; children?: React.ReactNode }) {
+  return (
+    <li className="flex gap-3">
+      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-cyan/50 font-mono text-[11px] text-cyan">
+        {n}
+      </span>
+      <div className="min-w-0 text-[13.5px] leading-6 text-dim">
+        <b className="text-ink">{title}</b>
+        {children ? <div className="mt-1">{children}</div> : null}
+      </div>
+    </li>
   );
-  const [showToken, setShowToken] = useState(false);
-  const [user, setUser] = useState<GhUser | null>(null);
-  const [repos, setRepos] = useState<GhRepo[]>([]);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+}
 
-  const [owner, setOwner] = useState("");
-  const [repo, setRepo] = useState("");
+/* ------------------------------------------------------------------ */
+/* main                                                                */
+/* ------------------------------------------------------------------ */
+
+export function GithubStudio() {
+  const [tab, setTab] = useState<Tab>("connect");
+
+  /* connection */
+  const [connected, setConnected] = useState<boolean | null>(null);
+  const [viaEnv, setViaEnv] = useState(false);
+  const [login, setLogin] = useState<string | null>(null);
+  const [tokenInput, setTokenInput] = useState("");
+  const [showTok, setShowTok] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  /* repos */
+  const [repos, setRepos] = useState<GhRepo[]>([]);
+  const [repoLoaded, setRepoLoaded] = useState(false);
+  const [newRepoName, setNewRepoName] = useState("");
+  const [isPrivate, setIsPrivate] = useState(false);
+
+  /* deploy */
+  const [owner, setOwner] = useState("YousofLHC");
+  const [repo, setRepo] = useState("YousofLHC");
   const [branch, setBranch] = useState("gh-pages");
   const [cname, setCname] = useState("");
   const [prune, setPrune] = useState(true);
-  const [rebuild, setRebuild] = useState(true);
-
-  const [log, setLog] = useState<string[]>([]);
-  const [lastDeploy, setLastDeploy] = useState<DeploySummary | null>(null);
+  const [rebuild, setRebuild] = useState(false);
   const [prog, setProg] = useState<DeployProgress | null>(null);
+  const [deployMsg, setDeployMsg] = useState<string | null>(null);
 
-  const [newRepoName, setNewRepoName] = useState("");
-  const [newRepoDesc, setNewRepoDesc] = useState("");
-  const [newRepoPrivate, setNewRepoPrivate] = useState(false);
+  /* live */
+  const [liveStatus, setLiveStatus] = useState<PagesStatus | null>(null);
+  const [checkRes, setCheckRes] = useState<string | null>(null);
 
-  const [live, setLive] = useState<PagesStatus | null>(null);
-  const [liveOwner, setLiveOwner] = useState("");
-  const [liveRepo, setLiveRepo] = useState("");
-  const [liveLoaded, setLiveLoaded] = useState(false);
-  const [siteUrl, setSiteUrl] = useState("");
-  const [site, setSite] = useState<SiteCheck | null>(null);
-  const [siteChecked, setSiteChecked] = useState(false);
-  const [siteBusy, setSiteBusy] = useState(false);
+  /* ---------- boot: connection status ---------- */
+  useEffect(() => {
+    void refreshStatus();
+  }, []);
 
-  const pushLog = (...lines: string[]) => {
-    setLog((prev) => [...prev, ...lines].slice(-40));
-  };
+  const refreshStatus = useCallback(async () => {
+    const res = await ghStatus();
+    setConnected(res.connected);
+    setViaEnv(res.viaEnv);
+    setLogin(res.login);
+  }, []);
 
-  const persistToken = (t: string) => {
-    setToken(t);
-    if (t) localStorage.setItem(TOKEN_KEY, t);
-    else localStorage.removeItem(TOKEN_KEY);
-  };
-
-  async function connect() {
-    if (!token.trim()) return;
-    setBusy(true);
-    setError(null);
-    const res = await validateGhToken(token.trim());
-    setBusy(false);
-    if (!res.ok) {
-      setError(res.error ?? "Connection failed");
-      setUser(null);
-      return;
-    }
-    setUser(res.data ?? null);
-    persistToken(token.trim());
-    setOwner(res.data?.login ?? "");
-    setLiveOwner(res.data?.login ?? "");
-    pushLog(`connected as @${res.data?.login}`);
-  }
-
-  async function disconnect() {
-    persistToken("");
-    setUser(null);
-    setRepos([]);
-    setLive(null);
-    setLiveLoaded(false);
-    pushLog("disconnected");
-  }
-
-  async function loadRepos() {
-    if (!token.trim()) return;
-    setBusy(true);
-    setError(null);
-    const res = await listRepos(token);
-    setBusy(false);
-    if (!res.ok) {
-      setError(res.error ?? "Failed to list repos");
-      return;
-    }
-    setRepos(res.data ?? []);
-    pushLog(`loaded ${res.data?.length ?? 0} repositories`);
-  }
-
-  async function makeRepo() {
-    if (!token.trim() || !newRepoName.trim()) return;
-    setBusy(true);
-    setError(null);
-    const res = await createRepo(token, {
-      name: newRepoName,
-      description: newRepoDesc,
-      isPrivate: newRepoPrivate,
-    });
-    setBusy(false);
-    if (!res.ok) {
-      setError(res.error ?? "Failed to create repo");
-      return;
-    }
-    const r = res.data!;
-    setOwner(r.full_name.split("/")[0]);
-    setRepo(r.name);
-    setNewRepoName("");
-    setNewRepoDesc("");
-    pushLog(`created ${r.full_name} (${r.private ? "private" : "public"})`);
-    await loadRepos();
-    setTab("deploy");
-  }
-
-  async function deploy() {
-    if (!token.trim() || !owner.trim() || !repo.trim()) return;
-    setBusy(true);
-    setError(null);
-    setLastDeploy(null);
-    setLog([]);
-    pushLog("→ starting GitHub Pages deployment…");
+  /* ---------- connect / disconnect ---------- */
+  const connect = async () => {
+    setBusy(true); setErr(null);
     try {
-      // For user.github.io/org.github.io repos Next exports with bare paths;
-      // any other repo lives at /<repo> on Pages and needs a basePath.
-      const basePath = repo.toLowerCase().endsWith(".github.io") ? undefined : `/${repo}`;
-      if (basePath) pushLog(`basePath: ${basePath} (assets must live under this subpath)`);
-      const doDeploy = async () => {
-        const out = await deployToPages(token, { owner, repo, branch, cname, prune: prune });
-        if (!out.ok) throw new Error(out.error ?? "deploy failed");
-        const d = out.data!;
-        setLastDeploy(d);
-        pushLog(
-          `uploaded ${d.uploaded} · updated ${d.updated} · deleted ${d.deleted} · unchanged ${d.unchanged}`,
-          d.pagesUrl ? `pages: ${d.pagesUrl}` : "pages: not detected yet",
-          d.pagesStatus ? `status: ${d.pagesStatus}` : ""
-        );
-      };
-      if (rebuild) {
-        pushLog("building static export (npm run build:pages)…");
-        const b = await buildStaticExport({ basePath });
-        if (!b.ok) throw new Error(b.error ?? "export build failed");
-        pushLog("static export ok —", `out/${b.data?.tail ? "tail below" : ""}`.trim());
-        if (b.data?.tail) pushLog(...b.data.tail.split("\n").filter(Boolean).slice(-6));
-        await doDeploy();
-      } else {
-        pushLog("using existing out/ (rebuild disabled)");
-        await doDeploy();
-      }
-      pushLog("✓ done — Pages build takes ~1 min, watch the Live tab.");
-      setLiveOwner(owner);
-      setLiveRepo(repo);
-      if (lastDeploy?.pagesUrl) setSiteUrl(lastDeploy.pagesUrl);
-      setLiveLoaded(false);
-      setProg(null);
+      const res = await ghConnect({ token: tokenInput });
+      if (!res.ok) throw new Error(res.error ?? "Connection failed");
+      if (!res.data?.login) throw new Error(res.error ?? "Token rejected by GitHub");
+      setTokenInput("");
+      await refreshStatus();
+      setTab("deploy");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Deploy failed");
+      setErr(e instanceof Error ? e.message : "Connection failed");
     } finally {
       setBusy(false);
     }
-  }
+  };
 
-  async function refreshLive() {
-    if (!token.trim() || !liveOwner.trim() || !liveRepo.trim()) return;
-    const res = await pagesStatus(token, liveOwner, liveRepo);
-    if (res.ok) {
-      setLive(res.data ?? null);
-      setLiveLoaded(true);
-      if (res.data?.htmlUrl && !siteUrl) setSiteUrl(res.data.htmlUrl);
-    }
-  }
+  const disconnect = async () => {
+    await ghDisconnect();
+    setTokenInput(""); setLogin(null); setConnected(false); setViaEnv(false);
+    setRepos([]); setRepoLoaded(false);
+  };
 
+  /* ---------- repos ---------- */
+  const loadRepos = async () => {
+    setBusy(true); setErr(null);
+    try {
+      const res = await listRepos();
+      if (!res.ok) throw new Error(res.error);
+      setRepos(res.data!); setRepoLoaded(true);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Failed to load repos");
+    } finally { setBusy(false); }
+  };
+
+  const makeRepo = async () => {
+    setBusy(true); setErr(null);
+    try {
+      const res = await createRepo({ name: newRepoName, isPrivate });
+      if (!res.ok) throw new Error(res.error);
+      setNewRepoName("");
+      await loadRepos(); setRepoLoaded(true);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Create failed");
+    } finally { setBusy(false); }
+  };
+
+  /* ---------- deploy pipeline ---------- */
+  const runDeploy = async () => {
+    setBusy(true); setErr(null); setDeployMsg(null);
+    try {
+      if (rebuild) {
+        const b = await buildStaticExport({ basePath: "/YousofLHC" });
+        if (!b.ok) throw new Error(b.error);
+      }
+      const res = await deployToPages({ owner, repo, branch, cname: cname || undefined, prune });
+      if (!res.ok) throw new Error(res.error);
+      const s = res.data!;
+      setDeployMsg(
+        `Deployed ✓ — ${s.uploaded} added · ${s.updated} updated · ${s.deleted} removed` +
+        (s.pagesUrl ? ` → ${s.pagesUrl}` : "")
+      );
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Deploy failed");
+    } finally { setBusy(false); }
+  };
+
+  /* progress polling while deploying */
   useEffect(() => {
     if (!busy) return;
-    const id = setInterval(async () => {
-      const p = await deployProgress();
-      if (p.ok && p.data) setProg(p.data);
-    }, 600);
-    return () => clearInterval(id);
+    const iv = setInterval(async () => {
+      const r = await deployProgress();
+      if (r.ok && r.data !== undefined && r.data !== null) setProg(r.data);
+    }, 800);
+    return () => clearInterval(iv);
   }, [busy]);
 
+  /* live status */
+  const refreshLive = async () => {
+    setBusy(true);
+    try {
+      const res = await pagesStatus(owner, repo);
+      if (res.ok && res.data) setLiveStatus(res.data);
+    } finally { setBusy(false); }
+  };
   useEffect(() => {
-    if (tab !== "live") return;
-    const t = setTimeout(refreshLive, 0);
-    const id = setInterval(refreshLive, 8000);
-    return () => {
-      clearTimeout(t);
-      clearInterval(id);
-    };
+    if (tab === "live" && connected) void refreshLive();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab, liveOwner, liveRepo, token]);
+  }, [tab]);
 
-  useEffect(() => {
-    if (tab !== "live" || !siteUrl.trim()) return;
-    const t = setTimeout(refreshSite, 0);
-    const id = setInterval(refreshSite, 15000);
-    return () => {
-      clearTimeout(t);
-      clearInterval(id);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab, siteUrl, token]);
+  const doSiteCheck = async () => {
+    const url = `https://${owner}.github.io/${repo}/`;
+    setCheckRes("checking…");
+    const res = await checkSite(url);
+    if (res.ok)
+      setCheckRes(`${res.data!.status} in ${res.data!.ms} ms · ${(res.data!.size / 1024).toFixed(0)} KB`);
+    else setCheckRes(res.error ?? "failed");
+  };
 
-  async function refreshSite() {
-    if (!siteUrl.trim() || siteBusy) return;
-    setSiteBusy(true);
-    const res = await checkSite(siteUrl.trim());
-    setSiteBusy(false);
-    if (res.ok) {
-      setSite(res.data ?? null);
-      setSiteChecked(true);
-    }
-  }
-
-  const tabs: { id: Tab; label: string; icon: typeof Globe }[] = [
-    { id: "connect", label: "Connect", icon: KeyRound },
-    { id: "repos", label: "Repositories", icon: FolderGit2 },
-    { id: "deploy", label: "Deploy", icon: Rocket },
-    { id: "live", label: "Live status", icon: Activity },
-  ];
+  /* ================================================================== */
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="section-kicker">deployment</p>
-          <h1 className="heading mt-2 flex items-center gap-2 text-3xl">
-            <Globe size={26} className="text-ink" /> GitHub Studio
-          </h1>
-          <p className="mt-2 text-sm text-dim">
-            Connect any GitHub account, create repositories and publish your static site to{" "}
-            <span className="font-mono text-xs text-cyan">github.io</span> — fully automatic,
-            straight from this admin panel. The main dynamic site is untouched.
-          </p>
-        </div>
-        {user && (
-          <div className="flex items-center gap-3 rounded-xl border border-line bg-panel/60 px-4 py-2.5">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={user.avatar_url}
-              alt=""
-              width={36}
-              height={36}
-              className="rounded-full ring-2 ring-cyan/40"
-            />
-            <div>
-              <p className="text-sm font-semibold text-ink">@{user.login}</p>
-              <p className="font-mono text-[10px] text-faint">{user.name ?? user.login} · {user.plan ?? "free"} plan</p>
-            </div>
-            <button
-              onClick={disconnect}
-              className="rounded-md p-1.5 text-faint transition-colors hover:bg-magenta/10 hover:text-magenta"
-              title="Disconnect"
-            >
-              <Trash2 size={14} />
-            </button>
-          </div>
-        )}
-      </header>
-
-      {error && (
-        <div className="flex items-start gap-2 rounded-xl border border-magenta/40 bg-magenta/5 p-4 text-sm text-dim">
-          <XCircle size={16} className="mt-0.5 shrink-0 text-magenta" />
-          <span className="font-mono text-xs whitespace-pre-wrap">{error}</span>
-        </div>
-      )}
-
-      <div className="flex w-max gap-1 rounded-xl border border-line bg-panel/80 p-1 backdrop-blur-md">
-        {tabs.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 font-mono text-[11px] uppercase tracking-wider transition-all ${
-              tab === t.id ? "bg-cyan/15 text-cyan" : "text-dim hover:bg-panel-2 hover:text-ink"
-            }`}
-          >
-            <t.icon size={13} />
-            {t.label}
-          </button>
-        ))}
+    <div className="space-y-6">
+      {/* tabs */}
+      <div className="flex flex-wrap gap-2">
+        <button onClick={() => setTab("connect")} className={tabBtn(tab === "connect")}>
+          <KeyRound size={13} className="mr-1.5 inline" /> Connect
+        </button>
+        <button onClick={() => setTab("deploy")} className={tabBtn(tab === "deploy")}>
+          <Rocket size={13} className="mr-1.5 inline" /> Deploy
+        </button>
+        <button onClick={() => setTab("live")} className={tabBtn(tab === "live")}>
+          <Globe size={13} className="mr-1.5 inline" /> Live status
+        </button>
+        <button onClick={() => setTab("guide")} className={tabBtn(tab === "guide")}>
+          How to deploy
+        </button>
       </div>
 
-      {/* ---------- connect ---------- */}
-      {tab === "connect" && (
-        <div className="card max-w-2xl p-6">
-          <h2 className="heading flex items-center gap-2 text-lg">
-            <KeyRound size={16} className="text-cyan" /> Personal Access Token
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-dim">
-            Create a token at{" "}
-            <a href="https://github.com/settings/tokens" target="_blank" className="text-cyan underline decoration-cyan/40 underline-offset-4">
-              github.com/settings/tokens
-            </a>{" "}
-            — a <b className="text-ink">fine-grained token</b> with <code className="rounded bg-panel-2 px-1 font-mono text-[11px] text-cyan">Contents: Read/Write</code> and{" "}
-            <code className="rounded bg-panel-2 px-1 font-mono text-[11px] text-cyan">Pages: Read/Write</code> on the repos you want to publish, or a{" "}
-            <b className="text-ink">classic token</b> with the <code className="rounded bg-panel-2 px-1 font-mono text-[11px] text-cyan">repo</code> scope.
-            The token stays in your browser (localStorage) and is sent only to the GitHub API through this server — it is never logged.
-          </p>
-          <div className="mt-5 flex items-end gap-2">
-            <div className="flex-1">
-              <Field
-                label="GitHub token"
-                type={showToken ? "text" : "password"}
-                value={token}
-                onChange={(v) => {
-                  setToken(v);
-                  setError(null);
-                }}
-                placeholder="ghp_… or github_pat_…"
-              />
-            </div>
-            <button
-              onClick={() => setShowToken((s) => !s)}
-              className="mb-1 rounded-lg border border-line bg-panel-2/50 p-2.5 text-faint transition-colors hover:text-ink"
-              title={showToken ? "Hide" : "Show"}
-            >
-              {showToken ? <EyeOff size={15} /> : <Eye size={15} />}
-            </button>
-            <button onClick={connect} disabled={busy || !token.trim()} className="btn btn-primary disabled:opacity-50">
-              {busy ? <Loader2 size={15} className="animate-spin" /> : <ShieldCheck size={15} />}
-              Validate & connect
-            </button>
-          </div>
-          {user && (
-            <div className="mt-4 flex items-center gap-2 rounded-lg border border-emerald/40 bg-emerald/10 px-3 py-2 font-mono text-xs text-emerald">
-              <CheckCircle2 size={13} /> authenticated as @{user.login} — token works
-            </div>
-          )}
-        </div>
+      {err && (
+        <p className="flex items-center gap-2 rounded-lg border border-magenta/40 bg-magenta/10 px-4 py-2.5 text-sm text-magenta">
+          <XCircle size={15} /> {err}
+        </p>
       )}
 
-      {/* ---------- repositories ---------- */}
-      {tab === "repos" && (
-        <div className="card p-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="heading flex items-center gap-2 text-lg">
-              <FolderGit2 size={16} className="text-violet" /> Repositories
+      {/* ---------------- CONNECT ---------------- */}
+      {tab === "connect" && (
+        <Card>
+          <div className="mb-5 flex items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 font-display text-lg text-ink">
+              <KeyRound size={16} className="text-cyan" /> Personal Access Token
             </h2>
-            <button onClick={loadRepos} disabled={busy || !token.trim()} className="btn btn-ghost py-2 text-xs disabled:opacity-50">
-              <RefreshCw size={13} className={busy ? "animate-spin" : ""} /> Refresh
-            </button>
+            {connected !== null && connected && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald/40 bg-emerald/10 px-3 py-1 font-mono text-xs text-emerald">
+                <ShieldCheck size={12} /> {viaEnv ? "env GITHUB_TOKEN" : login ? `@${login}` : "connected"}
+              </span>
+            )}
           </div>
-          {repos.length > 0 ? (
-            <div className="mt-4 divide-y divide-line">
-              {repos.map((r) => (
-                <div key={r.full_name} className="flex items-center justify-between gap-4 py-3">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-panel-2 text-faint">
-                      <FolderGit2 size={14} />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-ink">{r.full_name}</p>
-                      <p className="truncate font-mono text-[11px] text-faint">
-                        {r.description ?? "—"} · default: {r.default_branch}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    {r.private && (
-                      <span className="rounded-full border border-amber/40 bg-amber/10 px-2 py-0.5 font-mono text-[10px] text-amber">
-                        private
-                      </span>
-                    )}
-                    {r.pages_enabled && (
-                      <span className="rounded-full border border-emerald/40 bg-emerald/10 px-2 py-0.5 font-mono text-[10px] text-emerald">
-                        pages
-                      </span>
-                    )}
-                    <a href={r.html_url} target="_blank" className="rounded-md p-1.5 text-faint transition-colors hover:text-cyan">
-                      <ExternalLink size={14} />
-                    </a>
-                    <button
-                      onClick={() => {
-                        setOwner(r.full_name.split("/")[0]);
-                        setRepo(r.name);
-                        setTab("deploy");
-                      }}
-                      className="rounded-md border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-cyan transition-colors hover:bg-cyan/10"
-                    >
-                      deploy
-                    </button>
-                  </div>
-                </div>
-              ))}
+
+          <p className="mb-3 max-w-2xl text-sm leading-6 text-dim">
+            Create a token at{" "}
+            <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noreferrer" className="text-cyan underline decoration-cyan/40 underline-offset-2">
+              github.com/settings/tokens
+            </a>{" "}
+            — a <b className="text-ink">fine-grained token</b> limited to this repo with{" "}
+            <b className="text-ink">Contents: Read &amp; write</b> and{" "}
+            <b className="text-ink">Pages: Read &amp; write</b> permissions.
+            The token is validated once, then stored <b className="text-ink">only server-side</b> in an
+            encrypted httpOnly cookie for 12&nbsp;h — it never touches the browser storage or any page HTML.
+            {viaEnv && (
+              <span className="mt-2 block text-[12px] text-emerald">
+                ● Currently using the GITHUB_TOKEN default from .env.local
+              </span>
+            )}
+          </p>
+
+          <div className="max-w-xl space-y-3">
+            <Field label="GitHub token">
+              <div className="relative">
+                <TextInput
+                  type={showTok ? "text" : "password"}
+                  value={tokenInput}
+                  onChange={(e) => setTokenInput(e.target.value)}
+                  placeholder="github_pat_… or ghp_…"
+                  autoComplete="off"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowTok((s) => !s)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-faint hover:text-cyan"
+                >
+                  {showTok ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
+              </div>
+            </Field>
+
+            <div className="flex flex-wrap gap-2">
+              <button onClick={() => void connect()} disabled={busy || !tokenInput.trim()} className="btn btn-primary disabled:opacity-50">
+                {busy ? <Loader2 size={14} className="animate-spin" /> : <KeyRound size={14} />} Connect
+              </button>
+              {connected && (
+                <button onClick={() => void disconnect()} disabled={busy} className="btn btn-ghost !text-magenta">
+                  <XCircle size={14} /> Disconnect
+                </button>
+              )}
             </div>
-          ) : (
-            <p className="mt-4 font-mono text-xs text-faint">
-              {token.trim() ? "Connect first, then Refresh." : "No repositories loaded."}
+          </div>
+        </Card>
+      )}
+
+      {/* ---------------- DEPLOY ---------------- */}
+      {tab === "deploy" && (
+        <div className="space-y-6">
+          {!connected && (
+            <p className="rounded-lg border border-amber/40 bg-amber/10 px-4 py-3 text-sm text-dim">
+              ⚠ Connect a token first (Connect tab).
             </p>
           )}
 
-          <div className="mt-6 border-t border-line pt-5">
-            <h3 className="heading flex items-center gap-2 text-sm">
-              <Plus size={14} className="text-cyan" /> Create repository
-            </h3>
-            <div className="mt-3 grid gap-3 sm:grid-cols-3">
-              <Field label="Name (required)" value={newRepoName} onChange={setNewRepoName} placeholder="my-site" />
-              <div className="sm:col-span-2">
-                <Field label="Description" value={newRepoDesc} onChange={setNewRepoDesc} />
-              </div>
+          <Card>
+            <h2 className="mb-4 font-display text-lg text-ink">Repository</h2>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <Field label="Owner"><TextInput value={owner} onChange={(e) => setOwner(e.target.value)} /></Field>
+              <Field label="Repo"><TextInput value={repo} onChange={(e) => setRepo(e.target.value)} /></Field>
+              <Field label="Branch"><TextInput value={branch} onChange={(e) => setBranch(e.target.value)} /></Field>
             </div>
-            <div className="mt-3 flex items-center gap-3">
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={newRepoPrivate}
-                  onChange={(e) => setNewRepoPrivate(e.target.checked)}
-                  className="accent-cyan"
-                />
-                <span className="font-mono text-[11px] text-dim">private</span>
+
+            <details className="mt-4 rounded-lg border border-line px-4 py-2.5" open={repoLoaded}>
+              <summary className="cursor-pointer font-mono text-[11px] uppercase tracking-wider text-faint">
+                repositories ({repos.length})
+              </summary>
+              <div className="mt-2 flex gap-2">
+                <button onClick={() => void loadRepos()} disabled={busy || !connected} className="chip !py-1 !text-[10px]">
+                  <RefreshCw size={11} className="mr-1 inline" /> Refresh list
+                </button>
+              </div>
+              <ul className="mt-2 max-h-44 space-y-1 overflow-y-auto">
+                {repos.map((r) => (
+                  <li key={r.full_name}>
+                    <button
+                      onClick={() => { const [o, rn] = r.full_name.split("/"); setOwner(o); setRepo(rn); }}
+                      className={`w-full truncate rounded-md px-2 py-1 text-left font-mono text-[12px] ${
+                        repo === r.name ? "bg-cyan/10 text-cyan" : "text-dim hover:bg-panel hover:text-ink"
+                      }`}
+                    >
+                      {r.full_name}{r.private ? " 🔒" : ""}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </details>
+
+            <details className="mt-3 rounded-lg border border-line px-4 py-2.5">
+              <summary className="cursor-pointer font-mono text-[11px] uppercase tracking-wider text-faint">create a new repository</summary>
+              <div className="mt-2 flex flex-wrap items-end gap-2">
+                <div className="min-w-48 flex-1"><Field label="Repo name"><TextInput value={newRepoName} onChange={(e) => setNewRepoName(e.target.value)} placeholder="my-site-repo" /></Field></div>
+                <label className="flex cursor-pointer items-center gap-2 pb-2 font-mono text-xs text-dim">
+                  <input type="checkbox" checked={isPrivate} onChange={(e) => setIsPrivate(e.target.checked)} className="accent-cyan" /> private
+                </label>
+                <button onClick={() => void makeRepo()} disabled={busy || !newRepoName.trim() || !connected} className="btn btn-ghost !py-2 !text-[12px]">Create</button>
+              </div>
+            </details>
+          </Card>
+
+          <Card>
+            <h2 className="mb-4 font-display text-lg text-ink">Deploy pipeline</h2>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="flex cursor-pointer items-center gap-2 font-mono text-xs text-dim">
+                <input type="checkbox" checked={rebuild} onChange={(e) => setRebuild(e.target.checked)} className="accent-cyan" />
+                rebuild static export before push (out/)
               </label>
-              <button onClick={makeRepo} disabled={busy || !token.trim() || !newRepoName.trim()} className="btn btn-ghost py-2 text-xs disabled:opacity-50">
-                {busy ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
-                Create & deploy
-              </button>
+              <label className="flex cursor-pointer items-center gap-2 font-mono text-xs text-dim">
+                <input type="checkbox" checked={prune} onChange={(e) => setPrune(e.target.checked)} className="accent-cyan" />
+                prune files deleted locally
+              </label>
+              <Field label="Custom domain (optional)"><TextInput value={cname} onChange={(e) => setCname(e.target.value)} placeholder="mysite.com" /></Field>
             </div>
-          </div>
-        </div>
-      )}
 
-      {/* ---------- deploy ---------- */}
-      {tab === "deploy" && (
-        <div className="card p-6">
-          <h2 className="heading flex items-center gap-2 text-lg">
-            <Rocket size={16} className="text-emerald" /> Publish to GitHub Pages
-          </h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <Field label="Owner" value={owner} onChange={setOwner} list="gh-owners" placeholder="YousofLHC" />
-            <Field label="Repository" value={repo} onChange={setRepo} list="gh-repos" placeholder="my-site" />
-            <datalist id="gh-owners">
-              {user && <option value={user.login} />}
-            </datalist>
-            <datalist id="gh-repos">
-              {repos.map((r) => (
-                <option key={r.name} value={r.name} />
-              ))}
-            </datalist>
-            <Field label="Branch" value={branch} onChange={setBranch} placeholder="gh-pages" />
-            <Field label="Custom domain (optional CNAME)" value={cname} onChange={setCname} placeholder="yourdomain.com" />
-          </div>
-          <div className="mt-4 flex flex-wrap items-center gap-5">
-            <label className="flex items-center gap-2">
-              <input type="checkbox" checked={prune} onChange={(e) => setPrune(e.target.checked)} className="accent-cyan" />
-              <span className="flex items-center gap-1 font-mono text-[11px] text-dim">
-                <Trash2 size={11} /> prune removed files
-              </span>
-            </label>
-            <label className="flex items-center gap-2">
-              <input type="checkbox" checked={rebuild} onChange={(e) => setRebuild(e.target.checked)} className="accent-cyan" />
-              <span className="flex items-center gap-1 font-mono text-[11px] text-dim">
-                <FileCode2 size={11} /> rebuild static export first
-              </span>
-            </label>
-          </div>
-          <button
-            onClick={deploy}
-            disabled={busy || !token.trim() || !owner.trim() || !repo.trim()}
-            className="btn btn-primary mt-5 w-full disabled:opacity-50"
-          >
-            {busy ? <Loader2 size={16} className="animate-spin" /> : <Rocket size={16} />}
-            {busy ? "Deploying…" : "Build & deploy"}
-          </button>
-
-          {busy && prog && (
-            <div className="mt-4 rounded-xl border border-line bg-panel/50 p-4">
-              <div className="flex items-center justify-between font-mono text-[11px] text-dim">
-                <span className="uppercase tracking-wider text-cyan">
-                  {prog.stage === "branch" && "preparing branch"}
-                  {prog.stage === "tree" && "diffing remote tree"}
-                  {prog.stage === "upload" && `uploading files (${prog.current}/${prog.total})`}
-                  {prog.stage === "prune" && "pruning removed files"}
-                  {prog.stage === "pages" && "enabling GitHub Pages"}
-                  {prog.stage === "done" && "done"}
-                </span>
-                {prog.stage === "upload" && (
-                  <span>{Math.round((prog.current / Math.max(1, prog.total)) * 100)}%</span>
-                )}
-              </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-panel-2">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-cyan to-violet transition-all duration-300"
-                  style={{
-                    width:
-                      prog.stage === "upload"
-                        ? `${(prog.current / Math.max(1, prog.total)) * 100}%`
-                        : prog.stage === "prune" || prog.stage === "tree"
-                          ? "45%"
-                          : prog.stage === "pages"
-                            ? "90%"
-                            : "100%",
-                  }}
-                />
-              </div>
-              {prog.detail && <p className="mt-2 truncate font-mono text-[10px] text-faint">{prog.detail}</p>}
-            </div>
-          )}
-
-          {log.length > 0 && (
-            <pre className="mt-4 max-h-64 overflow-auto rounded-xl border border-line bg-void/60 p-4 font-mono text-[11px] leading-5 text-dim">
-              {log.join("\n")}
-            </pre>
-          )}
-
-          {lastDeploy && (
-            <div className="mt-4 grid gap-2 rounded-xl border border-emerald/40 bg-emerald/5 p-4 sm:grid-cols-4">
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-faint">uploaded</p>
-                <p className="font-mono text-lg text-emerald">{lastDeploy.uploaded}</p>
-              </div>
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-faint">updated</p>
-                <p className="font-mono text-lg text-cyan">{lastDeploy.updated}</p>
-              </div>
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-faint">deleted</p>
-                <p className="font-mono text-lg text-magenta">{lastDeploy.deleted}</p>
-              </div>
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-wider text-faint">unchanged</p>
-                <p className="font-mono text-lg text-faint">{lastDeploy.unchanged}</p>
-              </div>
-              {lastDeploy.pagesUrl && (
-                <a href={lastDeploy.pagesUrl} target="_blank" className="btn btn-ghost sm:col-span-4 py-2 text-xs">
-                  <ExternalLink size={13} className="text-cyan" /> {lastDeploy.pagesUrl}
-                </a>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ---------- live ---------- */}
-      {tab === "live" && (
-        <div className="card p-6">
-          <h2 className="heading flex items-center gap-2 text-lg">
-            <Activity size={16} className="text-amber" /> Live status
-          </h2>
-          <p className="mt-1 text-xs text-dim">Auto-refreshes every 8 seconds while this tab is open.</p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <Field label="Owner" value={liveOwner} onChange={setLiveOwner} placeholder="YousofLHC" />
-            <Field label="Repository" value={liveRepo} onChange={setLiveRepo} placeholder="my-site" />
-          </div>
-          <div className="mt-4 flex gap-2.5">
-            <button onClick={() => { setLiveLoaded(false); refreshLive(); }} disabled={!token.trim() || !liveOwner.trim() || !liveRepo.trim() || busy} className="btn btn-ghost py-2 text-xs disabled:opacity-50">
-              <RefreshCw size={13} className={busy ? "animate-spin" : ""} /> Refresh now
-            </button>
-          </div>
-
-          {/* site reachability — real HTTP check */}
-          <div className="mt-6 rounded-xl border border-line bg-panel/50 p-4">
-            <h3 className="heading flex items-center gap-2 text-sm">
-              <Globe size={14} className="text-emerald" /> Site reachability
-            </h3>
-            <div className="mt-3 flex items-end gap-2">
-              <div className="flex-1">
-                <Field label="Published URL" value={siteUrl} onChange={setSiteUrl} placeholder="https://user.github.io/repo/" />
-              </div>
-              <button onClick={refreshSite} disabled={!siteUrl.trim() || siteBusy} className="btn btn-ghost py-2 text-xs disabled:opacity-50">
-                <RefreshCw size={13} className={siteBusy ? "animate-spin" : ""} /> Check now
-              </button>
-            </div>
-            {siteChecked && site && (
-              <div
-                className={`mt-3 flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 ${
-                  site.status >= 200 && site.status < 400
-                    ? "border-emerald/40 bg-emerald/10"
-                    : "border-magenta/40 bg-magenta/10"
-                }`}
-              >
-                <span className="flex items-center gap-2 font-mono text-xs">
-                  {site.status >= 200 && site.status < 400 ? (
-                    <CheckCircle2 size={14} className="text-emerald" />
-                  ) : (
-                    <XCircle size={14} className="text-magenta" />
-                  )}
-                  <span className={site.status >= 200 && site.status < 400 ? "text-emerald" : "text-magenta"}>
-                    HTTP {site.status}
-                  </span>
-                  <span className="text-dim">
-                    {site.ms}ms · {(site.size / 1024).toFixed(1)} KB
-                  </span>
-                </span>
-                <span className="font-mono text-[11px] text-faint">
-                  {site.status >= 200 && site.status < 400 ? "live & serving" : "unreachable"}
-                </span>
+            {prog && busy && (
+              <div className="mt-5 rounded-lg border border-line bg-void/60 p-4 font-mono text-xs">
+                <p className="text-cyan">stage: {prog.stage} — {prog.detail}</p>
+                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-line">
+                  <div className="h-full bg-cyan transition-all" style={{ width: `${Math.round((prog.current / Math.max(prog.total, 1)) * 100)}%` }} />
+                </div>
               </div>
             )}
-            {!siteChecked && (
-              <p className="mt-3 font-mono text-[11px] text-faint">
-                Auto-checks this URL every 15 s — real HTTP request from the server.
+
+            {deployMsg && (
+              <p className="mt-4 flex items-start gap-2 rounded-lg border border-emerald/40 bg-emerald/10 px-4 py-2.5 text-sm text-emerald">
+                <CheckCircle2 size={15} className="shrink-0" /> {deployMsg}
               </p>
             )}
-          </div>
 
-          {liveLoaded && live ? (
-            <div className="mt-5 space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-panel/50 p-4">
-                <div className="flex items-center gap-3">
-                  <span className={`rounded-full border px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider ${STATUS_COLOR[live.status ?? "none"] ?? STATUS_COLOR.none}`}>
-                    {live.status ?? "not enabled"}
-                  </span>
-                  {live.lastBuild?.status && (
-                    <span className={`rounded-full border px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider ${STATUS_COLOR[live.lastBuild.status] ?? STATUS_COLOR.none}`}>
-                      build: {live.lastBuild.status}
-                    </span>
-                  )}
-                  {live.customDomain && (
-                    <span className="flex items-center gap-1 font-mono text-[11px] text-cyan">
-                      <Globe size={12} /> {live.customDomain}
-                    </span>
-                  )}
-                  {live.httpsEnforced === true && (
-                    <span className="flex items-center gap-1 font-mono text-[11px] text-emerald">
-                      <ShieldCheck size={12} /> https
-                    </span>
-                  )}
-                </div>
-                {live.htmlUrl && (
-                  <a href={live.htmlUrl} target="_blank" className="flex items-center gap-1.5 font-mono text-xs text-cyan underline decoration-cyan/40 underline-offset-4">
-                    <ExternalLink size={12} /> {live.htmlUrl}
-                  </a>
-                )}
-              </div>
-              {live.lastBuild && (
-                <div className="grid gap-3 rounded-xl border border-line bg-panel/50 p-4 sm:grid-cols-3">
-                  <div>
-                    <p className="font-mono text-[10px] uppercase tracking-wider text-faint">last build</p>
-                    <p className="mt-1 font-mono text-xs text-ink">{live.lastBuild.status ?? "—"}</p>
-                  </div>
-                  <div>
-                    <p className="font-mono text-[10px] uppercase tracking-wider text-faint">duration</p>
-                    <p className="mt-1 flex items-center gap-1 font-mono text-xs text-ink">
-                      <Clock3 size={11} className="text-faint" /> {live.lastBuild.duration != null ? `${Math.round(live.lastBuild.duration / 1000)}s` : "—"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="font-mono text-[10px] uppercase tracking-wider text-faint">updated</p>
-                    <p className="mt-1 font-mono text-xs text-ink">{live.lastBuild.updatedAt ? new Date(live.lastBuild.updatedAt).toLocaleString() : "—"}</p>
-                  </div>
-                  {live.lastBuild.error && (
-                    <p className="rounded-lg border border-magenta/40 bg-magenta/5 p-3 font-mono text-[11px] text-magenta sm:col-span-3">
-                      build error: {live.lastBuild.error}
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {live.builds.length > 1 && (
-                <div className="rounded-xl border border-line bg-panel/50 p-4">
-                  <p className="font-mono text-[10px] uppercase tracking-wider text-faint">recent builds</p>
-                  <div className="mt-2 divide-y divide-line">
-                    {live.builds.map((b, i) => (
-                      <div key={i} className="flex items-center justify-between gap-3 py-2">
-                        <span className={`rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${STATUS_COLOR[b.status ?? "none"] ?? STATUS_COLOR.none}`}>
-                          {b.status ?? "—"}
-                        </span>
-                        <span className="font-mono text-[10px] text-faint">
-                          {b.updatedAt ? new Date(b.updatedAt).toLocaleString() : "—"}
-                          {b.duration != null ? ` · ${Math.round(b.duration / 1000)}s` : ""}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  {live.builds.some((b) => b.error) && (
-                    <p className="mt-2 rounded-lg border border-magenta/40 bg-magenta/5 p-2.5 font-mono text-[11px] text-magenta">
-                      {live.builds.find((b) => b.error)?.error}
-                    </p>
-                  )}
-                </div>
-              )}
-              <div className="flex items-center gap-2 rounded-xl border border-line bg-panel/50 p-4">
-                <GitBranch size={13} className="text-faint" />
-                <span className="font-mono text-[11px] text-dim">
-                  Deploy branch: <span className="text-ink">{branch}</span> — tip: after deploying, wait ~1 minute for the first build, then refresh here.
-                </span>
-              </div>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <button onClick={() => void runDeploy()} disabled={busy || !connected}
+                className="btn btn-primary disabled:opacity-50">
+                {busy ? <Loader2 size={15} className="animate-spin" /> : <Rocket size={15} />}
+                Build &amp; Deploy to Pages
+              </button>
+              <a href={`https://${owner}.github.io/${repo}/`} target="_blank" rel="noreferrer" className="btn btn-ghost">
+                <ExternalLink size={14} /> open live site
+              </a>
             </div>
-          ) : (
-            <p className="mt-5 font-mono text-xs text-faint">Enter owner/repo and hit Refresh to see build status.</p>
-          )}
+          </Card>
         </div>
+      )}
+
+      {/* ---------------- LIVE STATUS ---------------- */}
+      {tab === "live" && (
+        <div className="space-y-6">
+          <Card>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-display text-lg text-ink">GitHub Pages status</h2>
+              <button onClick={() => void refreshLive()} disabled={busy} className="chip !py-1.5 !text-[11px]">
+                <RefreshCw size={12} className="mr-1 inline" /> refresh
+              </button>
+            </div>
+            {liveStatus ? (
+              <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+                <Row k="URL" v={liveStatus.htmlUrl} link />
+                <Row k="status" v={liveStatus.status} />
+                <Row k="custom domain" v={liveStatus.customDomain} />
+                <Row k="https enforced" v={String(liveStatus.httpsEnforced ?? "—")} />
+              </dl>
+            ) : (
+              <p className="mt-4 text-sm text-faint">Press refresh…</p>
+            )}
+            {liveStatus?.lastBuild && (
+              <p className="mt-4 font-mono text-xs text-dim">
+                last build: {liveStatus.lastBuild.status} · {liveStatus.lastBuild.duration}s
+                {liveStatus.lastBuild.error ? ` · ${liveStatus.lastBuild.error}` : ""}
+              </p>
+            )}
+          </Card>
+
+          <Card>
+            <h2 className="mb-3 font-display text-lg text-ink">Site health check</h2>
+            <button onClick={() => void doSiteCheck()} className="btn btn-primary !py-2 !text-[13px]">
+              <Globe size={14} /> Check https://{owner}.github.io/{repo}/
+            </button>
+            {checkRes && <p className="mt-3 font-mono text-xs text-dim">{checkRes}</p>}
+          </Card>
+        </div>
+      )}
+
+      {/* ---------------- GUIDE ---------------- */}
+      {tab === "guide" && (
+        <Card>
+          <h2 className="mb-5 font-display text-xl text-ink">Deploy from the dashboard — step by step</h2>
+          <ol className="space-y-5">
+            <Step n={1} title="Create the Personal Access Token">
+              Open <code>github.com/settings/personal-access-tokens/new</code> → generate a
+              <b> fine-grained token</b> scoped to <code>YousofLHC/YousofLHC</code> with
+              <b> Contents: Read &amp; Write</b> and <b>Pages: Read &amp; Write</b>.
+              Copy it (you see it only once).
+            </Step>
+            <Step n={2} title="Connect">
+              Paste it in the <b>Connect</b> tab and press Connect. It is stored
+              server-side in an encrypted httpOnly cookie for 12 h — nothing is kept in the browser.
+              Alternatively put <code>GITHUB_TOKEN=ghp_…</code> into your local{" "}
+              <code>.env.local</code> so the dashboard picks it up automatically.
+            </Step>
+            <Step n={3} title="Deploy">
+              In the <b>Deploy</b> tab confirm owner/repo (<code>YousofLHC/YousofLHC</code>) and branch
+              (<code>gh-pages</code>). Tick <i>rebuild static export</i> whenever content changed,
+              then press <b>Build &amp; Deploy to Pages</b> and watch the progress bar.
+            </Step>
+            <Step n={4} title="Verify">
+              The <b>Live status</b> tab shows Pages build state; use <i>Site health check</i> for an
+              HTTP probe of the published URL.
+            </Step>
+            <Step n={5} title="Security notes">
+              The token never enters browser storage or page HTML. Disconnect wipes it instantly.
+              Admin routes are excluded from the service worker cache. Login rate-limited.
+            </Step>
+          </ol>
+        </Card>
       )}
     </div>
   );
+
+  function Row({ k, v, link }: { k: string; v?: string | null; link?: boolean }) {
+    if (!v) return null;
+    return (
+      <div className="text-[13px]">
+        <dt className="font-mono text-[10.5px] uppercase tracking-wider text-faint">{k}</dt>
+        <dd className="mt-0.5 break-all text-dim">
+          {link ? <a href={v} target="_blank" rel="noreferrer" className="text-cyan hover:underline">{v}</a> : v}
+        </dd>
+      </div>
+    );
+  }
 }
+

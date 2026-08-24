@@ -2,6 +2,6 @@ import { ArticleManager } from "@/components/admin/article-manager";
 import { listArticles } from "@/lib/mdx";
 
 export default async function NotesManagerPage() {
-  const notes = await listArticles("notes");
+  const notes = await listArticles("notes", { includeDrafts: true });
   return <ArticleManager kind="notes" items={notes} title="Study notes" />;
 }

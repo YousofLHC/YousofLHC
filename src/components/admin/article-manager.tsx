@@ -46,7 +46,8 @@ export function ArticleManager({
           <p className="section-kicker">content</p>
           <h1 className="heading mt-2 text-3xl">{title}</h1>
           <p className="mt-2 text-sm text-dim">
-            {items.length} published · managed as Markdown files in <code>content/{kind}</code>.
+            {items.length} total ({items.filter((x) => x.draft).length} drafts) — managed as
+            Markdown files in <code>content/{kind}</code>.
           </p>
         </div>
         <Link href={`/admin/${kind}/new`} className="btn btn-primary">
@@ -77,7 +78,14 @@ export function ArticleManager({
                 className={`transition-colors hover:bg-panel/50 ${i > 0 ? "border-t border-line" : ""}`}
               >
                 <td className="max-w-[22rem] px-5 py-3.5">
-                  <p className="truncate font-medium text-ink">{a.title}</p>
+                  <p className="flex items-center gap-2 truncate font-medium text-ink">
+                    {a.title}
+                    {a.draft && (
+                      <span className="rounded-full border border-amber/50 bg-amber/10 px-1.5 py-0.5 font-mono text-[9.5px] uppercase tracking-wider text-amber">
+                        draft
+                      </span>
+                    )}
+                  </p>
                   <p className="mt-0.5 font-mono text-[11px] text-faint">{a.slug}</p>
                 </td>
                 <td className="whitespace-nowrap px-5 py-3.5 font-mono text-xs text-dim">{a.date}</td>

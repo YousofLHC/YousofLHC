@@ -67,7 +67,18 @@ try {
   if (existsSync(project)) rmSync(project, { recursive: true, force: true });
   copyTree(root, project);
 
-  const env = { ...process.env, EXPORT_MODE: "1" };
+  // Tell next.config.ts (inside the copy) where the REAL project root lives,
+  // so Turbopack pins its workspace root there instead of guessing between
+  // the two package-lock.json files. Module resolution then walks up to the
+  // real node_modules exactly like every pre-dashboard build did. The admin
+  // dashboard may spawn this from a dev server carrying NODE_ENV=development
+  // — a production export must never inherit it (breaks prerendering).
+  const env = {
+    ...process.env,
+    EXPORT_MODE: "1",
+    NODE_ENV: "production",
+    NEXT_PROJECT_ROOT: root,
+  };
   const nextBin = path.join(root, "node_modules", "next", "dist", "bin", "next");
   const generators = [
     "scripts/generate-content.mjs",

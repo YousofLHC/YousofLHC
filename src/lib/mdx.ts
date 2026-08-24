@@ -1,4 +1,9 @@
 import "katex/contrib/mhchem";
+// Pinning the default ESM instance here keeps `katex` and its mhchem
+// extension in ONE bundler module — prevents the dual-instance split that
+// made \ce{} render as raw text in some builds.
+import Katex from "katex";
+void Katex;
 import path from "path";
 import { readFileSync, readdirSync, existsSync } from "fs";
 import { evaluate } from "next-mdx-remote-client/rsc";
@@ -49,7 +54,8 @@ function readDir(dir: string): string[] {
 
 /** list the frontmatter of every .mdx in a content subfolder, newest first */
 export async function listArticles<T extends ArticleMeta = ArticleMeta>(
-  folder: string
+  folder: string,
+  opts: { includeDrafts?: boolean } = {}
 ): Promise<T[]> {
   const dir = path.join(contentRoot, folder);
   const files = readDir(dir)
@@ -61,7 +67,7 @@ export async function listArticles<T extends ArticleMeta = ArticleMeta>(
     const slug = file.replace(/\.mdx$/, "");
     const source = readFileSync(path.join(dir, file), "utf8");
     const { data } = matter(source);
-    if (data.draft) continue;
+    if (data.draft && !opts.includeDrafts) continue;
     items.push({ ...(data as T), slug } as T);
   }
   return items.sort((a, b) => (b.date || "").localeCompare(a.date || ""));

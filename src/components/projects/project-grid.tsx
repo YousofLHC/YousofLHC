@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowUpRight, FolderGit2, GitBranch } from "lucide-react";
 import type { Project } from "@/lib/data";
 import { domainColors } from "@/lib/data";
+import { CoverMedia } from "@/components/site/cover-media";
 
 const statusDot = {
   active: "bg-emerald shadow-[0_0_8px_#34d399]",
@@ -47,15 +48,12 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
             key={p.slug}
             className="card group flex h-full flex-col overflow-hidden"
           >
-            <div className="relative h-44 overflow-hidden bg-gradient-to-br from-panel-2 via-panel to-abyss">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={p.cover}
-                alt={p.title}
-                loading="lazy"
-                decoding="async"
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+                <div className="relative h-44 overflow-hidden bg-gradient-to-br from-panel-2 via-panel to-abyss">
+                  <CoverMedia
+                    src={p.cover}
+                    alt={p.title}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
               <span
                 className="absolute left-3 top-3 rounded-md px-2 py-1 font-mono text-[10px]"
                 style={{

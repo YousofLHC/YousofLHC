@@ -14,7 +14,7 @@ function readTheme(): "dark" | "light" {
   return document.documentElement.dataset.theme === "light" ? "light" : "dark";
 }
 
-const SERVER_THEME: "dark" | "light" = "dark";
+const SERVER_THEME: "dark" | "light" = "light";
 
 export function ThemeToggle({ className = "" }: { className?: string }) {
   const theme = useSyncExternalStore(subscribe, readTheme, () => SERVER_THEME);

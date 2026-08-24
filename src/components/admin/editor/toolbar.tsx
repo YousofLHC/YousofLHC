@@ -353,6 +353,162 @@ $$`,
 
 \\ce{^235_92U + ^1_0n -> ^144_56Ba + ^89_36Kr + 3 ^1_0n}`,
   },
+  {
+    label: "gather · multi-line",
+    code: `\\begin{gather}
+a_1 x + b_1 y = c_1 \\\\
+a_2 x + b_2 y = c_2
+\\end{gather}`,
+  },
+  {
+    label: "multline · long equation",
+    code: `\\begin{multline}
+f(x) = a_0 + a_1x + a_2x^2 + a_3x^3 \\\\ 
++ \\cdots + a_nx^n
+\\end{multline}`,
+  },
+  {
+    label: "split · aligned halves",
+    code: `$$
+\\begin{split}
+|x|^2 &= x\\bar{x} \\\\
+      &\\le |x|(|x|+|y|)
+\\end{split}
+$$`,
+  },
+  {
+    label: "alignedat · column pairs",
+    code: `\\begin{alignat}{2}
+x &= 1 \\\\ &\\quad + 2y &&= 3
+\\end{alignat}`,
+  },
+  {
+    label: "equation* · numbered off",
+    code: `\\begin{equation*}
+\\int_{-\\infty}^{\\infty} e^{-x^2}\\,dx = \\sqrt{\\pi}
+\\end{equation*}`,
+  },
+  {
+    label: "array · custom columns",
+    code: `$$
+\\begin{array}{c|c}
+\\text{Input} & \\text{Output} \\\\ \\hline
+0 & 1 \\\\
+1 & 0
+\\end{array}
+$$`,
+  },
+  {
+    label: "bmatrix / vmatrix",
+    code: `M = \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix},
+\\quad \\det M = \\begin{vmatrix} 1 & 2 \\\\ 3 & 4 \\end{vmatrix}`,
+  },
+  {
+    label: "substack · under sum",
+    code: `$$
+\\sum_{\\substack{ i,j \\\\ i \\neq j }} w_{ij}
+$$`,
+  },
+  {
+    label: "boxed result",
+    code: `$$
+\\boxed{ \\hat{\\beta} = (X^\\top X)^{-1} X^\\top y }
+$$`,
+  },
+  {
+    label: "tag + eqref",
+    code: `$$
+E = mc^2 \\tag{1}
+$$
+
+As shown in \\eqref{1}, energy equals mass.`,
+  },
+  {
+    label: "\\text{} inside math",
+    code: `$$
+\u062a = \\text{profit}(x) - \\text{cost}(x)
+$$`,
+  },
+];
+
+/* ------------------------------ Greek alphabet ------------------------------ */
+
+const greekItems: { label: string; code: string }[] = [
+  ...[
+    ["α", "alpha"], ["β", "beta"], ["γ", "gamma"], ["δ", "delta"],
+    ["ε", "epsilon"], ["ε var", "varepsilon"], ["ζ", "zeta"], ["η", "eta"],
+    ["θ", "theta"], ["θ var", "vartheta"], ["ι", "iota"], ["κ", "kappa"],
+    ["κ var", "varkappa"], ["λ", "lambda"], ["μ", "mu"], ["ν", "nu"],
+    ["ξ", "xi"], ["π", "pi"], ["π var", "varpi"], ["ρ", "rho"],
+    ["ρ var", "varrho"], ["σ", "sigma"], ["σ var", "varsigma"], ["τ", "tau"],
+    ["υ", "upsilon"], ["φ", "phi"], ["φ var", "varphi"], ["χ", "chi"],
+    ["ψ", "psi"], ["ω", "omega"],
+  ].map(([glyph, cmd]) => ({ label: `${glyph}  ${cmd}`, code: `\\${cmd} ` })),
+  ...[
+    ["Γ", "Gamma"], ["Δ", "Delta"], ["Θ", "Theta"], ["Λ", "Lambda"],
+    ["Ξ", "Xi"], ["Π", "Pi"], ["Σ", "Sigma"], ["Υ", "Upsilon"],
+    ["Φ", "Phi"], ["Ψ", "Psi"], ["Ω", "Omega"],
+  ].map(([glyph, cmd]) => ({ label: `${glyph}  \\${cmd}`, code: `\\${cmd} ` })),
+  ...[
+    ["∂", "partial"], ["∇", "nabla"], ["∞", "infty"], ["±", "pm"],
+    ["×", "times"], ["÷", "div"], ["≤", "leq"], ["≥", "geq"],
+    ["≈", "approx"], ["≠", "neq"], ["→", "to"], ["⇒", "Rightarrow"],
+    ["∈", "in"], ["⊂", "subset"], ["∀", "forall"], ["∃", "exists"],
+  ].map(([glyph, cmd]) => ({ label: `${glyph}  \\${cmd}`, code: `\\${cmd} ` })),
+];
+
+/* ------------------------------ TikZ templates ------------------------------ */
+
+const tikzItems: { label: string; code: string }[] = [
+  {
+    label: "standalone picture",
+    code: `\`\`\`tikz
+\\begin{tikzpicture}[>=stealth, scale=1.2]
+  \\draw[->] (-0.5,0) -- (4,0);
+  \\draw[->] (0,-0.5) -- (0,3);
+  \\draw[thick, domain=0:3.5] plot (\\x, {0.35*\\x});
+  \\node[circle, draw, fill=cyan!20] at (2.4,1.4) {\$f(x)\$};
+\\end{tikzpicture}
+\`\`\``,
+  },
+  {
+    label: "tree",
+    code: `\`\`\`tikz
+\\begin{tikzpicture}[level distance=14mm,
+  every node/.style={circle, draw, minimum size=8mm}]
+  \\node {A}
+    child { node {B} }
+    child { node {C}
+      child { node {D} }
+      child { node {E} } };
+\\end{tikzpicture}
+\`\`\``,
+  },
+  {
+    label: "state automaton",
+    code: `\`\`\`tikz
+\\begin{tikzpicture}[shorten >=1pt, node distance=22mm, >=stealth,
+  every state/.style={circle, draw, minimum size=8mm}]
+  \\node[state] (q0) {\$q_0\$};
+  \\node[state] (q1) [right of=q0] {\$q_1\$};
+  \\draw[->] (q0) edge[loop above] node {a} (q0)
+             (q0) edge[bend left] node {b} (q1)
+             (q1) edge[bend left] node {a} (q0);
+\\end{tikzpicture}
+\`\`\``,
+  },
+  {
+    label: "axes + labeled nodes",
+    code: `\`\`\`tikz
+\\begin{tikzpicture}[scale=0.9]
+  \\draw[help lines] (0,0) grid (5,4);
+  \\draw[<->] (0,4) -- (0,0) -- (5,0);
+  \\foreach \\x/\\y in {1/1, 2/2.5, 3/2, 4/3.5}
+     \\fill[cyan] (\\x,\\y) circle (2pt);
+  \\node[right] at (4,3.5) {\$P_4\$};
+\\end{tikzpicture}
+\`\`\``,
+  },
 ];
 
 const mdxComponents = [
@@ -393,6 +549,8 @@ caption="A small decision diagram."
   },
 ];
 
+import { SIM_CATALOG, SIM_GROUPS } from "@/components/sims/catalog";
+
 interface SnippetGroup {
   label: string;
   icon: typeof FileCode2;
@@ -400,6 +558,8 @@ interface SnippetGroup {
 }
 
 const snippets: SnippetGroup[] = [
+  { label: "Greek", icon: Sigma, items: greekItems },
+  { label: "TikZ", icon: Workflow, items: tikzItems },
   { label: "Python", icon: FileCode2, items: pythonSnippets },
   { label: "R / ggplot2", icon: Braces, items: rSnippets },
   { label: "C++ / Eigen", icon: Braces, items: cppSnippets },
@@ -593,7 +753,28 @@ export function EditorToolbar({ insert }: ToolbarProps) {
           <Table2 size={13} />
         </Btn>
 
-        <span className="mx-1 h-5 w-px bg-line" />
+
+        <Dropdown label="plots & sims" icon={FlaskConical}>
+          <div className="space-y-2 p-1.5">
+            {Object.entries(SIM_GROUPS).map(([gkey, glabel]) => (
+              <div key={gkey}>
+                <p className="mb-1 px-1.5 font-mono text-[10px] uppercase tracking-wider text-faint">{glabel}</p>
+                {SIM_CATALOG.filter(s => s.group === gkey).map(s => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    title={s.desc}
+                    onClick={() => insert(`<Sim id="${s.id}" />`, "", "\n")}
+                    className="block w-full rounded-md px-2.5 py-1.5 text-left text-[12px] text-dim transition-colors hover:bg-panel hover:text-ink"
+                  >
+                    {s.title}
+                  </button>
+                ))}
+              </div>
+            ))}
+          </div>
+        </Dropdown>
+`n        <span className="mx-1 h-5 w-px bg-line" />
 
         <Dropdown label="snippets" icon={Wrench}>
           <div className="space-y-2 p-1.5">

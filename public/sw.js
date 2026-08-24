@@ -51,6 +51,9 @@ self.addEventListener("fetch", (event) => {
   }
   if (url.origin !== location.origin) return;
 
+  // SECURITY: never cache or serve the admin panel from the SW.
+  if (url.pathname.startsWith(BASE + "admin") || url.pathname === BASE + "admin") return;
+
   // Navigations: network-first so deploys show up immediately,
   // but instant + offline when the network is gone.
   if (req.mode === "navigate") {

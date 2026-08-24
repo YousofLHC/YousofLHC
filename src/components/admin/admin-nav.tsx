@@ -19,13 +19,14 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/admin/resume", label: "Résumé studio", icon: UserRound },
+  { href: "/admin/data", label: "Data studio", icon: Settings, exact: true },
   { href: "/admin/posts", label: "Blog posts", icon: FileText },
   { href: "/admin/notes", label: "Study notes", icon: BookOpen },
   { href: "/admin/projects", label: "Projects", icon: FolderKanban },
   { href: "/admin/notebooks", label: "Notebooks", icon: FlaskConical },
-  { href: "/admin/settings", label: "Site settings", icon: Settings },
-  { href: "/admin/data", label: "Profile & data", icon: UserRound },
   { href: "/admin/media", label: "Media", icon: Images },
+  { href: "/admin/settings", label: "Site settings", icon: Settings },
   { href: "/admin/github", label: "GitHub Pages", icon: Globe },
 ];
 

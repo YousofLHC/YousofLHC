@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowUpRight, Download, Lightbulb, Info, TriangleAlert } from "lucide-react";
 import { CodeBlock } from "@/components/ui/code-block";
 import { Mermaid } from "@/components/ui/mermaid";
+import { TikzView } from "@/components/ui/tikz-view";
 import { Lightbox } from "@/components/ui/lightbox";
 import {
   LJPlot,
@@ -15,6 +16,7 @@ import {
   VerletPlot,
 } from "@/components/ui/math-plot";
 import { getNotebook } from "@/lib/notebooks";
+import { Sim } from "@/components/sims/sim";
 
 function Pre({ children }: { children?: React.ReactNode }) {
   const raw = Array.isArray(children) ? children[0] : children;
@@ -25,6 +27,7 @@ function Pre({ children }: { children?: React.ReactNode }) {
     const lang = m?.[1] ?? "text";
     const text = String(props.children ?? "");
     if (lang === "mermaid") return <Mermaid chart={text} />;
+    if (lang === "tikz") return <TikzView code={text} />;
     return <CodeBlock code={text} language={lang} />;
   }
   return <pre>{children}</pre>;
@@ -146,5 +149,6 @@ export function getMdxComponents(): MDXComponents {
     CoulombPlot,
     TailPlot,
     VerletPlot,
+    Sim,
   };
 }

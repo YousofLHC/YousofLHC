@@ -1,7 +1,7 @@
 "use client";
 
 import "katex/contrib/mhchem";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
@@ -20,7 +20,7 @@ import { renderArticlePreview } from "@/app/admin/preview-action";
  * lightweight react-markdown fallback keeps the pane usable.
  */
 export function MarkdownPreview({ body }: { body: string }) {
-  const [node, setNode] = useState<ReactNode | null>(null);
+  const [html, setHtml] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -35,7 +35,7 @@ export function MarkdownPreview({ body }: { body: string }) {
       if (!active) return;
       setPending(false);
       if (res.ok) {
-        setNode(res.node ?? null);
+        setHtml(res.html ?? "");
         setErr(null);
       } else {
         setErr(res.error ?? "MDX compilation failed");
@@ -55,7 +55,7 @@ export function MarkdownPreview({ body }: { body: string }) {
     );
   }
 
-  if (pending && node === null) {
+  if (pending && html === null) {
     return (
       <div className="flex items-center justify-center gap-2 px-6 py-16 font-mono text-xs text-faint">
         <Loader2 size={14} className="animate-spin" /> compiling preview…
@@ -63,7 +63,7 @@ export function MarkdownPreview({ body }: { body: string }) {
     );
   }
 
-  if (err && node === null) {
+  if (err && html === null) {
     return (
       <div className="space-y-4 px-6 py-6">
         <div className="flex items-start gap-2 rounded-lg border border-magenta/40 bg-magenta/5 p-3 text-sm text-dim">
@@ -80,8 +80,10 @@ export function MarkdownPreview({ body }: { body: string }) {
 
   return (
     <div className="rich px-6 py-8">
-      {node}
-      {pending && <p className="mt-4 font-mono text-[10px] text-faint">recompiling…</p>}
+      <div dangerouslySetInnerHTML={{ __html: html ?? "" }} />
+      {pending && html !== null && (
+        <p className="mt-4 font-mono text-[10px] text-faint">recompiling…</p>
+      )}
     </div>
   );
 }

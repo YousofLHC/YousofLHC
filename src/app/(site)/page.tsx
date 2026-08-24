@@ -123,7 +123,7 @@ const contactCards = [
     label: "GitHub",
     name: "Yousof_LHC",
     desc: "Explore my code and experiments.",
-    href: site.socials.github,
+    href: site.socialLinks.find((s) => s.id === "github")?.url ?? "",
     icon: AtSign,
   },
   {
@@ -144,7 +144,7 @@ const contactCards = [
 
 const contactRows = [
   { label: "Email", value: site.email, href: `mailto:${site.email}`, icon: Mail },
-  { label: "GitHub", value: "Yousof_LHC", href: site.socials.github, icon: AtSign },
+  { label: "GitHub", value: "Yousof_LHC", href: site.socialLinks.find((s) => s.id === "github")?.url ?? "", icon: AtSign },
 ];
 
 export default async function Home() {
