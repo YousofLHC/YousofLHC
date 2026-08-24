@@ -632,7 +632,7 @@ function Dropdown({
       </button>
       {open && (
         <div
-          className={`absolute top-9 z-30 max-h-80 w-64 overflow-y-auto rounded-xl border border-line bg-void p-1.5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.9)] ${
+          className={`absolute top-9 z-30 max-h-80 w-64 overflow-y-auto rounded-xl border border-line bg-panel/85 p-1.5 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.35)] backdrop-blur-md ${
             align === "right" ? "right-0" : "left-0"
           }`}
         >
@@ -652,7 +652,7 @@ export function EditorToolbar({ insert }: ToolbarProps) {
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-1 rounded-lg border border-line bg-void/60 px-2 py-1.5">
+      <div className="flex flex-wrap items-center gap-1 rounded-lg border border-line bg-void/30 px-2 py-1.5 backdrop-blur-sm">
         <Btn title="Bold" onClick={() => insert("**", "bold text", "**")}>
           <Bold size={13} />
         </Btn>
@@ -815,7 +815,7 @@ export function EditorToolbar({ insert }: ToolbarProps) {
 
 function KV({ k, children }: { k: string; children: React.ReactNode }) {
   return (
-    <p className="rounded-md border border-line bg-void/50 px-3 py-2">
+    <p className="rounded-md border border-line bg-void/25 px-3 py-2">
       <code className="font-mono text-[11px] text-cyan">{k}</code>
       <span className="mt-1 block text-[12px] leading-5 text-dim">{children}</span>
     </p>
@@ -824,7 +824,7 @@ function KV({ k, children }: { k: string; children: React.ReactNode }) {
 
 function SyntaxHelp() {
   return (
-    <div className="grid gap-2 rounded-xl border border-line bg-void/40 p-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-2 rounded-xl border border-line bg-void/20 p-4 md:grid-cols-2 lg:grid-cols-3">
       <KV k="```lang">Fenced code with syntax highlighting: python, r, cpp, bash, latex, matlab, sql, json, yaml…</KV>
       <KV k="```mermaid">Live diagram: flowchart, sequenceDiagram, timeline (roadmap), gantt, stateDiagram-v2, classDiagram…</KV>
       <KV k="$…$ / $$…$$">KaTeX math. Chemistry with <code>{"\\ce{...}"}</code> (mhchem). Auto-renders live in the preview.</KV>

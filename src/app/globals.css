@@ -185,8 +185,8 @@
 
 [data-theme="light"] {
   color-scheme: light;
-  --t-void: #f6f7fa;
-  --t-abyss: #ecf0f6;
+  --t-void: #fafbfd;
+  --t-abyss: #f0f3f8;
   --t-panel: #ffffff;
   --t-panel-2: #eef1f7;
   --t-line: rgba(15, 23, 42, 0.09);
@@ -895,8 +895,8 @@
   /* ---------- light-theme hero legibility & ambience ---------- */
   [data-theme="light"] .hx-mesh { opacity: 0.55; }
   [data-theme="light"] .hx-grid { opacity: 0.18; }
-  [data-theme="light"] .hx-vignette { opacity: 0.18; }
-  [data-theme="light"] .hx-scan { opacity: 0.32; }
+  [data-theme="light"] .hx-vignette { opacity: 0.06; }
+  [data-theme="light"] .hx-scan { opacity: 0.18; }
   [data-theme="light"] .hx-bracket { opacity: 0.2; }
   [data-theme="light"] .hx-orb { opacity: 0.26; }
   [data-theme="light"] .hx-cursor-glow { display: none; }
