@@ -1,6 +1,6 @@
 /*
  * Site service worker — lean hand-rolled precacher.
- * The build id is stamped into every vtkabbg occurrence at export time
+ * The build id is stamped into every vtkp3bs occurrence at export time
  * (export-static.mjs), so each deploy gets a fresh cache namespace.
  *
  * Strategies:
@@ -8,7 +8,7 @@
  *   - document navigations               → network-first, offline → cached page or homepage shell
  *   - other same-origin GETs             → stale-while-revalidate (LRU-capped)
  */
-const VER = "vtkabbg";
+const VER = "vtkp3bs";
 const CACHE = "site-" + VER;
 const BASE = "/YousofLHC/";
 const SHELL = BASE;
