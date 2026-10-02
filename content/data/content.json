@@ -6,17 +6,29 @@
     "degree": "M.Sc. in Computer Engineering — Artificial Intelligence & Robotics",
     "tagline": "Bridging machine learning, optimization, and mathematics.",
     "bio": [
-      "I hold an M.Sc. in Computer Engineering (Artificial Intelligence & Robotics) from Ferdowsi University of Mashhad, where my thesis developed a single-class anomaly-detection framework based on an implicit convex hull and ensemble learning, supervised by Prof. Hadi Sadoghi Yazdi. I also hold a bachelor's degree in mathematics education from Shahid Beheshti University of Mashhad, and I studied computer engineering at the University of Bojnurd, North Khorasan.",
-      "I have completed courses in paper writing, machine learning, statistics, and optimization from credible educational sources, and I carry out hands-on projects such as optimizing solar cells with the genetic algorithm. My work interests include neural networks, machine learning, reinforcement learning, big data processing, and distributed systems.",
+      "I hold an M.Sc. in Computer Engineering (Artificial Intelligence & Robotics) from Ferdowsi University of Mashhad, where my thesis developed Anomaly Detection Using One-Class Classification Based on Implicit Convex Hull and Ensemble Learning, supervised by Prof. Hadi Sadoghi Yazdi. I also hold a bachelor's degree in mathematics education from Shahid Beheshti University of Mashhad, and I studied computer engineering at the University of Bojnurd, North Khorasan.",
+      "I have studied paper writing, machine learning, statistics, and optimization through self-guided online coursework, and I carry out hands-on projects such as optimizing solar cells with the genetic algorithm. My work interests include neural networks, machine learning, reinforcement learning, big data processing, and distributed systems.",
       "I teach mathematics while pursuing research, and I am always open to research collaborations, academic exchanges, and opportunities that combine rigorous mathematics with real-world engineering."
     ],
-    "focus": "Recently completed: M.Sc. thesis on single-class anomaly detection via an implicit convex hull and ensemble learning — combining elastic-net regularization, proximal methods, and Kalman-based approximate message passing (KAMP/DKAMP)."
+    "focus": "Recently completed: M.Sc. thesis on Anomaly Detection Using One-Class Classification Based on Implicit Convex Hull and Ensemble Learning."
   },
   "stats": [
-    { "value": "3", "label": "Degrees" },
-    { "value": "4", "label": "Years of teaching" },
-    { "value": "5", "label": "Programming languages" },
-    { "value": "3", "label": "Research interests" }
+    {
+      "value": "3",
+      "label": "Degrees(Academic Programs)"
+    },
+    {
+      "value": "4",
+      "label": "Years of teaching"
+    },
+    {
+      "value": "5",
+      "label": "Technical Skills"
+    },
+    {
+      "value": "6",
+      "label": "Research interests"
+    }
   ],
   "education": [
     {
@@ -24,7 +36,11 @@
       "title": "M.Sc. in Computer Engineering — Artificial Intelligence & Robotics",
       "org": "Ferdowsi University of Mashhad, Iran",
       "detail": "Graduated with the grade Excellent (19.5/20). Thesis: “Single-class anomaly detection based on implicit convex hull and ensemble learning” — an elastic-net-regularized one-class framework solved with proximal methods and Kalman-based approximate message passing (KAMP), with a distributed variant (DKAMP). Advisor: Prof. Hadi Sadoghi Yazdi.",
-      "tags": ["Anomaly Detection", "Machine Learning", "Optimization"],
+      "tags": [
+        "Anomaly Detection",
+        "Machine Learning",
+        "Optimization"
+      ],
       "highlight": true
     },
     {
@@ -32,14 +48,22 @@
       "title": "B.Sc. in Mathematics Education",
       "org": "Shahid Beheshti University of Mashhad, Iran",
       "detail": "Government-funded bachelor's degree in mathematics education, graduated with a GPA of 17.56/20. Served as the secretary of the university's mathematics scientific association.",
-      "tags": ["Mathematics", "Education", "Statistics"]
+      "tags": [
+        "Mathematics",
+        "Education",
+        "Statistics"
+      ]
     },
     {
       "period": "2017 — 2019",
       "title": "B.Sc. in Computer Engineering (studied)",
       "org": "University of Bojnurd, Iran",
       "detail": "Computer engineering studies at the University of Bojnurd (government-funded) in North Khorasan, with a GPA of 17/20.",
-      "tags": ["Programming", "Computer Science", "Linear Algebra"]
+      "tags": [
+        "Programming",
+        "Computer Science",
+        "Linear Algebra"
+      ]
     }
   ],
   "experience": [
@@ -48,7 +72,10 @@
       "title": "Mathematics Teacher",
       "org": "Ministry of Education, Bojnurd, Iran",
       "detail": "Teaching mathematics at the secondary level under the Iranian Ministry of Education in Bojnurd, North Khorasan.",
-      "tags": ["Teaching", "Mathematics"],
+      "tags": [
+        "Teaching",
+        "Mathematics"
+      ],
       "highlight": true
     },
     {
@@ -56,54 +83,26 @@
       "title": "Secretary, Mathematics Scientific Association",
       "org": "Shahid Beheshti University of Mashhad",
       "detail": "Organized seminars, workshops, and academic events for the university's mathematics scientific association.",
-      "tags": ["Leadership", "Mathematics", "Events"]
+      "tags": [
+        "Leadership",
+        "Mathematics",
+        "Events"
+      ]
     },
     {
       "period": "2017 — 2020",
       "title": "Freelance Programmer",
       "org": "Freelance",
       "detail": "Developed software and data solutions in Python, R, C++, and PHP on a freelance basis.",
-      "tags": ["Python", "R", "C++", "PHP"]
+      "tags": [
+        "Python",
+        "R",
+        "C++",
+        "PHP"
+      ]
     }
   ],
-  "publications": [
-    {
-      "title": "Single-Class Anomaly Detection via Implicit Convex Hull and Ensemble Learning",
-      "authors": "Y. Ghalenoei, H. Sadoghi Yazdi",
-      "venue": "M.Sc. Thesis — Ferdowsi University of Mashhad",
-      "year": "2025",
-      "status": "under-review",
-      "tags": ["Anomaly Detection", "One-Class Classification", "Proximal Methods"],
-      "cite": "Sample entry — replace with the real citation"
-    },
-    {
-      "title": "Kalman-Based Approximate Message Passing for Online Anomaly Scoring",
-      "authors": "Y. Ghalenoei, H. Sadoghi Yazdi",
-      "venue": "Preprint (sample)",
-      "year": "2025",
-      "status": "preprint",
-      "tags": ["Message Passing", "Kalman Filter", "AMP"],
-      "cite": "Sample entry — replace with the real citation"
-    },
-    {
-      "title": "Genetic-Algorithm Optimization of Solar-Cell Parameters",
-      "authors": "Y. Ghalenoei",
-      "venue": "Technical report (sample)",
-      "year": "2024",
-      "status": "published",
-      "tags": ["Genetic Algorithm", "Optimization", "Photovoltaics"],
-      "cite": "Sample entry — replace with the real citation"
-    },
-    {
-      "title": "Compression-Based Outlier Detection on Industrial Time Series",
-      "authors": "Y. Ghalenoei",
-      "venue": "Working paper (sample)",
-      "year": "2023",
-      "status": "in-press",
-      "tags": ["Anomaly Detection", "Time Series", "Compression"],
-      "cite": "Sample entry — replace with the real citation"
-    }
-  ],
+  "publications": [],
   "awards": [],
   "certifications": [
     {
@@ -114,47 +113,117 @@
   ],
   "skills": [
     {
-      "name": "Programming Languages",
+      "name": "Technical Skills",
       "skills": [
-        { "name": "Python", "level": 90 },
-        { "name": "R", "level": 85 },
-        { "name": "C++", "level": 70 },
-        { "name": "PHP", "level": 65 },
-        { "name": "Git", "level": 80 },
-        { "name": "LaTeX", "level": 75 }
+        {
+          "name": "Python",
+          "level": 90
+        },
+        {
+          "name": "R",
+          "level": 85
+        },
+        {
+          "name": "C++",
+          "level": 70
+        },
+        {
+          "name": "PHP",
+          "level": 65
+        },
+        {
+          "name": "Git",
+          "level": 80
+        },
+        {
+          "name": "LaTeX",
+          "level": 75
+        }
       ]
     },
     {
       "name": "Mathematical Foundations",
       "skills": [
-        { "name": "Linear Algebra", "level": 85 },
-        { "name": "Statistics", "level": 80 },
-        { "name": "Machine Learning", "level": 85 },
-        { "name": "Optimization", "level": 80 }
+        {
+          "name": "Linear Algebra",
+          "level": 85
+        },
+        {
+          "name": "Statistics",
+          "level": 80
+        },
+        {
+          "name": "Machine Learning",
+          "level": 85
+        },
+        {
+          "name": "Optimization",
+          "level": 80
+        }
       ]
     },
     {
       "name": "Research Interests",
       "skills": [
-        { "name": "Message Passing", "level": 70 },
-        { "name": "Compression-Based Anomaly Detection", "level": 70 },
-        { "name": "Proximal Methods for Nonconvex Systems", "level": 65 },
-        { "name": "Genetic Algorithms", "level": 80 }
+        {
+          "name": "Optimization",
+          "level": 40
+        },
+        {
+          "name": "Machine Learning",
+          "level": 60
+        },
+        {
+          "name": "Anomaly Detection",
+          "level": 55
+        },
+        {
+          "name": "Big Data & Distributed Systems",
+          "level": 10
+        },
+        {
+          "name": "Mathematics & Statistics",
+          "level": 73
+        },
+        {
+          "name": "Teaching & Education",
+          "level": 85
+        }
       ]
     },
     {
       "name": "Languages",
       "skills": [
-        { "name": "Persian (Farsi) — Native", "level": 100 },
-        { "name": "English — Reading", "level": 80 },
-        { "name": "English — Writing", "level": 75 },
-        { "name": "English — Speaking & Listening", "level": 75 }
+        {
+          "name": "Persian (Farsi) — Native",
+          "level": 100
+        },
+        {
+          "name": "English — Reading",
+          "level": 80
+        },
+        {
+          "name": "English — Writing",
+          "level": 75
+        },
+        {
+          "name": "English — Speaking & Listening",
+          "level": 75
+        }
       ]
     }
   ],
   "languages": [
-    { "name": "Persian (Farsi)", "level": "Native", "percentage": 100 },
-    { "name": "English", "level": "Working proficiency (reading, writing, speaking, listening)", "percentage": 75 }
+    {
+      "name": "Persian (Farsi)",
+      "level": "Native",
+      "percentage": 100
+    },
+    {
+      "name": "English",
+      "level": "Working proficiency (reading, writing, speaking, listening)",
+      "percentage": 75
+    }
   ],
   "projects": [
     {
@@ -166,8 +235,16 @@
       "status": "complete",
       "domain": "Anomaly Detection",
       "domainColor": "magenta",
-      "tags": ["Anomaly Detection", "One-Class Classification", "AMP", "Ensemble Learning"],
-      "tech": ["Python", "R"],
+      "tags": [
+        "Anomaly Detection",
+        "One-Class Classification",
+        "AMP",
+        "Ensemble Learning"
+      ],
+      "tech": [
+        "Python",
+        "R"
+      ],
       "cover": "/covers/single-class-anomaly-detection.svg",
       "featured": true
     },
@@ -180,8 +257,16 @@
       "status": "complete",
       "domain": "Optimization",
       "domainColor": "emerald",
-      "tags": ["Genetic Algorithm", "Optimization", "Python", "R"],
-      "tech": ["Python", "R"],
+      "tags": [
+        "Genetic Algorithm",
+        "Optimization",
+        "Python",
+        "R"
+      ],
+      "tech": [
+        "Python",
+        "R"
+      ],
       "cover": "/covers/solar-cells-genetic-optimization.svg",
       "featured": true
     }
@@ -228,7 +313,13 @@
       "heat": 4,
       "color": "cyan",
       "icon": "Cpu",
-      "keywords": ["machine learning", "neural network", "deep learning", "python", "statistics"]
+      "keywords": [
+        "machine learning",
+        "neural network",
+        "deep learning",
+        "python",
+        "statistics"
+      ]
     },
     {
       "id": "mp",
@@ -239,7 +330,12 @@
       "heat": 4,
       "color": "violet",
       "icon": "Magnet",
-      "keywords": ["message passing", "belief propagation", "probabilistic", "inference"]
+      "keywords": [
+        "message passing",
+        "belief propagation",
+        "probabilistic",
+        "inference"
+      ]
     },
     {
       "id": "opt",
@@ -250,7 +346,12 @@
       "heat": 4,
       "color": "emerald",
       "icon": "Sigma",
-      "keywords": ["optimization", "genetic algorithm", "proximal", "nonconvex"]
+      "keywords": [
+        "optimization",
+        "genetic algorithm",
+        "proximal",
+        "nonconvex"
+      ]
     },
     {
       "id": "anomaly",
@@ -261,7 +362,12 @@
       "heat": 3,
       "color": "magenta",
       "icon": "ScanLine",
-      "keywords": ["anomaly", "compression", "outlier", "detection"]
+      "keywords": [
+        "anomaly",
+        "compression",
+        "outlier",
+        "detection"
+      ]
     },
     {
       "id": "distributed",
@@ -272,7 +378,12 @@
       "heat": 3,
       "color": "amber",
       "icon": "Network",
-      "keywords": ["big data", "distributed", "parallel", "processing"]
+      "keywords": [
+        "big data",
+        "distributed",
+        "parallel",
+        "processing"
+      ]
     },
     {
       "id": "math",
@@ -283,7 +394,12 @@
       "heat": 4,
       "color": "cyan",
       "icon": "Brain",
-      "keywords": ["linear algebra", "statistics", "probability", "mathematics"]
+      "keywords": [
+        "linear algebra",
+        "statistics",
+        "probability",
+        "mathematics"
+      ]
     }
   ]
 }
